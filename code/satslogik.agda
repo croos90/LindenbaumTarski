@@ -44,20 +44,13 @@ data _⊢_ : List Formula →  Formula → Set where
     → Γ ⊢ ϕ
        ---------
     → Γ ⊢ ϕ ∨ ψ
-    
-  ∨-elimˡ : (Γ : List Formula) (ϕ ψ : Formula)
-    → Γ ⊢ ϕ ∨ ψ
-    → (ϕ ∷ Γ) ⊢ ϕ
-    → (ψ ∷ Γ) ⊢ ϕ
-       -----------
-    → Γ ⊢ ϕ
 
-  ∨-elimʳ : (Γ : List Formula) (ϕ ψ : Formula)
+  ∨-elim : (Γ : List Formula) (ϕ ψ γ : Formula)
     → Γ ⊢ ϕ ∨ ψ
-    → (ϕ ∷ Γ) ⊢ ψ
-    → (ψ ∷ Γ) ⊢ ψ
+    → (ϕ ∷ Γ) ⊢ γ
+    → (ψ ∷ Γ) ⊢ γ
        -----------
-    → Γ ⊢ ψ
+    → Γ ⊢ γ
 
   p∈Γ : (Γ : List Formula) (ϕ : Formula)
     → ϕ ∈ Γ
@@ -74,3 +67,4 @@ data _⊢_ : List Formula →  Formula → Set where
     → (¬ ϕ ∷ Γ) ⊢ ⊥
        --------------  Ok att ta för givet ¬¬ϕ ⊢ ϕ ? 
     → Γ ⊢ ϕ
+    
