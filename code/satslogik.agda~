@@ -1,0 +1,27 @@
+open import Data.Nat using (ℕ)
+open import Data.List using (List)
+
+-- Datatyp för formler
+
+data Formula : Set where
+  _∧_    : Formula → Formula → Formula
+  _∨_    : Formula → Formula → Formula
+  ¬_     : Formula → Formula
+  const  : ℕ      → Formula
+  ⊥      : Formula
+  ⊤      : Formula
+
+
+infixl 25 _∧_ _∨_
+infixl 10  ¬_
+
+
+data _⊢_ : (List Formula) →  Formula → Set where
+  ∧intro  : (Γ : List Formula) (ϕ ψ : Formula) → Γ ⊢ ϕ → Γ ⊢ ψ → Γ ⊢ ϕ ∧ ψ
+  ∧elimˡ : (Γ : List Formula) (ϕ ψ : Formula) → Γ ⊢ ϕ ∧ ψ → Γ ⊢ ϕ
+  ∧elimʳ : (Γ : List Formula) (ϕ ψ : Formula) → Γ ⊢ ϕ ∧ ψ → Γ ⊢ ψ
+  ∨intror : (Γ : List Formula) (ϕ ψ : Formula) → Γ ⊢ ψ → Γ ⊢ ϕ ∨ ψ
+  ∨introl : (Γ : List Formula) (ϕ ψ : Formula) → Γ ⊢ ϕ → Γ ⊢ ϕ ∨ ψ
+
+--  Hur och var definierar jag ∈? 
+--  ¬intro  : (Γ : List Formula) (ϕ : Formula) → ϕ ∈ Γ → Γ ⊢ ⊥ → ¬ ϕ
