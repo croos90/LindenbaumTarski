@@ -1,5 +1,5 @@
 open import Data.Nat using (ℕ)
-open import Data.List using (List; _∷_)
+open import Data.List using (List; _∷_; [])
 open import Data.List.Membership.Propositional using (_∈_)
 
 
@@ -67,4 +67,7 @@ data _⊢_ : List Formula →  Formula → Set where
     → (¬ ϕ ∷ Γ) ⊢ ⊥
        --------------  Ok att ta för givet ¬¬ϕ ⊢ ϕ ? 
     → Γ ⊢ ϕ
-    
+
+  ⊥-elim : (ϕ : Formula) → (⊥ ∷ []) ⊢ ϕ
+
+  ⊤-intro : [] ⊢ ⊤

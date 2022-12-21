@@ -1,3 +1,5 @@
+# Notes
+
 ## Formula
 
 - Behövs \top ?
@@ -16,7 +18,3 @@
 - \or-intro: r och l?
 - Givet att \neg \neg \phi = \phi ?
 - Givet att \Gamma \nvdash \bot ?
-
-Ej implementerat än:
-1. \bot-elim 
-2. \top-intro
