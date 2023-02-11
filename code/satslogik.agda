@@ -39,8 +39,6 @@ data _⊢_ : ctxt → Formula → Set where
 
   ∨-elim : (Γ : ctxt) (ϕ ψ γ : Formula) → Γ ⊢ ϕ ∨ ψ → (Γ , ϕ) ⊢ γ → (Γ , ψ) ⊢ γ → Γ ⊢ γ
 
-  p∈Γ : (Γ : ctxt) (ϕ : Formula) → ϕ ∈ Γ → Γ ⊢ ϕ
-
   ¬intro : (Γ : ctxt) (ϕ : Formula) → (Γ , ϕ) ⊢ ⊥ → Γ ⊢ ¬ ϕ
     
   ¬elim : (Γ : ctxt) (ϕ : Formula) → (Γ , ¬ ϕ) ⊢ ⊥ → Γ ⊢ ϕ
@@ -48,42 +46,53 @@ data _⊢_ : ctxt → Formula → Set where
   ⊥-elim : (Γ : ctxt) (ϕ : Formula) → (Γ , ⊥) ⊢ ϕ
 
   ⊤-intro : ∅ ⊢ ⊤
-------------------------------------------------------------------------------------
-  ext : (Γ : ctxt) (ϕ ψ : Formula) → Γ ⊢ ψ → (Γ , ϕ) ⊢ ψ
 
-  rearrange : (Γ : ctxt) (ϕ ψ γ : Formula) → ((Γ , ϕ) , ψ) ⊢ γ → ((Γ , ψ) , ϕ) ⊢ γ
-------------------------------------------------------------------------------------
+  axiom : (Γ : ctxt) (ϕ : Formula) → ϕ ∈ Γ → Γ ⊢ ϕ
+
+  weakening : (Γ : ctxt) (ϕ ψ : Formula) → Γ ⊢ ψ → (Γ , ϕ) ⊢ ψ
+
+  exchange : (Γ : ctxt) (ϕ ψ γ : Formula) → ((Γ , ϕ) , ψ) ⊢ γ → ((Γ , ψ) , ϕ) ⊢ γ
+
+  contraction : (Γ : ctxt) (ϕ ψ : Formula) → ((Γ , ϕ) , ϕ) ⊢ ψ → (Γ , ϕ) ⊢ ψ
+
 
 data _×_ (A B : Set) : Set where
   ⟨_,_⟩ : A → B → A × B
 
-×-projₗ : ∀ {A B : Set} → A × B → A
-×-projₗ ⟨ A , B ⟩  = A
+×-first : ∀ {A B : Set} → A × B → A
+×-first ⟨ A , B ⟩  = A
 
-×-projᵣ : ∀ {A B : Set} → A × B → B
-×-projᵣ ⟨ A , B ⟩ = B
+×-second : ∀ {A B : Set} → A × B → B
+×-second ⟨ A , B ⟩ = B
 
+
+-- Equivalence
 _⊢_∼_ : ctxt → Formula → Formula → Set
 Γ ⊢ ϕ ∼ ψ = ((Γ , ϕ) ⊢ ψ) × ((Γ , ψ) ⊢ ϕ)
 
+
+-- Reflexivity
 ∼-refl : ∀ {ϕ : Formula} {Γ : ctxt} → Γ ⊢ ϕ ∼ ϕ
-∼-refl {ϕ} {Γ} = ⟨ p∈Γ (Γ , ϕ) ϕ Z , (p∈Γ (Γ , ϕ) ϕ Z) ⟩
+∼-refl {ϕ} {Γ} = ⟨ axiom (Γ , ϕ) ϕ Z , (axiom (Γ , ϕ) ϕ Z) ⟩
 
+
+-- Symmetry
 ∼-sym : ∀ {ϕ ψ : Formula} {Γ : ctxt} → Γ ⊢ ϕ ∼ ψ → Γ ⊢ ψ ∼ ϕ
-∼-sym ⟨ A , B ⟩ = ⟨ ×-projᵣ ⟨ A , B ⟩ , ×-projₗ ⟨ A , B ⟩ ⟩
+∼-sym ⟨ A , B ⟩ = ⟨ B , A ⟩
 
 
+-- Lemma (for transitivity)
 -------------------------------------------------------------------
--- Lemma
-⊢-trans : ∀ {ϕ ψ γ : Formula} {Γ : ctxt} → (Γ , ϕ) ⊢ γ → (Γ , γ) ⊢ ψ → (Γ , ϕ) ⊢ ψ
-⊢-trans {ϕ} {ψ} {γ} {Γ} Γ,ϕ⊢γ Γ,γ⊢ψ = ∨-elim (Γ , ϕ) γ ψ ψ (∨-introʳ (Γ , ϕ) γ ψ Γ,ϕ⊢γ) (rearrange Γ γ ϕ ψ (ext (Γ , γ) ϕ ψ Γ,γ⊢ψ)) (p∈Γ ((Γ , ϕ) , ψ) ψ Z)
-
 -- [ Γ , ϕ      ⊢ γ ∨ ψ ]:    (∨-introˡ (Γ , ϕ) γ ψ Γ,ϕ⊢γ)
--- [ Γ , ϕ , γ  ⊢ ψ     ]:    (rearrange Γ γ ϕ ψ (ext (Γ , γ) ϕ ψ Γ,γ⊢ψ))
--- [ Γ , ϕ , ψ  ⊢ ψ     ]:    (p∈Γ ((Γ , ϕ) , ψ) ψ Z)
--- [ Γ , ϕ      ⊢ ψ     ]:    ∨-elim (∨-introˡ (Γ , ϕ) ψ Γ,ϕ⊢γ) (ext (Γ , γ) ϕ ψ Γ,γ⊢ψ) (p∈Γ (Γ , ϕ , ψ) ψ S Z)
+-- [ Γ , ϕ , γ  ⊢ ψ     ]:    (exchange Γ γ ϕ ψ (weakening (Γ , γ) ϕ ψ Γ,γ⊢ψ))
+-- [ Γ , ϕ , ψ  ⊢ ψ     ]:    (axiom ((Γ , ϕ) , ψ) ψ Z)
+-- [ Γ , ϕ      ⊢ ψ     ]:    ∨-elim (∨-introˡ (Γ , ϕ) ψ Γ,ϕ⊢γ) (weakening (Γ , γ) ϕ ψ Γ,γ⊢ψ) (axiom (Γ , ϕ , ψ) ψ Z)
 -------------------------------------------------------------------
+-- Namn?
+lemma : ∀ {ϕ ψ γ : Formula} {Γ : ctxt} → (Γ , ϕ) ⊢ γ → (Γ , γ) ⊢ ψ → (Γ , ϕ) ⊢ ψ
+lemma {ϕ} {ψ} {γ} {Γ} A B = ∨-elim (Γ , ϕ) γ ψ ψ (∨-introʳ (Γ , ϕ) γ ψ A) (exchange Γ γ ϕ ψ (weakening (Γ , γ) ϕ ψ B)) (axiom ((Γ , ϕ) , ψ) ψ Z)
 
 
+-- Transitivity
 ∼-trans : ∀ {ϕ ψ γ : Formula} {Γ : ctxt} → Γ ⊢ ϕ ∼ γ → Γ ⊢ γ ∼ ψ → Γ ⊢ ϕ ∼ ψ
-∼-trans x y = ⟨ ⊢-trans (×-projₗ x) (×-projₗ y) , ⊢-trans (×-projᵣ y) (×-projᵣ x) ⟩
+∼-trans x y = ⟨ lemma (×-first x) (×-first y) , lemma (×-second y) (×-second x) ⟩
