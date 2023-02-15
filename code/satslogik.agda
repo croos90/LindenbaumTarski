@@ -1,10 +1,14 @@
-open import Data.Nat using (ℕ)
+{-# OPTIONS --cubical-compatible #-}
+
+module satslogik where
+
+-- open import Data.Nat using (ℕ)
 
 data Formula : Set where
   _∧_    : Formula → Formula → Formula
   _∨_    : Formula → Formula → Formula
   ¬_     : Formula → Formula
-  const  : ℕ      → Formula
+--  const  : ℕ      → Formula
   ⊥      : Formula
   ⊤      : Formula
 
@@ -59,12 +63,11 @@ data _⊢_ : ctxt → Formula → Set where
 data _×_ (A B : Set) : Set where
   ⟨_,_⟩ : A → B → A × B
 
-×-first : ∀ {A B : Set} → A × B → A
-×-first ⟨ A , B ⟩  = A
+×-fst : ∀ {A B : Set} → A × B → A
+×-fst ⟨ A , B ⟩  = A
 
-×-second : ∀ {A B : Set} → A × B → B
-×-second ⟨ A , B ⟩ = B
-
+×-snd : ∀ {A B : Set} → A × B → B
+×-snd ⟨ A , B ⟩ = B
 
 -- Equivalence
 _⊢_∼_ : ctxt → Formula → Formula → Set
@@ -95,4 +98,4 @@ lemma {ϕ} {ψ} {γ} {Γ} A B = ∨-elim (Γ , ϕ) γ ψ ψ (∨-introʳ (Γ , �
 
 -- Transitivity
 ∼-trans : ∀ {ϕ ψ γ : Formula} {Γ : ctxt} → Γ ⊢ ϕ ∼ γ → Γ ⊢ γ ∼ ψ → Γ ⊢ ϕ ∼ ψ
-∼-trans x y = ⟨ lemma (×-first x) (×-first y) , lemma (×-second y) (×-second x) ⟩
+∼-trans x y = ⟨ lemma (×-fst x) (×-fst y) , lemma (×-snd y) (×-snd x) ⟩
