@@ -4,11 +4,18 @@ open import satslogik
 open import Cubical.HITs.SetQuotients.Base
 
 
-B : {ctxt} → Set
-B {Γ} = Formula / _⊢_∼_ Γ
+LT : Set
+LT = Formula / _∼_
 
 
 -- Define ⋀ ⋁ ¬ ⊤ ⊥
+
+_⋀_ : LT → LT → LT
+_⋀_ = {!!}
+
+
+
+
 
 {-
 

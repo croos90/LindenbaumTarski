@@ -1,8 +1,11 @@
-{-# OPTIONS --cubical-compatible #-}
+-- {-# OPTIONS --cubical-compatible #-}
+{-# OPTIONS --cubical #-}
+
 
 module satslogik where
 
 -- open import Data.Nat using (ℕ)
+open import Cubical.HITs.SetQuotients.Base
 
 data Formula : Set where
   _∧_    : Formula → Formula → Formula
@@ -69,10 +72,59 @@ data _×_ (A B : Set) : Set where
 ×-snd : ∀ {A B : Set} → A × B → B
 ×-snd ⟨ A , B ⟩ = B
 
+
+module _ {Γ : ctxt} where
+
+  -- Equivalence relation
+  _∼_ : Formula → Formula → Set
+  ϕ ∼ ψ = (Γ , ϕ) ⊢ ψ × (Γ , ψ) ⊢ ϕ
+
+  ∼-refl : ∀ {ϕ : Formula} → ϕ ∼ ϕ
+  ∼-refl {ϕ} = ⟨ axiom (_ , ϕ) ϕ Z , (axiom (_ , ϕ) ϕ Z) ⟩
+
+  ∼-sym : ∀ {ϕ ψ : Formula} → ϕ ∼ ψ → ψ ∼ ϕ
+  ∼-sym ⟨ A , B ⟩ = ⟨ B , A ⟩
+
+  lemma : ∀ {ϕ ψ γ : Formula} → (Γ , ϕ) ⊢ γ → (Γ , γ) ⊢ ψ → (Γ , ϕ) ⊢ ψ
+  lemma {ϕ} {ψ} {γ} A B = ∨-elim (_ , ϕ) γ ψ ψ (∨-introʳ (_ , ϕ) γ ψ A) (exchange _ γ ϕ ψ (weakening (_ , γ) ϕ ψ B)) (axiom ((_ , ϕ) , ψ) ψ Z)
+
+  ∼-trans : ∀ {ϕ ψ γ : Formula} → ϕ ∼ γ → γ ∼ ψ → ϕ ∼ ψ
+  ∼-trans x y = ⟨ lemma (×-fst x) (×-fst y) , lemma (×-snd y) (×-snd x) ⟩
+
+
+
+  -- Lindenbaum-Tarski algebra
+
+  LT : Set
+  LT = Formula / _∼_
+
+
+  -- Define ⋀ ⋁ ¬ ⊤ ⊥
+
+  _⋀_ : LT → LT → LT      -- Paaaattern matching
+  [ a ] ⋀ [ b ] = [ a ∧ b ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{-
 -- Equivalence
 _⊢_∼_ : ctxt → Formula → Formula → Set
 Γ ⊢ ϕ ∼ ψ = ((Γ , ϕ) ⊢ ψ) × ((Γ , ψ) ⊢ ϕ)
-
 
 -- Reflexivity
 ∼-refl : ∀ {ϕ : Formula} {Γ : ctxt} → Γ ⊢ ϕ ∼ ϕ
@@ -99,3 +151,5 @@ lemma {ϕ} {ψ} {γ} {Γ} A B = ∨-elim (Γ , ϕ) γ ψ ψ (∨-introʳ (Γ , �
 -- Transitivity
 ∼-trans : ∀ {ϕ ψ γ : Formula} {Γ : ctxt} → Γ ⊢ ϕ ∼ γ → Γ ⊢ γ ∼ ψ → Γ ⊢ ϕ ∼ ψ
 ∼-trans x y = ⟨ lemma (×-fst x) (×-fst y) , lemma (×-snd y) (×-snd x) ⟩
+
+-}
