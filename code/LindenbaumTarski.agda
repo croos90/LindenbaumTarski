@@ -1,8 +1,7 @@
--- {-# OPTIONS --cubical-compatible #-}
 {-# OPTIONS --cubical #-}
 
 
-module satslogik where
+module LindenbaumTarski where
 
 -- open import Data.Nat using (ℕ)
 open import Cubical.HITs.SetQuotients.Base
@@ -99,57 +98,4 @@ module _ {Γ : ctxt} where
   LT = Formula / _∼_
 
 
-  -- Define ⋀ ⋁ ¬ ⊤ ⊥
-
-  _⋀_ : LT → LT → LT      -- Paaaattern matching
-  [ a ] ⋀ [ b ] = [ a ∧ b ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{-
--- Equivalence
-_⊢_∼_ : ctxt → Formula → Formula → Set
-Γ ⊢ ϕ ∼ ψ = ((Γ , ϕ) ⊢ ψ) × ((Γ , ψ) ⊢ ϕ)
-
--- Reflexivity
-∼-refl : ∀ {ϕ : Formula} {Γ : ctxt} → Γ ⊢ ϕ ∼ ϕ
-∼-refl {ϕ} {Γ} = ⟨ axiom (Γ , ϕ) ϕ Z , (axiom (Γ , ϕ) ϕ Z) ⟩
-
-
--- Symmetry
-∼-sym : ∀ {ϕ ψ : Formula} {Γ : ctxt} → Γ ⊢ ϕ ∼ ψ → Γ ⊢ ψ ∼ ϕ
-∼-sym ⟨ A , B ⟩ = ⟨ B , A ⟩
-
-
--- Lemma (for transitivity)
--------------------------------------------------------------------
--- [ Γ , ϕ      ⊢ γ ∨ ψ ]:    (∨-introˡ (Γ , ϕ) γ ψ Γ,ϕ⊢γ)
--- [ Γ , ϕ , γ  ⊢ ψ     ]:    (exchange Γ γ ϕ ψ (weakening (Γ , γ) ϕ ψ Γ,γ⊢ψ))
--- [ Γ , ϕ , ψ  ⊢ ψ     ]:    (axiom ((Γ , ϕ) , ψ) ψ Z)
--- [ Γ , ϕ      ⊢ ψ     ]:    ∨-elim (∨-introˡ (Γ , ϕ) ψ Γ,ϕ⊢γ) (weakening (Γ , γ) ϕ ψ Γ,γ⊢ψ) (axiom (Γ , ϕ , ψ) ψ Z)
--------------------------------------------------------------------
--- Namn?
-lemma : ∀ {ϕ ψ γ : Formula} {Γ : ctxt} → (Γ , ϕ) ⊢ γ → (Γ , γ) ⊢ ψ → (Γ , ϕ) ⊢ ψ
-lemma {ϕ} {ψ} {γ} {Γ} A B = ∨-elim (Γ , ϕ) γ ψ ψ (∨-introʳ (Γ , ϕ) γ ψ A) (exchange Γ γ ϕ ψ (weakening (Γ , γ) ϕ ψ B)) (axiom ((Γ , ϕ) , ψ) ψ Z)
-
-
--- Transitivity
-∼-trans : ∀ {ϕ ψ γ : Formula} {Γ : ctxt} → Γ ⊢ ϕ ∼ γ → Γ ⊢ γ ∼ ψ → Γ ⊢ ϕ ∼ ψ
-∼-trans x y = ⟨ lemma (×-fst x) (×-fst y) , lemma (×-snd y) (×-snd x) ⟩
-
--}
+  -- Define operations ⋀ ⋁ ¬ ⊤ ⊥ on LT
