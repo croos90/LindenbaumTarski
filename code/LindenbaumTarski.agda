@@ -5,6 +5,7 @@ module LindenbaumTarski where
 
 -- open import Data.Nat using (ℕ)
 open import Cubical.HITs.SetQuotients.Base
+open import Cubical.HITs.SetQuotients.Properties
 
 data Formula : Set where
   _∧_    : Formula → Formula → Formula
@@ -66,7 +67,7 @@ data _×_ (A B : Set) : Set where
   ⟨_,_⟩ : A → B → A × B
 
 ×-fst : ∀ {A B : Set} → A × B → A
-×-fst ⟨ A , B ⟩  = A
+×-fst ⟨ A , B ⟩ = A
 
 ×-snd : ∀ {A B : Set} → A × B → B
 ×-snd ⟨ A , B ⟩ = B
@@ -79,13 +80,13 @@ module _ {Γ : ctxt} where
   ϕ ∼ ψ = (Γ , ϕ) ⊢ ψ × (Γ , ψ) ⊢ ϕ
 
   ∼-refl : ∀ {ϕ : Formula} → ϕ ∼ ϕ
-  ∼-refl {ϕ} = ⟨ axiom (_ , ϕ) ϕ Z , (axiom (_ , ϕ) ϕ Z) ⟩
+  ∼-refl = ⟨ axiom (_ , _) _ Z , (axiom (_ , _) _ Z) ⟩
 
   ∼-sym : ∀ {ϕ ψ : Formula} → ϕ ∼ ψ → ψ ∼ ϕ
   ∼-sym ⟨ A , B ⟩ = ⟨ B , A ⟩
 
   lemma : ∀ {ϕ ψ γ : Formula} → (Γ , ϕ) ⊢ γ → (Γ , γ) ⊢ ψ → (Γ , ϕ) ⊢ ψ
-  lemma {ϕ} {ψ} {γ} A B = ∨-elim (_ , ϕ) γ ψ ψ (∨-introʳ (_ , ϕ) γ ψ A) (exchange _ γ ϕ ψ (weakening (_ , γ) ϕ ψ B)) (axiom ((_ , ϕ) , ψ) ψ Z)
+  lemma A B = ∨-elim (_ , _) _ _ _ (∨-introʳ (_ , _) _ _ A) (exchange _ _ _ _ (weakening (_ , _) _ _ B)) (axiom ((_ , _) , _) _ Z)
 
   ∼-trans : ∀ {ϕ ψ γ : Formula} → ϕ ∼ γ → γ ∼ ψ → ϕ ∼ ψ
   ∼-trans x y = ⟨ lemma (×-fst x) (×-fst y) , lemma (×-snd y) (×-snd x) ⟩
