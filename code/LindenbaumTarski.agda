@@ -63,7 +63,7 @@ data _⊢_ : ctxt → Formula → Type where
   exchange : (Γ : ctxt) (ϕ ψ γ : Formula) → ((Γ ,' ϕ) ,' ψ) ⊢ γ → ((Γ ,' ψ) ,' ϕ) ⊢ γ
 
   contraction : (Γ : ctxt) (ϕ ψ : Formula) → ((Γ ,' ϕ) ,' ϕ) ⊢ ψ → (Γ ,' ϕ) ⊢ ψ
-
+  
 
 data _×_ (A B : Type) : Type where
   ⟨_,_⟩ : A → B → A × B
@@ -100,11 +100,7 @@ module _ {Γ : ctxt} where
   LT : Type
   LT = Formula / _∼_
 
-
-  -- Define operations ⋀ ⋁ ¬ ⊤ ⊥ on LT
   {-
-    Lemman:
-  
     setQuotUnaryOp : (-_ : A → A)
     → (∀ a a' → R a a' → R (- a) (- a'))
     → (A / R → A / R)
@@ -133,6 +129,9 @@ module _ {Γ : ctxt} where
       squash/ : (x y : A / R) → (p q : x ≡ y) → p ≡ q
     
     -}
+
+  -- Binary operation on LT
+  
   open BinaryRelation
 
   LT-BinOp : ( _*_ : Formula → Formula → Formula)
@@ -140,14 +139,62 @@ module _ {Γ : ctxt} where
            → (LT → LT → LT)
   LT-BinOp _*_ h = setQuotBinOp ∼-refl ∼-refl _*_ h
 
+
+  -- Binary operations and propositional constants
+  
   _⋀_ : LT → LT → LT
   A ⋀ B = LT-BinOp _∧'_ rem A B
     where
       rem : (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∧' b) ∼ (a' ∧' b')
-      rem = {!!}
---  [ a ] ⋀ B = {!!}
---  eq/ a b r i ⋀ B =  {!!}
---  squash/ A B p q i j ⋀ C = squash/ (A ⋀ C) (B ⋀ C) (λ x → p x ⋀ C) (λ x → q x ⋀ C) i j
+      rem a a' b b' x y = ⟨ {!!} , {!!} ⟩
 
-  ⋀-comm : ∀ (x y : LT) → x ⋀ y ≡ y ⋀ x
-  ⋀-comm = elimProp2 (λ _ _ → squash/ _ _) {!!}
+  _⋁_ : LT → LT → LT
+  A ⋁ B = LT-BinOp _∨'_ rem A B
+    where
+      rem : (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∨' b) ∼ (a' ∨' b')
+      rem a a' b b' x y = ⟨ {!!} , {!!} ⟩
+ 
+  ¬/_ : LT → LT
+  ¬/ A = setQuotUnaryOp ¬'_ rem A
+    where
+      rem : (a a' : Formula) → a ∼ a' → (¬' a) ∼ (¬' a')
+      rem a a' x = ⟨ {!!} , {!!} ⟩
+
+  ⊤/ : LT
+  ⊤/ = [ ⊤' ]
+  
+  ⊥/ : LT
+  ⊥/ = [ ⊥' ]
+
+
+  -- Proof of commutativity on ⋀ and ⋁
+
+  ∧-comm : (ϕ ψ : Formula) → (Γ ,' ϕ ∧' ψ) ⊢ ψ ∧' ϕ
+  ∧-comm ϕ ψ = ∧-intro _ _ _ (∧-elimʳ _ _ ψ (axiom _ _ Z)) (∧-elimˡ _ _ ψ (axiom _ _ Z))
+
+  ∨-comm : (ϕ ψ : Formula) → (Γ ,' ϕ ∨' ψ) ⊢ ψ ∨' ϕ
+  ∨-comm ϕ ψ = ∨-elim _ ϕ ψ (ψ ∨' ϕ) (axiom _ _ Z) (∨-introˡ _ _ _ (axiom _ _ Z)) (∨-introʳ _ _ _ (axiom _ _ Z))
+
+  ⋀-comm : ∀ (A B : LT) → A ⋀ B ≡ B ⋀ A
+  ⋀-comm = elimProp2 (λ _ _ → squash/ _ _) λ ϕ ψ → eq/ _ _ (∼-sym ⟨ (∧-comm ψ ϕ) , ∧-comm ϕ ψ ⟩)
+
+  ⋁-comm : ∀ (A B : LT) → A ⋁ B ≡ B ⋁ A
+  ⋁-comm = elimProp2 (λ _ _ → squash/ _ _) λ ϕ ψ → eq/ _ _ (∼-sym ⟨ ∨-comm ψ ϕ , ∨-comm ϕ ψ ⟩)
+
+
+  -- Proof of associativity on ⋀ and ⋁
+
+  ⋀-assoc : ∀ (A B C : LT) → (A ⋀ B) ⋀ C ≡ A ⋀ (B ⋀ C)
+  ⋀-assoc A B C = {!!}
+
+  ⋁-assoc : ∀ (A B C : LT) → (A ⋁ B) ⋁ C ≡ A ⋁ (B ⋁ C)
+  ⋁-assoc = {!!}
+
+
+  -- Proof of distributivity
+
+  ⋀-dist : ∀ (A B C : LT) → A ⋀ (B ⋁ C) ≡ (A ⋀ B) ⋁ (A ⋀ C)
+  ⋀-dist = {!!}
+
+  ⋁-dist : ∀ (A B C : LT) → A ⋁ (B ⋀ C) ≡ (A ⋁ B) ⋀ (A ⋁ C)
+  ⋁-dist = {!!}
