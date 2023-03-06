@@ -146,7 +146,8 @@ module _ {Γ : ctxt} where
   A ⋀ B = LT-BinOp _∧'_ rem A B
     where
       rem : (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∧' b) ∼ (a' ∧' b')
-      rem a a' b b' x y = ⟨ {!!} , {!!} ⟩
+      rem a a' b b' x y = ⟨ ∧-intro _ a' b' (lemma (∧-elimˡ _ _ _ (axiom _ (a ∧' b) Z)) (×-fst x)) (lemma (∧-elimʳ _ a _ (axiom _ ((a ∧' b)) Z)) (×-fst y)) ,
+       ∧-intro _ a b (lemma (∧-elimˡ _ _ _ (axiom _ (a' ∧' b') Z)) (×-snd x)) (lemma (∧-elimʳ _ a' _ (axiom _ ((a' ∧' b')) Z)) (×-snd y)) ⟩
 
   _⋁_ : LT → LT → LT
   A ⋁ B = LT-BinOp _∨'_ rem A B
