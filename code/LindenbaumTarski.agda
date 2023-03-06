@@ -8,12 +8,13 @@ open import Cubical.HITs.SetQuotients.Base
 open import Cubical.HITs.SetQuotients.Properties
 open import Cubical.Foundations.Prelude
 open import Cubical.Relation.Binary.Base
+open import Cubical.Data.Nat.Base
 
 data Formula : Type where
   _∧'_    : Formula → Formula → Formula
   _∨'_    : Formula → Formula → Formula
   ¬'_     : Formula → Formula
---  const  : ℕ      → Formula
+  const  : ℕ      → Formula
   ⊥'      : Formula
   ⊤'      : Formula
 
