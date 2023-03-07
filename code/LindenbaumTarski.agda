@@ -3,7 +3,6 @@
 
 module LindenbaumTarski where
 
--- open import Data.Nat using (ℕ)
 open import Cubical.HITs.SetQuotients.Base
 open import Cubical.HITs.SetQuotients.Properties
 open import Cubical.Foundations.Prelude
@@ -14,7 +13,7 @@ data Formula : Type where
   _∧'_    : Formula → Formula → Formula
   _∨'_    : Formula → Formula → Formula
   ¬'_     : Formula → Formula
-  const  : ℕ      → Formula
+  const   : ℕ      → Formula
   ⊥'      : Formula
   ⊤'      : Formula
 
@@ -51,7 +50,7 @@ data _⊢_ : ctxt → Formula → Type where
 
   ¬intro : (Γ : ctxt) (ϕ : Formula) → (Γ ,' ϕ) ⊢ ⊥' → Γ ⊢ ¬' ϕ
     
-  ¬elim : (Γ : ctxt) (ϕ : Formula) → (Γ ,' ¬' ϕ) ⊢ ⊥' → Γ ⊢ ϕ
+  RAA : (Γ : ctxt) (ϕ : Formula) → (Γ ,' ¬' ϕ) ⊢ ϕ → (Γ ,' ¬' ϕ) ⊢ ⊥'
 
   ⊥-elim : (Γ : ctxt) (ϕ : Formula) → (Γ ,' ⊥') ⊢ ϕ
 
@@ -137,30 +136,43 @@ module _ {Γ : ctxt} where
 
   LT-BinOp : ( _*_ : Formula → Formula → Formula)
              (h : (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a * b) ∼ (a' * b'))
-           → (LT → LT → LT)
+          → (LT → LT → LT)
   LT-BinOp _*_ h = setQuotBinOp ∼-refl ∼-refl _*_ h
 
 
   -- Binary operations and propositional constants
-  
+
+  lemma2 : (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∧' b) ∼ (a' ∧' b')
+  lemma2 a a' b b' x y =
+                ⟨ ∧-intro _ a' b'
+                      (lemma (∧-elimˡ _ _ _  (axiom _ (a ∧' b)    Z)) (×-fst x))
+                      (lemma (∧-elimʳ _ a _  (axiom _ (a ∧' b)    Z)) (×-fst y)) ,
+                  ∧-intro _ a b
+                      (lemma (∧-elimˡ _ _ _  (axiom _ (a' ∧' b')  Z)) (×-snd x))
+                      (lemma (∧-elimʳ _ a' _ (axiom _ (a' ∧' b')  Z)) (×-snd y)) ⟩
+
+  lemma3 : (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∨' b) ∼ (a' ∨' b')
+  lemma3 a a' b b' x y =
+                ⟨ ∨-elim _ a b (a' ∨' b') (axiom _ _ Z)
+                    (exchange _ _ _ _ (weakening _ _ _ (∨-introʳ _ _ _ (×-fst x))))
+                    (exchange _ _ _ _ (weakening _ _ _ (∨-introˡ _ _ _ (×-fst y)))) ,
+                  ∨-elim _ a' b' (a ∨' b) (axiom _ _ Z)
+                    (exchange _ _ _ _ (weakening _ _ _ (∨-introʳ _ _ _ (×-snd x))))
+                    (exchange _ _ _ _ (weakening _ _ _ (∨-introˡ _ _ _ (×-snd y)))) ⟩
+
+  lemma4 : (a a' : Formula) → a ∼ a' → (¬' a) ∼ (¬' a')
+  lemma4 a a' x =
+          ⟨ ¬intro _ _ (exchange _ _ _ _ (RAA _ _ (weakening _ _ _ (×-snd x)))) ,
+            ¬intro _ _ (exchange _ _ _ _ (RAA _ _ (weakening _ _ _ (×-fst x)))) ⟩
+
   _⋀_ : LT → LT → LT
-  A ⋀ B = LT-BinOp _∧'_ rem A B
-    where
-      rem : (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∧' b) ∼ (a' ∧' b')
-      rem a a' b b' x y = ⟨ ∧-intro _ a' b' (lemma (∧-elimˡ _ _ _ (axiom _ (a ∧' b) Z)) (×-fst x)) (lemma (∧-elimʳ _ a _ (axiom _ ((a ∧' b)) Z)) (×-fst y)) ,
-       ∧-intro _ a b (lemma (∧-elimˡ _ _ _ (axiom _ (a' ∧' b') Z)) (×-snd x)) (lemma (∧-elimʳ _ a' _ (axiom _ ((a' ∧' b')) Z)) (×-snd y)) ⟩
+  A ⋀ B = LT-BinOp _∧'_ lemma2 A B
 
   _⋁_ : LT → LT → LT
-  A ⋁ B = LT-BinOp _∨'_ rem A B
-    where
-      rem : (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∨' b) ∼ (a' ∨' b')
-      rem a a' b b' x y = ⟨ {!!} , {!!} ⟩
+  A ⋁ B = LT-BinOp _∨'_ lemma3 A B
  
   ¬/_ : LT → LT
-  ¬/ A = setQuotUnaryOp ¬'_ rem A
-    where
-      rem : (a a' : Formula) → a ∼ a' → (¬' a) ∼ (¬' a')
-      rem a a' x = ⟨ {!!} , {!!} ⟩
+  ¬/ A = setQuotUnaryOp ¬'_ lemma4 A
 
   ⊤/ : LT
   ⊤/ = [ ⊤' ]
@@ -186,17 +198,50 @@ module _ {Γ : ctxt} where
 
   -- Proof of associativity on ⋀ and ⋁
 
+  ∧-assoc1 : ∀ (ϕ ψ γ : Formula) → (Γ ,' (ϕ ∧' ψ) ∧' γ) ⊢ ϕ ∧' (ψ ∧' γ)
+  ∧-assoc1 ϕ ψ γ = ∧-intro _ _ _ (∧-elimˡ _ _ ψ (∧-elimˡ _ _ γ (axiom _ _ Z)))
+                  (∧-intro _ _ _ (∧-elimʳ _ ϕ _ (∧-elimˡ _ _ γ (axiom _ _ Z)))
+                                 (∧-elimʳ _ (ϕ ∧' ψ) _ (axiom _ _ Z)))
+
+  ∧-assoc2 : ∀ (ϕ ψ γ : Formula) → (Γ ,' ϕ ∧' (ψ ∧' γ)) ⊢ (ϕ ∧' ψ) ∧' γ
+  ∧-assoc2 ϕ ψ γ = ∧-intro _ _ _
+                  (∧-intro _ _ _ (∧-elimˡ _ _ (ψ ∧' γ) (axiom _ _ Z))
+                                 (∧-elimˡ _ _ γ (∧-elimʳ _ ϕ _ (axiom _ _ Z))))
+                                 (∧-elimʳ _ ψ _ (∧-elimʳ _ ϕ _ (axiom _ _ Z)))
+
+  ∨-assoc1 : ∀ (ϕ ψ γ : Formula) → (Γ ,' (ϕ ∨' ψ) ∨' γ) ⊢ ϕ ∨' (ψ ∨' γ)
+  ∨-assoc1 ϕ ψ γ = ∨-elim _ (ϕ ∨' ψ) γ (ϕ ∨' (ψ ∨' γ)) (axiom _ _ Z)
+                  (∨-elim _ ϕ ψ (ϕ ∨' (ψ ∨' γ)) (axiom _ _ Z) (∨-introʳ _ _ _ (axiom _ _ Z)) (∨-introˡ _ _ _ (∨-introʳ _ _ _ (axiom _ _ Z))))
+                  (∨-introˡ _ _ _ (∨-introˡ _ _ _ (axiom _ _ Z)))
+
+  ∨-assoc2 : ∀ (ϕ ψ γ : Formula) → (Γ ,' ϕ ∨' (ψ ∨' γ)) ⊢ (ϕ ∨' ψ) ∨' γ
+  ∨-assoc2 ϕ ψ γ = ∨-elim _ ϕ (ψ ∨' γ) ((ϕ ∨' ψ) ∨' γ) (axiom _ _ Z)
+                  (∨-introʳ _ _ _ (∨-introʳ _ _ _ (axiom _ _ Z)))
+                  (∨-elim _ ψ γ ((ϕ ∨' ψ) ∨' γ) (axiom _ _ Z) (∨-introʳ _ _ _ (∨-introˡ _ _ _ (axiom _ _ Z))) (∨-introˡ _ _ _ (axiom _ _ Z)))
+
   ⋀-assoc : ∀ (A B C : LT) → (A ⋀ B) ⋀ C ≡ A ⋀ (B ⋀ C)
-  ⋀-assoc A B C = {!!}
+  ⋀-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ⟨ ∧-assoc1 _ _ _ , ∧-assoc2 _ _ _ ⟩
 
   ⋁-assoc : ∀ (A B C : LT) → (A ⋁ B) ⋁ C ≡ A ⋁ (B ⋁ C)
-  ⋁-assoc = {!!}
+  ⋁-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ⟨ ∨-assoc1 _ _ _ , ∨-assoc2 _ _ _ ⟩
 
 
   -- Proof of distributivity
 
+  ∧-dist1 : ∀ (ϕ ψ γ : Formula) → (Γ ,' ϕ ∧' (ψ ∨' γ)) ⊢ (ϕ ∧' ψ) ∨' (ϕ ∧' γ)
+  ∧-dist1 ϕ ψ γ = {!!}
+
+  ∧-dist2 : ∀ (ϕ ψ γ : Formula) → (Γ ,' (ϕ ∧' ψ) ∨' (ϕ ∧' γ)) ⊢ ϕ ∧' (ψ ∨' γ)
+  ∧-dist2 ϕ ψ γ = {!!}
+
+  ∨-dist1 : ∀ (ϕ ψ γ : Formula) → (Γ ,' ϕ ∨' (ψ ∧' γ)) ⊢ (ϕ ∨' ψ) ∧' (ϕ ∨' γ)
+  ∨-dist1 ϕ ψ γ = {!!}
+
+  ∨-dist2 : ∀ (ϕ ψ γ : Formula) → (Γ ,' (ϕ ∨' ψ) ∧' (ϕ ∨' γ)) ⊢ ϕ ∨' (ψ ∧' γ)
+  ∨-dist2 ϕ ψ γ = {!!}
+
   ⋀-dist : ∀ (A B C : LT) → A ⋀ (B ⋁ C) ≡ (A ⋀ B) ⋁ (A ⋀ C)
-  ⋀-dist = {!!}
+  ⋀-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ⟨ ∧-dist1 _ _ _ , ∧-dist2 _ _ _ ⟩
 
   ⋁-dist : ∀ (A B C : LT) → A ⋁ (B ⋀ C) ≡ (A ⋁ B) ⋀ (A ⋁ C)
-  ⋁-dist = {!!}
+  ⋁-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ⟨ ∨-dist1 _ _ _ , ∨-dist2 _ _ _ ⟩
