@@ -20,7 +20,7 @@ data Formula : Type where
 
 infix 35  _∧'_
 infix 30 _∨'_
-infix 25  ¬'_
+infixl 36  ¬'_
 infix 15 _×_
 infix 20 _⊢_
 infix 10 _,'_
@@ -48,9 +48,9 @@ data _⊢_ : ctxt → Formula → Type where
 
   ∨-elim : (Γ : ctxt) (ϕ ψ γ : Formula) → Γ ⊢ ϕ ∨' ψ → (Γ ,' ϕ) ⊢ γ → (Γ ,' ψ) ⊢ γ → Γ ⊢ γ
 
-  ¬intro : (Γ : ctxt) (ϕ : Formula) → (Γ ,' ϕ) ⊢ ⊥' → Γ ⊢ ¬' ϕ
+  ¬-intro : (Γ : ctxt) (ϕ : Formula) → (Γ ,' ϕ) ⊢ ⊥' → Γ ⊢ ¬' ϕ
     
-  RAA : (Γ : ctxt) (ϕ : Formula) → (Γ ,' ¬' ϕ) ⊢ ϕ → (Γ ,' ¬' ϕ) ⊢ ⊥'
+  ⊥-intro : (Γ : ctxt) (ϕ : Formula) → Γ ⊢ ϕ → Γ ⊢ ¬' ϕ → Γ ⊢ ⊥'
 
   ⊥-elim : (Γ : ctxt) (ϕ : Formula) → (Γ ,' ⊥') ⊢ ϕ
 
@@ -76,6 +76,8 @@ data _×_ (A B : Type) : Type where
 
 
 module _ {Γ : ctxt} where
+
+  infixl 25 ¬/_
 
 
   -- Commutativity on ∧ and ∨
@@ -151,9 +153,8 @@ module _ {Γ : ctxt} where
                                  (∨-introˡ _ _ _ (∧-intro _ _ _ (exchange _ _ _ _ (axiom _ _ Z)) (axiom _ _ Z))))
 
 
-  
-
   -- Equivalence relation
+  
   _∼_ : Formula → Formula → Type
   ϕ ∼ ψ = (Γ ,' ϕ) ⊢ ψ × (Γ ,' ψ) ⊢ ϕ
 
@@ -175,45 +176,6 @@ module _ {Γ : ctxt} where
 
   LT : Type
   LT = Formula / _∼_
-
-  {-
-    setQuotUnaryOp : (-_ : A → A)
-    → (∀ a a' → R a a' → R (- a) (- a'))
-    → (A / R → A / R)
-    setQuotUnaryOp -_ h = rec squash/ (λ a → [ - a ]) (λ a b x → eq/ _ _ (h _ _ x))
-
-    setQuotBinOp : isRefl R → isRefl S
-      → (_∗_ : A → B → C)
-      → (∀ a a' b b' → R a a' → S b b' → T (a ∗ b) (a' ∗ b'))
-      → (A / R → B / S → C / T)
-    setQuotBinOp isReflR isReflS _∗_ h =
-      rec2 squash/ (λ a b → [ a ∗ b ])
-        (λ _ _ _ r → eq/ _ _ (h _ _ _ _ r (isReflS _)))
-        (λ _ _ _ s → eq/ _ _ (h _ _ _ _ (isReflR _) s))
-
-    elimProp2 : {P : A / R → B / S → Type ℓ}
-      → (∀ x y → isProp (P x y))
-      → (∀ a b → P [ a ] [ b ])
-      → ∀ x y → P x y
-    elimProp2 prop f =
-              elimProp (λ x → isPropΠ (prop x)) λ a →
-              elimProp (prop [ a ]) (f a)
-
-    data _/_ {ℓ ℓ'} (A : Type ℓ) (R : A → A → Type ℓ') : Type (ℓ-max ℓ ℓ') where
-      [_] : (a : A) → A / R
-      eq/ : (a b : A) → (r : R a b) → [ a ] ≡ [ b ]
-      squash/ : (x y : A / R) → (p q : x ≡ y) → p ≡ q
-    
-    -}
-
-  -- Binary operation on LT
-  
-  open BinaryRelation
-
-  LT-BinOp : ( _*_ : Formula → Formula → Formula)
-             (h : (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a * b) ∼ (a' * b'))
-          → (LT → LT → LT)
-  LT-BinOp _*_ h = setQuotBinOp ∼-refl ∼-refl _*_ h
 
 
   -- Binary operations and propositional constants
@@ -237,15 +199,15 @@ module _ {Γ : ctxt} where
                                   (exchange _ _ _ _ (weakening _ _ _ (∨-introˡ _ _ _ (×-snd y)))) ⟩
 
   lemma4 : (a a' : Formula) → a ∼ a' → (¬' a) ∼ (¬' a')
-  lemma4 a a' x = ⟨ ¬intro _ _ (exchange _ _ _ _ (RAA _ _ (weakening _ _ _ (×-snd x)))) ,
-                    ¬intro _ _ (exchange _ _ _ _ (RAA _ _ (weakening _ _ _ (×-fst x)))) ⟩
+  lemma4 a a' x = ⟨ ¬-intro _ _ (⊥-intro _ a (exchange _ _ _ _ (weakening _ _ _ (×-snd x))) (weakening _ _ _ (axiom _ _ Z))),
+                    ¬-intro _ _ (⊥-intro _ a' (exchange _ _ _ _ (weakening _ _ _ (×-fst x))) (weakening _ _ _ (axiom _ _ Z))) ⟩
 
   _⋀_ : LT → LT → LT
-  A ⋀ B = LT-BinOp _∧'_ lemma2 A B
+  A ⋀ B = setQuotBinOp ∼-refl ∼-refl _∧'_ lemma2 A B
 
   _⋁_ : LT → LT → LT
-  A ⋁ B = LT-BinOp _∨'_ lemma3 A B
- 
+  A ⋁ B = setQuotBinOp ∼-refl ∼-refl _∨'_ lemma3 A B
+  
   ¬/_ : LT → LT
   ¬/ A = setQuotUnaryOp ¬'_ lemma4 A
 
@@ -256,7 +218,7 @@ module _ {Γ : ctxt} where
   ⊥/ = [ ⊥' ]
 
 
-  -- Proof of commutativity on ⋀ and ⋁
+  -- Commutativity
 
   ⋀-comm : ∀ (A B : LT) → A ⋀ B ≡ B ⋀ A
   ⋀-comm = elimProp2 (λ _ _ → squash/ _ _) λ ϕ ψ → eq/ _ _ (∼-sym ⟨ (∧-comm ψ ϕ) , ∧-comm ϕ ψ ⟩)
@@ -265,7 +227,7 @@ module _ {Γ : ctxt} where
   ⋁-comm = elimProp2 (λ _ _ → squash/ _ _) λ ϕ ψ → eq/ _ _ (∼-sym ⟨ ∨-comm ψ ϕ , ∨-comm ϕ ψ ⟩)
 
 
-  -- Proof of associativity on ⋀ and ⋁
+  -- Associativity
   
   ⋀-assoc : ∀ (A B C : LT) → (A ⋀ B) ⋀ C ≡ A ⋀ (B ⋀ C)
   ⋀-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ⟨ ∧-assoc1 _ _ _ , ∧-assoc2 _ _ _ ⟩
@@ -274,10 +236,30 @@ module _ {Γ : ctxt} where
   ⋁-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ⟨ ∨-assoc1 _ _ _ , ∨-assoc2 _ _ _ ⟩
 
 
-  -- Proof of distributivity
+  -- Distributivity
 
   ⋀-dist : ∀ (A B C : LT) → A ⋀ (B ⋁ C) ≡ (A ⋀ B) ⋁ (A ⋀ C)
   ⋀-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ⟨ ∧-dist1 _ _ _ , ∧-dist2 _ _ _ ⟩
 
   ⋁-dist : ∀ (A B C : LT) → A ⋁ (B ⋀ C) ≡ (A ⋁ B) ⋀ (A ⋁ C)
   ⋁-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ⟨ ∨-dist1 _ _ _ , ∨-dist2 _ _ _ ⟩
+
+
+  -- Complement
+
+  ⋀-comp : ∀ (A : LT) → A ⋀ ¬/ A ≡ ⊥/
+  ⋀-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _
+         ⟨ (⊥-intro _ _ (∧-elimˡ _ _ _ (axiom _ _ Z)) (∧-elimʳ _ _ _ (axiom _ _ Z))) , ⊥-elim _ _ ⟩
+
+  ⋁-comp : ∀ (A : LT) → A ⋁ ¬/ A ≡ ⊤/
+  ⋁-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ⟨ weakening _ _ _ {!!} , {!!} ⟩
+
+  -- Absorbtion
+
+  ⋀-abs : ∀ (A B : LT) → (A ⋁ B) ⋀ B ≡ B
+  ⋀-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _
+        ⟨ (∧-elimʳ _ _ _ (axiom _ _ Z)) , ∧-intro _ _ _ (∨-introˡ _ _ _ (axiom _ _ Z)) (axiom _ _ Z) ⟩
+
+  ⋁-abs : ∀ (A B : LT) → (A ⋀ B) ⋁ B ≡ B
+  ⋁-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _
+        ⟨ ∨-elim _ _ _ _ (axiom _ _ Z) (∧-elimʳ _ _ _ (axiom _ _ Z)) (axiom _ _ Z) , ∨-introˡ _ _ _ (axiom _ _ Z) ⟩
