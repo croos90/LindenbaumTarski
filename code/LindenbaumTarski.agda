@@ -55,7 +55,7 @@ data _⊢_ : ctxt → Formula → Type where
 
   ⊥-elim : {Γ : ctxt} {ϕ : Formula} → (Γ ∶ ⊥) ⊢ ϕ
 
-  ⊤-intro : {Γ : ctxt} → Γ ⊢ ⊤
+  ⊤-intro : ∅ ⊢ ⊤
 
   axiom : {Γ : ctxt} {ϕ : Formula} → ϕ ∈ Γ → Γ ⊢ ϕ
 
@@ -232,11 +232,16 @@ module _ {Γ : ctxt} where
 
   -- Complement
 
+  superweakening : ∀ (Γ : ctxt) → Γ ⊢ ⊤
+  superweakening ∅ = ⊤-intro
+  superweakening (Δ ∶ x) = weakening (superweakening Δ)
+
   ⋀-comp : ∀ (A : LT) → A ⋀ ¬/ A ≡ ⊥/
   ⋀-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ((⊥-intro (∧-elimˡ (axiom Z)) (∧-elimʳ (axiom Z))) , ⊥-elim)
 
   ⋁-comp : ∀ (A : LT) → A ⋁ ¬/ A ≡ ⊤/
-  ⋁-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (weakening (⊤-intro) , LEM)
+  ⋁-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ( superweakening _ , LEM)
+
 
   -- Absorbtion
 
