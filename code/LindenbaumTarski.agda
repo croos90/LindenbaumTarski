@@ -72,7 +72,6 @@ module _ {Γ : ctxt} where
 
   infixl 25 ¬/_
 
-
   -- Commutativity on ∧ and ∨
 
   ∧-comm : ∀ {ϕ ψ : Formula} → (Γ ∶ ϕ ∧ ψ) ⊢ ψ ∧ ϕ
@@ -230,7 +229,7 @@ module _ {Γ : ctxt} where
   ⋁-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∨-dist1 , ∨-dist2)
 
 
-  -- Complement
+  -- Complement(?)
 
   superweakening : ∀ (Γ : ctxt) → Γ ⊢ ⊤
   superweakening ∅ = ⊤-intro
@@ -240,7 +239,7 @@ module _ {Γ : ctxt} where
   ⋀-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ((⊥-intro (∧-elimˡ (axiom Z)) (∧-elimʳ (axiom Z))) , ⊥-elim)
 
   ⋁-comp : ∀ (A : LT) → A ⋁ ¬/ A ≡ ⊤/
-  ⋁-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ( superweakening _ , LEM)
+  ⋁-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (superweakening _ , LEM)
 
 
   -- Absorbtion
@@ -250,3 +249,9 @@ module _ {Γ : ctxt} where
 
   ⋁-abs : ∀ (A B : LT) → (A ⋀ B) ⋁ B ≡ B
   ⋁-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ (∨-elim _ _ _ (axiom Z) (∧-elimʳ (axiom Z)) (axiom Z) , ∨-introˡ (axiom Z))
+
+
+  -- Soundness
+
+  sound : ∀ {ϕ : Formula} → Γ ⊢ ϕ → [ ϕ ] ≡ ⊤/
+  sound x = eq/ _ _ (superweakening _ , weakening x)
