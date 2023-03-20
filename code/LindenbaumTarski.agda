@@ -50,8 +50,10 @@ data _⊢_ : ctxt → Formula → Type where
   ∨-elim : {Γ : ctxt} (ϕ ψ γ : Formula) → Γ ⊢ ϕ ∨ ψ → (Γ ∶ ϕ) ⊢ γ → (Γ ∶ ψ) ⊢ γ → Γ ⊢ γ
 
   ¬-intro : {Γ : ctxt} {ϕ : Formula} → (Γ ∶ ϕ) ⊢ ⊥ → Γ ⊢ ¬ ϕ
-    
-  ⊥-intro : {Γ : ctxt} {ϕ : Formula} → Γ ⊢ ϕ → Γ ⊢ ¬ ϕ → Γ ⊢ ⊥
+
+  RAA : {Γ : ctxt} {ϕ : Formula} → (Γ ∶ ¬ ϕ) ⊢ ⊥ → Γ ⊢ ϕ
+
+  ⊥-intro : {Γ : ctxt} {ϕ : Formula} → Γ ⊢ ϕ ∧ ¬ ϕ → Γ ⊢ ⊥
 
   ⊥-elim : {Γ : ctxt} {ϕ : Formula} → (Γ ∶ ⊥) ⊢ ϕ
 
@@ -183,8 +185,9 @@ module _ {Γ : ctxt} where
                                       (exchange (weakening (∨-introˡ (proj₂ y))))
 
   lemma3 : ∀ (a a' : Formula) → a ∼ a' → (¬ a) ∼ (¬ a')
-  lemma3 a a' x = ¬-intro (⊥-intro (exchange (weakening (proj₂ x))) (weakening (axiom Z))),
-                  ¬-intro (⊥-intro (exchange (weakening (proj₁ x))) (weakening (axiom Z)))
+  lemma3 a a' x = ¬-intro (⊥-intro (∧-intro (exchange (weakening (proj₂ x))) (weakening (axiom Z)))) ,
+                  ¬-intro (⊥-intro (∧-intro (exchange (weakening (proj₁ x))) (weakening (axiom Z))))
+  
 
   _⋀_ : LT → LT → LT
   A ⋀ B = setQuotBinOp ∼-refl ∼-refl _∧_ lemma1 A B
@@ -229,15 +232,15 @@ module _ {Γ : ctxt} where
   ⋁-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∨-dist1 , ∨-dist2)
 
 
-  -- Complement(?)
+  -- Inverse element
 
   superweakening : ∀ (Γ : ctxt) → Γ ⊢ ⊤
   superweakening ∅ = ⊤-intro
   superweakening (Δ ∶ x) = weakening (superweakening Δ)
 
   ⋀-comp : ∀ (A : LT) → A ⋀ ¬/ A ≡ ⊥/
-  ⋀-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ((⊥-intro (∧-elimˡ (axiom Z)) (∧-elimʳ (axiom Z))) , ⊥-elim)
-
+  ⋀-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (⊥-intro (axiom Z) , ⊥-elim)
+  
   ⋁-comp : ∀ (A : LT) → A ⋁ ¬/ A ≡ ⊤/
   ⋁-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (superweakening _ , LEM)
 
