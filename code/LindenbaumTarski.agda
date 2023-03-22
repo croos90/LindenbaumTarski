@@ -219,20 +219,12 @@ module _ {Γ : ctxt} where
 
 
   -- Associativity
-  
---  ⋀-assoc : ∀ (A B C : LindenbaumTarski) → (A ⋀ B) ⋀ C ≡ A ⋀ (B ⋀ C)
---  ⋀-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∧-assoc1 , ∧-assoc2)
-
---  ⋁-assoc : ∀ (A B C : LindenbaumTarski) → (A ⋁ B) ⋁ C ≡ A ⋁ (B ⋁ C)
---  ⋁-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∨-assoc1 , ∨-assoc2)
-
-
-  ⋁-assoc : ∀ (A B C : LindenbaumTarski) → A ⋁ (B ⋁ C) ≡ (A ⋁ B) ⋁ C
-  ⋁-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∨-assoc2 , ∨-assoc1)
 
   ⋀-assoc : ∀ (A B C : LindenbaumTarski) → A ⋀ (B ⋀ C) ≡ (A ⋀ B) ⋀ C
   ⋀-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∧-assoc2 , ∧-assoc1)
 
+  ⋁-assoc : ∀ (A B C : LindenbaumTarski) → A ⋁ (B ⋁ C) ≡ (A ⋁ B) ⋁ C
+  ⋁-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∨-assoc2 , ∨-assoc1)
 
 
   -- Distributivity
