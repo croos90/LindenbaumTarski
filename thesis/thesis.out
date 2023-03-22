@@ -1,0 +1,18 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Agda proof assistant}{}% 2
+\BOOKMARK [1][-]{section.3}{Propositional calculus in Agda}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Formulas}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Context}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Inference rules}{section.3}% 6
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Conjunction}{subsection.3.3}% 7
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Disjunction}{subsection.3.3}% 8
+\BOOKMARK [3][-]{subsubsection.3.3.3}{Negation}{subsection.3.3}% 9
+\BOOKMARK [3][-]{subsubsection.3.3.4}{Rules for \040and }{subsection.3.3}% 10
+\BOOKMARK [3][-]{subsubsection.3.3.5}{Axiom}{subsection.3.3}% 11
+\BOOKMARK [3][-]{subsubsection.3.3.6}{Law of excluded middle}{subsection.3.3}% 12
+\BOOKMARK [3][-]{subsubsection.3.3.7}{Structural rules}{subsection.3.3}% 13
+\BOOKMARK [2][-]{subsection.3.4}{Properties of a propositional calculus}{section.3}% 14
+\BOOKMARK [1][-]{section.4}{Lindenbaum-Tarski algebra}{}% 15
+\BOOKMARK [2][-]{subsection.4.1}{Representing Lindenbaum Tarski algebra in Agda}{section.4}% 16
+\BOOKMARK [2][-]{subsection.4.2}{Proof that the Lindenbaum Tarski algebra is Boolean}{section.4}% 17
+\BOOKMARK [2][-]{subsection.4.3}{Soundness}{section.4}% 18

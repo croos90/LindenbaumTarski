@@ -1,0 +1,180 @@
+\documentclass[titlepage]{article}
+
+\usepackage{textcomp}
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{pifont}
+\usepackage{amsmath, amsfonts , amsthm , mathtools , bbold , float}
+\usepackage{tikz}
+\usetikzlibrary{arrows,matrix,decorations.pathmorphing,
+  decorations.markings, calc, backgrounds}
+\usepackage{mathpartir}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{url}
+\DisableLigatures[-]{family=tt*}
+
+\newcommand\myeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily def}}}{=}}}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}{Definition}[section]
+
+\input{macros}
+
+\bibliographystyle{plainurl}
+
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Abstract            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+    Abstract
+\end{abstract}
+
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+\setcounter{page}{1}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%          Introduction          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    The Agda proof assistant    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Agda proof assistant}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Propositional calculus in Agda %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Propositional calculus in Agda}
+Propositional calculus is a formal system that consists of a set of propositional constants, symbols, inference rules, and axioms. The symbols in propositional calculus represent logical connectives and parenthesis.
+
+The inference rules of propositional calculus define how these symbols can be used. These inference rules specify how to construct well-formed formulas that follow the syntax of the system.
+
+The axioms of propositional calculus are the initial statements or assumptions from which we can derive additional statements using the inference rules.
+
+The semantics of propositional calculus define how the expressions in the system correspond to truth values, typically "true" or "false".
+
+
+%% Formulas %%
+
+\subsection{Formulas}
+
+\begin{definition}[Language]
+    The language $\mathcal{L}$ of propositional calculus consists of
+    \begin{itemize}
+        \item proposition symbols: $p_0,p_1,\hdots,p_n$,
+        \item logical connectives: $\wedge,\vee,\neg,\top,\bot$,
+        \item auxiliary symbols: (, ).
+    \end{itemize}
+\end{definition}
+
+Note that we have omitted the common logical connectives $\rightarrow$ and $\leftrightarrow$. This is becuase we can define them using other connectives, 
+\begin{align*}
+    \phi \rightarrow \psi &\myeq \neg \phi \vee \psi, \\
+    \phi \leftrightarrow \psi &\myeq (\neg \phi \vee \psi) \wedge (\neg \psi \vee \phi),
+\end{align*}making them reduntant. It is possible to choose an even smaller set of connectives \cite{vanDalen}, but we choose this as it is convenient.
+
+\begin{definition}[Well formed formula]
+    The set of well formed formulas is inductively defined as
+    \begin{itemize}
+        \item any propositional constant $p_0,p_1,\hdots,p_n$ is a well formed formula,
+        \item $\top$ and $\bot$ are well formed formulas,
+        \item if $p$ is a well formed formula, then so is
+        $$\neg p,$$
+        \item if $p_i$ and $p_j$ are well formed formulas, then so are
+            $$p_i \wedge p_j \quad \text{and} \quad p_i \vee p_j.$$
+    \end{itemize}
+    The formula $\top$ should be thought of as the proposition that is always true, and the formula $\bot$ interpreted as the proposition that is always false.
+\end{definition}
+
+We can represent the concept of a well formed formula in \Agda as a \Type
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{form}
+
+
+%% Context %%
+
+\subsection{Context}
+
+\begin{definition}[Context]
+    A set of sentences in the language $\mathcal{L}$. The set is defined inductively as
+    \begin{itemize}
+        \item the empty set is a context
+        \item if $\Gamma$ is a context, then $\Gamma \cup \{\phi\}$ is also a context, where $\phi$ a formula.
+    \end{itemize}
+\end{definition}
+
+In \Agda we can define a context \Type
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{ctxt}
+
+We also need a way to determine if a given formula is in a given context. 
+\begin{definition}[Lookup]
+    For all contexts $\Gamma$ and all formulas $\phi$ and $\psi$
+    \begin{itemize}
+        \item $\phi \in \Gamma \cup \{\phi\}$,
+        \item if $\phi \in \Gamma$, then $\phi \in \Gamma \cup \{\psi\}$.
+    \end{itemize}
+\end{definition}
+
+We represent this as a \Type in \Agda
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{lookup}
+
+
+%% Inference rules %%
+
+\subsection{Inference rules}
+
+\subsubsection{Conjunction}
+\subsubsection{Disjunction}
+\subsubsection{Negation}
+\subsubsection{Rules for $\top$ and $\bot$}
+\subsubsection{Axiom}
+\subsubsection{Law of excluded middle}
+\subsubsection{Structural rules}
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{rules}
+
+
+%% Properties of propositional calc %%
+
+\subsection{Properties of a propositional calculus}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Lindenbaum Tarski algebra    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Lindenbaum-Tarski algebra}
+[What is LT?]
+
+\subsection{Representing Lindenbaum Tarski algebra in Agda}
+\subsection{Proof that the Lindenbaum Tarski algebra is Boolean}
+\subsection{Soundness}
+
+
+\bibliography{refs}
+
+\end{document}
