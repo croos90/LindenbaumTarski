@@ -41,6 +41,9 @@ data _∈_ : Formula → ctxt → Type where
   S_ : ∀ {Γ ϕ ψ} → ϕ ∈ Γ → ϕ ∈ (Γ ∶ ψ)
 -}
 
+
+{-# NO_POSITIVITY_CHECK #-}
+
 data _⊢_ : ctxt → Formula → Type where
   ∧-intro : {Γ : ctxt} {ϕ ψ : Formula} → Γ ⊢ ϕ → Γ ⊢ ψ → Γ ⊢ ϕ ∧ ψ
   ∧-elimˡ : {Γ : ctxt} {ϕ ψ : Formula} → Γ ⊢ ϕ ∧ ψ → Γ ⊢ ϕ
@@ -120,7 +123,6 @@ module _ {Γ : ctxt} where
 --                                  (axiom Z)
 --                                  (∨-introʳ (∨-introˡ (axiom Z)))
 --                                  (∨-introˡ (axiom Z)))
-
   ∨-assoc1 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ ϕ ∨ (ψ ∨ γ) → Γ ⊢ (ϕ ∨ ψ) ∨ γ
   ∨-assoc1 x = ∨-elim x (λ y → ∨-introʳ (∨-introʳ y)) λ y → ∨-elim y (λ z → ∨-introʳ (∨-introˡ z)) ∨-introˡ
 
@@ -165,7 +167,6 @@ module _ {Γ : ctxt} where
 --                                             (exchange (∧-elimʳ (axiom Z)))
 --                                             (∨-introʳ (axiom Z))
 --                                             (∨-introˡ (∧-intro (weakening (axiom Z)) (axiom Z))))
-
   ∨-dist2 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ (ϕ ∨ ψ) ∧ (ϕ ∨ γ) → Γ ⊢ ϕ ∨ (ψ ∧ γ)
   ∨-dist2 x = ∨-elim (∧-elimˡ x) ∨-introʳ λ y → ∨-elim (∧-elimʳ x) ∨-introʳ λ z → ∨-introˡ (∧-intro y z)
 
@@ -188,14 +189,15 @@ module _ {Γ : ctxt} where
 --  ⊢trans : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ) ⊢ γ → (Γ ∶ γ) ⊢ ψ → (Γ ∶ ϕ) ⊢ ψ
 --  ⊢trans A B = ∨-elim _ _ _ (∨-introʳ A) (exchange (weakening B)) (axiom Z)
   ⊢trans : ∀ {ϕ ψ γ : Formula} → (Γ ⊢ ϕ → Γ ⊢ ψ) → (Γ ⊢ ψ → Γ ⊢ γ) → (Γ ⊢ ϕ → Γ ⊢ γ)
-  ⊢trans x y = λ z → y (x z)
+  ⊢trans x y z = y (x z)
   
 --  ∼-trans : ∀ {ϕ ψ γ : Formula} → ϕ ∼ γ → γ ∼ ψ → ϕ ∼ ψ
 --  ∼-trans x y = ⊢trans (proj₁ x) (proj₁ y) , ⊢trans (proj₂ y) (proj₂ x)
   ∼-trans : ∀ {ϕ ψ γ : Formula} → ϕ ∼ γ → γ ∼ ψ → ϕ ∼ ψ
   ∼-trans x y = ⊢trans (proj₁ x) (proj₁ y) , ⊢trans (proj₂ y) (proj₂ x)
   
-  
+
+
   {- Lindenbaum-Tarski algebra -}
   
   LindenbaumTarski : Type
@@ -234,19 +236,12 @@ module _ {Γ : ctxt} where
                         (λ x → ¬-intro (λ y → ⊥-intro (proj₁ A y) x))
 
 
-
---  _⋀_ : LindenbaumTarski → LindenbaumTarski → LindenbaumTarski
---  A ⋀ B = setQuotBinOp ∼-refl ∼-refl _∧_ ∼-respects-∧ A B
   _⋀_ : LindenbaumTarski → LindenbaumTarski → LindenbaumTarski
   A ⋀ B = setQuotBinOp ∼-refl ∼-refl _∧_ ∼-respects-∧ A B
 
---  _⋁_ : LindenbaumTarski → LindenbaumTarski → LindenbaumTarski
---  A ⋁ B = setQuotBinOp ∼-refl ∼-refl _∨_ ∼-respects-∨ A B
   _⋁_ : LindenbaumTarski  → LindenbaumTarski → LindenbaumTarski
   A ⋁ B = setQuotBinOp ∼-refl ∼-refl _∨_ ∼-respects-∨ A B
 
---  ¬/_ : LindenbaumTarski → LindenbaumTarski
---  ¬/ A = setQuotUnaryOp ¬_ ∼-respects-¬ A
   ¬/_ : LindenbaumTarski → LindenbaumTarski
   ¬/ A = setQuotUnaryOp ¬_ ∼-respects-¬ A
   
@@ -361,7 +356,7 @@ module _ {Γ : ctxt} where
 
 
 {-
-  open DistLatticeStr        -- DistLattice (not in scope) -> DistLatticeStr? IsDistLattice?
+  open DistLattice         -- DistLattice (not in scope) -> DistLatticeStr? IsDistLattice?
 
   LindenbaumTarski-Boolean : (x y : fst LindenbaumTarski-DistLattice) -> x ∨l y ≡ 1l
   LindenbaumTarski-Boolean x y = {!!}
