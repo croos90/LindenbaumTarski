@@ -54,7 +54,7 @@ data _⊢_ : ctxt → Formula → Type where
   
   ∨-introˡ : {Γ : ctxt} {ϕ ψ : Formula} → Γ ⊢ ψ → Γ ⊢ ϕ ∨ ψ
   ∨-introʳ : {Γ : ctxt} {ϕ ψ : Formula} → Γ ⊢ ϕ → Γ ⊢ ϕ ∨ ψ
---  ∨-elim : {Γ : ctxt} (ϕ ψ γ : Formula) → Γ ⊢ ϕ ∨ ψ → (Γ ∶ ϕ) ⊢ γ → (Γ ∶ ψ) ⊢ γ → Γ ⊢ γ
+--  ∨-elim : {Γ : ctxt} {ϕ ψ γ : Formula} → Γ ⊢ ϕ ∨ ψ → (Γ ∶ ϕ) ⊢ γ → (Γ ∶ ψ) ⊢ γ → Γ ⊢ γ
   ∨-elim : {Γ : ctxt} {ϕ ψ γ : Formula} → Γ ⊢ ϕ ∨ ψ → (Γ ⊢ ϕ → Γ ⊢ γ) → (Γ ⊢ ψ → Γ ⊢ γ) → Γ ⊢ γ
 
 --  ¬-intro : {Γ : ctxt} {ϕ : Formula} → (Γ ∶ ϕ) ⊢ ⊥ → Γ ⊢ ¬ ϕ
@@ -65,7 +65,7 @@ data _⊢_ : ctxt → Formula → Type where
   
   ⊤-intro : ∅ ⊢ ⊤
   
---  axiom : {Γ : ctxt} {ϕ : Formula} → ϕ ∈ Γ → Γ ⊢ ϕ
+  axiom : {Γ : ctxt} {ϕ : Formula} → ϕ ∈ Γ → Γ ⊢ ϕ
   LEM : {Γ : ctxt} {ϕ : Formula} → Γ ⊢ ϕ ∨ ¬ ϕ
   
   weakening : {Γ : ctxt} {ϕ ψ : Formula} → Γ ⊢ ψ → (Γ ∶ ϕ) ⊢ ψ
@@ -75,12 +75,13 @@ data _⊢_ : ctxt → Formula → Type where
 
 module _ {Γ : ctxt} where
 
+
   infixl 25 ¬/_
 
   ----------------------------------------
   -- Properties of propositional calculus
   ----------------------------------------
-  
+
   -- Commutativity on ∧
   --  ∧-comm : ∀ {ϕ ψ : Formula} → (Γ ∶ ϕ ∧ ψ) ⊢ ψ ∧ ϕ
   --  ∧-comm = ∧-intro (∧-elimʳ (axiom Z)) (∧-elimˡ (axiom Z))
@@ -88,8 +89,8 @@ module _ {Γ : ctxt} where
   ∧-comm x = ∧-intro (∧-elimʳ x) (∧-elimˡ x)
 
   -- Commutativity on ∨
-  --  ∨-comm : {ϕ ψ : Formula} → (Γ ∶ ϕ ∨ ψ) ⊢ ψ ∨ ϕ
-  --  ∨-comm = ∨-elim _ _ _ (axiom Z) (∨-introˡ (axiom Z)) (∨-introʳ (axiom Z))
+--  ∨-comm : {ϕ ψ : Formula} → (Γ ∶ ϕ ∨ ψ) ⊢ ψ ∨ ϕ
+--  ∨-comm = ∨-elim (axiom Z) (∨-introˡ (axiom Z)) (∨-introʳ (axiom Z))
   ∨-comm : {ϕ ψ : Formula} → Γ ⊢ ϕ ∨ ψ → Γ ⊢ ψ ∨ ϕ
   ∨-comm x = ∨-elim x ∨-introˡ ∨-introʳ
 
@@ -112,70 +113,62 @@ module _ {Γ : ctxt} where
                        (∧-intro (∧-elimʳ (∧-elimˡ x)) (∧-elimʳ x))
 
   -- Associativity on ∨
-  --  ∨-assoc1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∨ (ψ ∨ γ)) ⊢ (ϕ ∨ ψ) ∨ γ
-  --  ∨-assoc1 = ∨-elim _ _ _ (axiom Z)
-  --                          (∨-introʳ (∨-introʳ (axiom Z)))
-  --                          (∨-elim _ _ _
-  --                                  (axiom Z)
-  --                                  (∨-introʳ (∨-introˡ (axiom Z)))
-  --                                  (∨-introˡ (axiom Z)))
+--  ∨-assoc1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∨ (ψ ∨ γ)) ⊢ (ϕ ∨ ψ) ∨ γ
+--  ∨-assoc1 = ∨-elim (axiom Z)
+--                          (∨-introʳ (∨-introʳ (axiom Z)))
+--                          (∨-elim (axiom Z)
+--                                  (∨-introʳ (∨-introˡ (axiom Z)))
+--                                  (∨-introˡ (axiom Z)))
   ∨-assoc1 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ ϕ ∨ (ψ ∨ γ) → Γ ⊢ (ϕ ∨ ψ) ∨ γ
   ∨-assoc1 x = ∨-elim x (λ y → ∨-introʳ (∨-introʳ y))
-                         λ y → ∨-elim y (λ z → ∨-introʳ (∨-introˡ z))
-                                          ∨-introˡ
+                         λ y → ∨-elim y (λ z → ∨-introʳ (∨-introˡ z)) ∨-introˡ
                                           
-  --  ∨-assoc2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∨ ψ) ∨ γ) ⊢ ϕ ∨ (ψ ∨ γ)
-  --  ∨-assoc2 = ∨-elim _ _ _ (axiom Z)
-  --                          (∨-elim _ _ _
-  --                                  (axiom Z)
-  --                                  (∨-introʳ (axiom Z))
-  --                                  (∨-introˡ (∨-introʳ (axiom Z))))
-  --                          (∨-introˡ  (∨-introˡ (axiom Z)))
+--  ∨-assoc2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∨ ψ) ∨ γ) ⊢ ϕ ∨ (ψ ∨ γ)
+--  ∨-assoc2 = ∨-elim (axiom Z)
+--                    (∨-elim (axiom Z)
+--                            (∨-introʳ (axiom Z))
+--                            (∨-introˡ (∨-introʳ (axiom Z))))
+--                    (∨-introˡ  (∨-introˡ (axiom Z)))
   ∨-assoc2 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ (ϕ ∨ ψ) ∨ γ → Γ ⊢ ϕ ∨ (ψ ∨ γ)
-  ∨-assoc2 x = ∨-elim x (λ y → ∨-elim y ∨-introʳ λ z → ∨-introˡ (∨-introʳ z))
-                      λ y → ∨-introˡ (∨-introˡ y)
+  ∨-assoc2 x = ∨-elim x (λ y → ∨-elim y ∨-introʳ λ z → ∨-introˡ (∨-introʳ z)) λ y → ∨-introˡ (∨-introˡ y)
 
 
   -- Distributivity over ∧
-  --  ∧-dist1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∧ (ψ ∨ γ)) ⊢ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)
-  --  ∧-dist1 = ∨-elim _ _ _ (∧-elimʳ (axiom Z))
-  --                         (∨-introʳ (∧-intro (exchange (∧-elimˡ (axiom Z))) (axiom Z)))
-  --                         (∨-introˡ (∧-intro (exchange (∧-elimˡ (axiom Z))) (axiom Z)))
+--  ∧-dist1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∧ (ψ ∨ γ)) ⊢ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)
+--  ∧-dist1 = ∨-elim (∧-elimʳ (axiom Z))
+--                   (∨-introʳ (∧-intro (weakening (∧-elimˡ (axiom Z))) (axiom Z)))
+--                   (∨-introˡ (∧-intro (weakening (∧-elimˡ (axiom Z))) (axiom Z)))
   ∧-dist1 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ ϕ ∧ (ψ ∨ γ) → Γ ⊢ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)
   ∧-dist1 x = ∨-elim (∧-elimʳ x) (λ y → ∨-introʳ (∧-intro (∧-elimˡ x) y))
                               λ y → ∨-introˡ (∧-intro (∧-elimˡ x) y)
 
-  --  ∧-dist2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)) ⊢ ϕ ∧ (ψ ∨ γ)
-  --  ∧-dist2 = ∧-intro (∨-elim _ _ _ (axiom Z)
-  --                                  (∧-elimˡ (axiom Z))
-  --                                  (∧-elimˡ (axiom Z)))
-  --                    (∨-elim _ _ _ (axiom Z)
-  --                                  (∨-introʳ (∧-elimʳ (axiom Z)))
-  --                                  (∨-introˡ (∧-elimʳ (axiom Z))))
+--  ∧-dist2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)) ⊢ ϕ ∧ (ψ ∨ γ)
+--  ∧-dist2 = ∧-intro (∨-elim (axiom Z)
+--                            (∧-elimˡ (axiom Z))
+--                            (∧-elimˡ (axiom Z)))
+--                    (∨-elim (axiom Z)
+--                            (∨-introʳ (∧-elimʳ (axiom Z)))
+--                            (∨-introˡ (∧-elimʳ (axiom Z))))
   ∧-dist2 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ (ϕ ∧ ψ) ∨ (ϕ ∧ γ) → Γ ⊢ ϕ ∧ (ψ ∨ γ)
   ∧-dist2 x = ∧-intro (∨-elim x ∧-elimˡ ∧-elimˡ)
                       (∨-elim x (λ y → ∨-introʳ (∧-elimʳ y))
                               λ y → ∨-introˡ (∧-elimʳ y))
 
   -- Distributivity over ∨
-  --  ∨-dist1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∨ (ψ ∧ γ)) ⊢ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)
-  --  ∨-dist1 = ∨-elim _ _ _ (axiom Z)
-  --                         (∧-intro (∨-introʳ (axiom Z)) (∨-introʳ (axiom Z)))
-  --                         (∧-intro (∨-introˡ (∧-elimˡ (axiom Z))) (∨-introˡ (∧-elimʳ (axiom Z))))
+--  ∨-dist1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∨ (ψ ∧ γ)) ⊢ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)
+--  ∨-dist1 = ∨-elim (axiom Z)
+--                   (∧-intro (∨-introʳ (axiom Z)) (∨-introʳ (axiom Z)))
+--                   (∧-intro (∨-introˡ (∧-elimˡ (axiom Z))) (∨-introˡ (∧-elimʳ (axiom Z))))
   ∨-dist1 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ ϕ ∨ (ψ ∧ γ) → Γ ⊢ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)
   ∨-dist1 x = ∨-elim x (λ y → ∧-intro (∨-introʳ y) (∨-introʳ y))
                      λ y → ∧-intro (∨-introˡ (∧-elimˡ y)) (∨-introˡ (∧-elimʳ y))
   
-  --  ∨-dist2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)) ⊢ ϕ ∨ (ψ ∧ γ)
-  --  ∨-dist2 {ϕ} {ψ} {γ} = ∨-elim _ _ _ (∧-elimˡ (axiom Z))
-  --                                     (∨-elim _ ψ _
-  --                                             (∨-introʳ (axiom Z))
-  --                                             (∨-introʳ (axiom Z))
-  --                                             (weakening (∨-introʳ (axiom Z))) )
-  --                                     (∨-elim _ γ _
-  --                                             (exchange (∧-elimʳ (axiom Z)))
-  --                                             (∨-introʳ (axiom Z))
-  --                                             (∨-introˡ (∧-intro (weakening (axiom Z)) (axiom Z))))
+--  ∨-dist2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)) ⊢ ϕ ∨ (ψ ∧ γ)
+--  ∨-dist2 = ∨-elim (∧-elimˡ (axiom Z))
+--                   (∨-introʳ (axiom Z))
+--                   (∨-elim (∧-elimʳ (weakening (axiom Z)))
+--                           (∨-introʳ (axiom Z))
+--                           (∨-introˡ (∧-intro (weakening (axiom Z)) (axiom Z))))
   ∨-dist2 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ (ϕ ∨ ψ) ∧ (ϕ ∨ γ) → Γ ⊢ ϕ ∨ (ψ ∧ γ)
   ∨-dist2 x = ∨-elim (∧-elimˡ x) ∨-introʳ λ y → ∨-elim (∧-elimʳ x) ∨-introʳ  λ z → ∨-introˡ (∧-intro y z)
 
@@ -199,8 +192,8 @@ module _ {Γ : ctxt} where
   ∼-sym : ∀ {ϕ ψ : Formula} → ϕ ∼ ψ → ψ ∼ ϕ
   ∼-sym (A , B) = B , A
 
-  --  ⊢trans : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ) ⊢ γ → (Γ ∶ γ) ⊢ ψ → (Γ ∶ ϕ) ⊢ ψ
-  --  ⊢trans A B = ∨-elim _ _ _ (∨-introʳ A) (exchange (weakening B)) (axiom Z)
+  --  ⊢trans' : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ) ⊢ γ → (Γ ∶ γ) ⊢ ψ → (Γ ∶ ϕ) ⊢ ψ
+  --  ⊢trans' A B = ∨-elim (∨-introʳ A) (exchange (weakening B)) (axiom Z)
   ⊢trans : ∀ {ϕ ψ γ : Formula} → (Γ ⊢ ϕ → Γ ⊢ ψ) → (Γ ⊢ ψ → Γ ⊢ γ) → (Γ ⊢ ϕ → Γ ⊢ γ)
   ⊢trans x y z = y (x z)
   
@@ -220,6 +213,7 @@ module _ {Γ : ctxt} where
   --------------------------------------------------
   -- The equivalence relation ∼ respects operations
   --------------------------------------------------
+
   --  ∼-respects-∧ : ∀ (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∧ b) ∼ (a' ∧ b')
   --  ∼-respects-∧ a a' b b' x y = ∧-intro (⊢trans (∧-elimˡ (axiom Z)) (proj₁ x))
   --                                       (⊢trans (∧-elimʳ (axiom Z)) (proj₁ y)) ,
@@ -230,12 +224,12 @@ module _ {Γ : ctxt} where
                                (λ z → ∧-intro (proj₂ x (∧-elimˡ z)) (proj₂ y (∧-elimʳ z)))
 
   --  ∼-respects-∨ : ∀ (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∨ b) ∼ (a' ∨ b')
-  --  ∼-respects-∨ a a' b b' x y = ∨-elim _ _ _ (axiom Z)
-  --                                            (exchange (weakening (∨-introʳ (proj₁ x))))
-  --                                            (exchange (weakening (∨-introˡ (proj₁ y)))) ,
-  --                               ∨-elim _ _ _ (axiom Z)
-  --                                            (exchange (weakening (∨-introʳ (proj₂ x))))
-  --                                            (exchange (weakening (∨-introˡ (proj₂ y))))
+  --  ∼-respects-∨ a a' b b' x y = ∨-elim (axiom Z)
+  --                                      (exchange (weakening (∨-introʳ (proj₁ x))))
+  --                                      (exchange (weakening (∨-introˡ (proj₁ y)))) ,
+  --                               ∨-elim (axiom Z)
+  --                                      (exchange (weakening (∨-introʳ (proj₂ x))))
+  --                                      (exchange (weakening (∨-introˡ (proj₂ y))))
   ∼-respects-∨ : ∀ (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∨ b) ∼ (a' ∨ b')
   ∼-respects-∨ a a' b b' A B = (λ x → ∨-elim x (λ x → ∨-introʳ (proj₁ A x)) λ x → ∨-introˡ (proj₁ B x)) ,
                                 λ x → ∨-elim x (λ x → ∨-introʳ (proj₂ A x)) λ x → ∨-introˡ (proj₂ B x)
@@ -267,7 +261,7 @@ module _ {Γ : ctxt} where
   ⊥/ : LindenbaumTarski
   ⊥/ = [ ⊥ ]
 
-  
+ 
   -- Commutativity on ⋀  
   ⋀-comm : ∀ (A B : LindenbaumTarski) → A ⋀ B ≡ B ⋀ A
   ⋀-comm = elimProp2 (λ _ _ → squash/ _ _) λ ϕ ψ → eq/ _ _ (∼-sym (∧-comm , ∧-comm))
