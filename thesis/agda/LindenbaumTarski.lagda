@@ -2,14 +2,21 @@
 {-# OPTIONS --cubical #-}
 module LindenbaumTarski where
 
+
 open import Cubical.HITs.SetQuotients.Base
 open import Cubical.HITs.SetQuotients.Properties
+
 open import Cubical.Foundations.Prelude hiding (_∧_; _∨_)
+
 open import Cubical.Relation.Binary.Base
+
 open import Cubical.Data.Nat.Base
 open import Cubical.Data.Prod.Base
+
+open import Cubical.Algebra.DistLattice.Base
 \end{code}
 
+-- Definition: Formula
 %<*form>
 \begin{code}
 data Formula : Type where
@@ -30,6 +37,7 @@ infix  20  _⊢_
 infix  10  _∶_
 \end{code}
 
+-- Definition: Context
 %<*ctxt>
 \begin{code}
 data ctxt : Type where
@@ -38,6 +46,7 @@ data ctxt : Type where
 \end{code}
 %</ctxt>
 
+-- Definition: Lookup
 %<*lookup>
 \begin{code}
 data _∈_ : Formula → ctxt → Type where
@@ -46,273 +55,450 @@ data _∈_ : Formula → ctxt → Type where
 \end{code}
 %</lookup>
 
-%<*rules>
+\begin{code}
+{-# NO_POSITIVITY_CHECK #-}
+\end{code}
+
+-- Definition: Inference rules
+%<*vdash>
 \begin{code}
 data _⊢_ : ctxt → Formula → Type where
-  ∧-intro : {Γ : ctxt} {ϕ ψ : Formula} → Γ ⊢ ϕ → Γ ⊢ ψ → Γ ⊢ ϕ ∧ ψ
-  ∧-elimˡ : {Γ : ctxt} {ϕ ψ : Formula} → Γ ⊢ ϕ ∧ ψ → Γ ⊢ ϕ
-  ∧-elimʳ : {Γ : ctxt} {ϕ ψ : Formula} → Γ ⊢ ϕ ∧ ψ → Γ ⊢ ψ
-  ∨-introˡ : {Γ : ctxt} {ϕ ψ : Formula} → Γ ⊢ ψ → Γ ⊢ ϕ ∨ ψ
-  ∨-introʳ : {Γ : ctxt} {ϕ ψ : Formula} → Γ ⊢ ϕ → Γ ⊢ ϕ ∨ ψ
-  ∨-elim : {Γ : ctxt} (ϕ ψ γ : Formula) → Γ ⊢ ϕ ∨ ψ → (Γ ∶ ϕ) ⊢ γ → (Γ ∶ ψ) ⊢ γ → Γ ⊢ γ
-  ¬-intro : {Γ : ctxt} {ϕ : Formula} → (Γ ∶ ϕ) ⊢ ⊥ → Γ ⊢ ¬ ϕ
-  RAA : {Γ : ctxt} {ϕ : Formula} → (Γ ∶ ¬ ϕ) ⊢ ⊥ → Γ ⊢ ϕ
-  ⊥-intro : {Γ : ctxt} {ϕ : Formula} → Γ ⊢ ϕ ∧ ¬ ϕ → Γ ⊢ ⊥
-  ⊥-elim : {Γ : ctxt} {ϕ : Formula} → (Γ ∶ ⊥) ⊢ ϕ
-  ⊤-intro : ∅ ⊢ ⊤
-  axiom : {Γ : ctxt} {ϕ : Formula} → ϕ ∈ Γ → Γ ⊢ ϕ
-  LEM : {Γ : ctxt} {ϕ : Formula} → Γ ⊢ ϕ ∨ ¬ ϕ
-  weakening : {Γ : ctxt} {ϕ ψ : Formula} → Γ ⊢ ψ → (Γ ∶ ϕ) ⊢ ψ
-  exchange : {Γ : ctxt} {ϕ ψ γ : Formula} → ((Γ ∶ ϕ) ∶ ψ) ⊢ γ → ((Γ ∶ ψ) ∶ ϕ) ⊢ γ
-  contraction : {Γ : ctxt} {ϕ ψ : Formula} → ((Γ ∶ ϕ) ∶ ϕ) ⊢ ψ → (Γ ∶ ϕ) ⊢ ψ
 \end{code}
-%</rules>
+%</vdash>
+
+%<*conji>
+\begin{code}
+  ∧-intro : {Γ : ctxt} {ϕ ψ : Formula} 
+          → Γ ⊢ ϕ 
+          → Γ ⊢ ψ 
+          → Γ ⊢ ϕ ∧ ψ
+\end{code}
+%</conji>
+%<*conje1>
+\begin{code}
+  ∧-elimˡ : {Γ : ctxt} {ϕ ψ : Formula} 
+          → Γ ⊢ ϕ ∧ ψ 
+          → Γ ⊢ ϕ
+\end{code}
+%</conje1>
+%<*conje2>
+\begin{code}
+  ∧-elimʳ : {Γ : ctxt} {ϕ ψ : Formula} 
+          → Γ ⊢ ϕ ∧ ψ 
+          → Γ ⊢ ψ
+\end{code}
+%</conje2>
+
+%<*disji1>
+\begin{code}
+  ∨-introˡ : {Γ : ctxt} {ϕ ψ : Formula} 
+           → Γ ⊢ ψ 
+           → Γ ⊢ ϕ ∨ ψ
+\end{code}
+%</disji1>
+%<*disji2>
+\begin{code}
+  ∨-introʳ : {Γ : ctxt} {ϕ ψ : Formula} 
+           → Γ ⊢ ϕ 
+           → Γ ⊢ ϕ ∨ ψ
+\end{code}
+%</disji2>
+%<*disje>
+\begin{code}
+  ∨-elim : {Γ : ctxt} {ϕ ψ γ : Formula} 
+         → Γ ⊢ ϕ ∨ ψ 
+         → (Γ ⊢ ϕ → Γ ⊢ γ) 
+         → (Γ ⊢ ψ → Γ ⊢ γ) 
+         → Γ ⊢ γ
+\end{code}
+%</disje>
+--  ∨-elim : {Γ : ctxt} (ϕ ψ γ : Formula) → Γ ⊢ ϕ ∨ ψ → (Γ ∶ ϕ) ⊢ γ → (Γ ∶ ψ) ⊢ γ → Γ ⊢ γ
+
+--  ¬-intro : {Γ : ctxt} {ϕ : Formula} → (Γ ∶ ϕ) ⊢ ⊥ → Γ ⊢ ¬ ϕ
+%<*neg>
+\begin{code}
+  ¬-intro : {Γ : ctxt} {ϕ : Formula} 
+          → (Γ ⊢ ϕ → Γ ⊢ ⊥) 
+          → Γ ⊢ ¬ ϕ
+\end{code}
+%</neg>
+
+%<*bote>
+\begin{code}
+  ¬-elim : {Γ : ctxt} {ϕ : Formula} 
+         → Γ ⊢ ⊥ 
+         → Γ ⊢ ϕ
+\end{code}
+%</bote>
+%<*boti>
+\begin{code}
+  ⊥-intro : {Γ : ctxt} {ϕ : Formula} 
+          → Γ ⊢ ϕ 
+          → Γ ⊢ ¬ ϕ 
+          → Γ ⊢ ⊥
+\end{code}
+%</boti>
+
+%<*top>
+\begin{code}
+  ⊤-intro : ∅ ⊢ ⊤
+\end{code}
+%</top>
+
+--  axiom : {Γ : ctxt} {ϕ : Formula} → ϕ ∈ Γ → Γ ⊢ ϕ
+
+%<*LEM>
+\begin{code}
+  LEM : {Γ : ctxt} {ϕ : Formula} → Γ ⊢ ϕ ∨ ¬ ϕ
+\end{code}
+%</LEM>
+
+%<*weak>
+\begin{code}
+  weakening : {Γ : ctxt} {ϕ ψ : Formula} 
+            → Γ ⊢ ψ 
+            → (Γ ∶ ϕ) ⊢ ψ
+\end{code}
+%</weak>
+
+--  exchange : {Γ : ctxt} {ϕ ψ γ : Formula} → ((Γ ∶ ϕ) ∶ ψ) ⊢ γ → ((Γ ∶ ψ) ∶ ϕ) ⊢ γ
+--  contraction : {Γ : ctxt} {ϕ ψ : Formula} → ((Γ ∶ ϕ) ∶ ϕ) ⊢ ψ → (Γ ∶ ϕ) ⊢ ψ
 
 \begin{code}
 module _ {Γ : ctxt} where
 
   infixl 25 ¬/_
 \end{code}
-  -- Commutativity on ∧ and ∨
+
+  ----------------------------------------
+  -- Properties of propositional calculus
+  ----------------------------------------
+  
+  -- Commutativity on ∧
+  --  ∧-comm : ∀ {ϕ ψ : Formula} → (Γ ∶ ϕ ∧ ψ) ⊢ ψ ∧ ϕ
+  --  ∧-comm = ∧-intro (∧-elimʳ (axiom Z)) (∧-elimˡ (axiom Z)) 
+  %<*comm-conj>
+  \begin{code}
+  ∧-comm : ∀ {ϕ ψ : Formula} → Γ ⊢ ϕ ∧ ψ → Γ ⊢ ψ ∧ ϕ
+  ∧-comm x = ∧-intro (∧-elimʳ x) (∧-elimˡ x)
+  \end{code}
+  %</comm-conj>
+
+  -- Commutativity on ∨
+  --  ∨-comm : {ϕ ψ : Formula} → (Γ ∶ ϕ ∨ ψ) ⊢ ψ ∨ ϕ
+  --  ∨-comm = ∨-elim _ _ _ (axiom Z) (∨-introˡ (axiom Z)) (∨-introʳ (axiom Z))
+  %<*comm-disj>
+  \begin{code}
+  ∨-comm : {ϕ ψ : Formula} → Γ ⊢ ϕ ∨ ψ → Γ ⊢ ψ ∨ ϕ
+  ∨-comm x = ∨-elim x ∨-introˡ ∨-introʳ
+  \end{code}
+  %</comm-disj>
 
 
-\begin{code}
-  ∧-comm : ∀ {ϕ ψ : Formula} → (Γ ∶ ϕ ∧ ψ) ⊢ ψ ∧ ϕ
-  ∧-comm = ∧-intro (∧-elimʳ (axiom Z)) (∧-elimˡ (axiom Z))
-\end{code}
-\begin{code}
-  ∨-comm : {ϕ ψ : Formula} → (Γ ∶ ϕ ∨ ψ) ⊢ ψ ∨ ϕ
-  ∨-comm = ∨-elim _ _ _ (axiom Z) (∨-introˡ (axiom Z)) (∨-introʳ (axiom Z))
-\end{code}
+  -- Associativity on ∧
+  --  ∧-assoc1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∧ (ψ ∧ γ)) ⊢ (ϕ ∧ ψ) ∧ γ
+  --  ∧-assoc1 = ∧-intro (∧-intro (∧-elimˡ (axiom Z))
+  --                              (∧-elimˡ (∧-elimʳ (axiom Z))))
+  --                     (∧-elimʳ (∧-elimʳ (axiom Z)))
+  %<*ass1-conj>
+  \begin{code}
+  ∧-assoc1 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ ϕ ∧ (ψ ∧ γ) → Γ ⊢ (ϕ ∧ ψ) ∧ γ
+  ∧-assoc1 x = ∧-intro (∧-intro (∧-elimˡ x) (∧-elimˡ (∧-elimʳ x)))
+                       (∧-elimʳ (∧-elimʳ x))
+  \end{code}
+  %</ass1-conj>
+                       
+  --  ∧-assoc2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∧ ψ) ∧ γ) ⊢ ϕ ∧ (ψ ∧ γ)
+  --  ∧-assoc2 = ∧-intro (∧-elimˡ (∧-elimˡ (axiom Z)))
+  --                     (∧-intro (∧-elimʳ (∧-elimˡ (axiom Z)))
+  --                              (∧-elimʳ (axiom Z)))
+  %<*ass2-conj>
+  \begin{code}
+  ∧-assoc2 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ (ϕ ∧ ψ) ∧ γ → Γ ⊢ ϕ ∧ (ψ ∧ γ)
+  ∧-assoc2 x = ∧-intro (∧-elimˡ (∧-elimˡ x))
+                       (∧-intro (∧-elimʳ (∧-elimˡ x)) (∧-elimʳ x))
+  \end{code}
+  %</ass2-conj>
 
-  -- Associativity on ∧ and ∨
+  -- Associativity on ∨
+  --  ∨-assoc1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∨ (ψ ∨ γ)) ⊢ (ϕ ∨ ψ) ∨ γ
+  --  ∨-assoc1 = ∨-elim _ _ _ (axiom Z)
+  --                          (∨-introʳ (∨-introʳ (axiom Z)))
+  --                          (∨-elim _ _ _
+  --                                  (axiom Z)
+  --                                  (∨-introʳ (∨-introˡ (axiom Z)))
+  --                                  (∨-introˡ (axiom Z)))
+  %<*ass1-disj>
+  \begin{code}
+  ∨-assoc1 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ ϕ ∨ (ψ ∨ γ) → Γ ⊢ (ϕ ∨ ψ) ∨ γ
+  ∨-assoc1 x = ∨-elim x (λ y → ∨-introʳ (∨-introʳ y))
+                         λ y → ∨-elim y (λ z → ∨-introʳ (∨-introˡ z))
+                                          ∨-introˡ
+  \end{code}
+  %</ass1-disj>
+                                          
+  --  ∨-assoc2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∨ ψ) ∨ γ) ⊢ ϕ ∨ (ψ ∨ γ)
+  --  ∨-assoc2 = ∨-elim _ _ _ (axiom Z)
+  --                          (∨-elim _ _ _
+  --                                  (axiom Z)
+  --                                  (∨-introʳ (axiom Z))
+  --                                  (∨-introˡ (∨-introʳ (axiom Z))))
+  --                          (∨-introˡ  (∨-introˡ (axiom Z)))
+  %<*ass2-disj>
+  \begin{code}
+  ∨-assoc2 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ (ϕ ∨ ψ) ∨ γ → Γ ⊢ ϕ ∨ (ψ ∨ γ)
+  ∨-assoc2 x = ∨-elim x (λ y → ∨-elim y ∨-introʳ λ z → ∨-introˡ (∨-introʳ z))
+                      λ y → ∨-introˡ (∨-introˡ y)
+  \end{code}
+  %</ass2-disj>
 
-\begin{code}
-  ∧-assoc1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∧ ψ) ∧ γ) ⊢ ϕ ∧ (ψ ∧ γ)
-  ∧-assoc1 = ∧-intro (∧-elimˡ (∧-elimˡ (axiom Z)))
-                     (∧-intro (∧-elimʳ (∧-elimˡ (axiom Z)))
-                              (∧-elimʳ (axiom Z)))
-\end{code}
 
-\begin{code}
-  ∧-assoc2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∧ (ψ ∧ γ)) ⊢ (ϕ ∧ ψ) ∧ γ
-  ∧-assoc2 = ∧-intro (∧-intro (∧-elimˡ (axiom Z))
-                              (∧-elimˡ (∧-elimʳ (axiom Z))))
-                     (∧-elimʳ (∧-elimʳ (axiom Z)))
-\end{code}
+  -- Distributivity over ∧
+  --  ∧-dist1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∧ (ψ ∨ γ)) ⊢ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)
+  --  ∧-dist1 = ∨-elim _ _ _ (∧-elimʳ (axiom Z))
+  --                         (∨-introʳ (∧-intro (exchange (∧-elimˡ (axiom Z))) (axiom Z)))
+  --                         (∨-introˡ (∧-intro (exchange (∧-elimˡ (axiom Z))) (axiom Z)))
+  %<*dist1-conj>
+  \begin{code}
+  ∧-dist1 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ ϕ ∧ (ψ ∨ γ) → Γ ⊢ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)
+  ∧-dist1 x = ∨-elim (∧-elimʳ x) (λ y → ∨-introʳ (∧-intro (∧-elimˡ x) y))
+                              λ y → ∨-introˡ (∧-intro (∧-elimˡ x) y)
+  \end{code}
+  %<dist1-conj>
 
-\begin{code}
-  ∨-assoc1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∨ ψ) ∨ γ) ⊢ ϕ ∨ (ψ ∨ γ)
-  ∨-assoc1 = ∨-elim _ _ _ (axiom Z)
-                          (∨-elim _ _ _
-                                  (axiom Z)
-                                  (∨-introʳ (axiom Z))
-                                  (∨-introˡ (∨-introʳ (axiom Z))))
-                          (∨-introˡ  (∨-introˡ (axiom Z)))
-\end{code}
+  --  ∧-dist2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)) ⊢ ϕ ∧ (ψ ∨ γ)
+  --  ∧-dist2 = ∧-intro (∨-elim _ _ _ (axiom Z)
+  --                                  (∧-elimˡ (axiom Z))
+  --                                  (∧-elimˡ (axiom Z)))
+  --                    (∨-elim _ _ _ (axiom Z)
+  --                                  (∨-introʳ (∧-elimʳ (axiom Z)))
+  --                                  (∨-introˡ (∧-elimʳ (axiom Z))))
+  %<*dist2-conj>
+  \begin{code}
+  ∧-dist2 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ (ϕ ∧ ψ) ∨ (ϕ ∧ γ) → Γ ⊢ ϕ ∧ (ψ ∨ γ)
+  ∧-dist2 x = ∧-intro (∨-elim x ∧-elimˡ ∧-elimˡ)
+                      (∨-elim x (λ y → ∨-introʳ (∧-elimʳ y))
+                              λ y → ∨-introˡ (∧-elimʳ y))
+  \end{code}
+  %</dist2-conj>
 
-\begin{code}
-  ∨-assoc2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∨ (ψ ∨ γ)) ⊢ (ϕ ∨ ψ) ∨ γ
-  ∨-assoc2 = ∨-elim _ _ _ (axiom Z)
-                          (∨-introʳ (∨-introʳ (axiom Z)))
-                          (∨-elim _ _ _
-                                  (axiom Z)
-                                  (∨-introʳ (∨-introˡ (axiom Z)))
-                                  (∨-introˡ (axiom Z)))
-\end{code}
+  -- Distributivity over ∨
+  --  ∨-dist1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∨ (ψ ∧ γ)) ⊢ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)
+  --  ∨-dist1 = ∨-elim _ _ _ (axiom Z)
+  --                         (∧-intro (∨-introʳ (axiom Z)) (∨-introʳ (axiom Z)))
+  --                         (∧-intro (∨-introˡ (∧-elimˡ (axiom Z))) (∨-introˡ (∧-elimʳ (axiom Z))))
+  %<*dist1-disj>
+  \begin{code}
+  ∨-dist1 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ ϕ ∨ (ψ ∧ γ) → Γ ⊢ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)
+  ∨-dist1 x = ∨-elim x (λ y → ∧-intro (∨-introʳ y) (∨-introʳ y))
+                     λ y → ∧-intro (∨-introˡ (∧-elimˡ y)) (∨-introˡ (∧-elimʳ y))
+  \end{code}
+  %</dist1-disj>
 
-  -- Distributivity over ∧ and ∨
-\begin{code}
-  ∧-dist1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∧ (ψ ∨ γ)) ⊢ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)
-  ∧-dist1 = ∨-elim _ _ _ (∧-elimʳ (axiom Z))
-                         (∨-introʳ (∧-intro (exchange (∧-elimˡ (axiom Z))) (axiom Z)))
-                         (∨-introˡ (∧-intro (exchange (∧-elimˡ (axiom Z))) (axiom Z)))
-\end{code}
+  --  ∨-dist2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)) ⊢ ϕ ∨ (ψ ∧ γ)
+  --  ∨-dist2 {ϕ} {ψ} {γ} = ∨-elim _ _ _ (∧-elimˡ (axiom Z))
+  --                                     (∨-elim _ ψ _
+  --                                             (∨-introʳ (axiom Z))
+  --                                             (∨-introʳ (axiom Z))
+  --                                             (weakening (∨-introʳ (axiom Z))) )
+  --                                     (∨-elim _ γ _
+  --                                             (exchange (∧-elimʳ (axiom Z)))
+  --                                             (∨-introʳ (axiom Z))
+  --                                             (∨-introˡ (∧-intro (weakening (axiom Z)) (axiom Z))))
+  %<*dist2-disj>
+  \begin{code}
+  ∨-dist2 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ (ϕ ∨ ψ) ∧ (ϕ ∨ γ) → Γ ⊢ ϕ ∨ (ψ ∧ γ)
+  ∨-dist2 x = ∨-elim (∧-elimˡ x) ∨-introʳ λ y → ∨-elim (∧-elimʳ x) ∨-introʳ  λ z → ∨-introˡ (∧-intro y z)
+  \end{code}
+  %</dist2-disj>
 
-\begin{code}
-  ∧-dist2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)) ⊢ ϕ ∧ (ψ ∨ γ)
-  ∧-dist2 = ∧-intro (∨-elim _ _ _ (axiom Z)
-                                  (∧-elimˡ (axiom Z))
-                                  (∧-elimˡ (axiom Z)))
-                    (∨-elim _ _ _ (axiom Z)
-                                  (∨-introʳ (∧-elimʳ (axiom Z)))
-                                  (∨-introˡ (∧-elimʳ (axiom Z))))
-\end{code}
-
-\begin{code}
-  ∨-dist1 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ ∨ (ψ ∧ γ)) ⊢ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)
-  ∨-dist1 = ∨-elim _ _ _ (axiom Z)
-                         (∧-intro (∨-introʳ (axiom Z)) (∨-introʳ (axiom Z)))
-                         (∧-intro (∨-introˡ (∧-elimˡ (axiom Z))) (∨-introˡ (∧-elimʳ (axiom Z))))
-\end{code}
-
-\begin{code}
-  ∨-dist2 : ∀ {ϕ ψ γ : Formula} → (Γ ∶ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)) ⊢ ϕ ∨ (ψ ∧ γ)
-  ∨-dist2 {ϕ} {ψ} {γ} = ∨-elim _ _ _ (∧-elimˡ (axiom Z))
-                                     (∨-elim _ ψ _
-                                             (∨-introʳ (axiom Z))
-                                             (∨-introʳ (axiom Z))
-                                             (exchange (∨-introʳ (axiom Z))))
-                                     (∨-elim _ γ _
-                                             (exchange (∧-elimʳ (axiom Z)))
-                                             (∨-introʳ (axiom Z))
-                                             (∨-introˡ (∧-intro (exchange (axiom Z)) (axiom Z))))
-\end{code}
-
-  -- Equivalence relation
-\begin{code}
+  ------------------------------------------------------
+  -- Defining relation where two formulas are related
+  -- if they are provably equivalent. Then proving that
+  -- the relation is an equivalence relation by proving
+  -- it is reflexive, symmetric and transitive.
+  ------------------------------------------------------  
+  --  _∼_ : Formula → Formula → Type
+  --  ϕ ∼ ψ = (Γ ∶ ϕ) ⊢ ψ × (Γ ∶ ψ) ⊢ ϕ
   _∼_ : Formula → Formula → Type
-  ϕ ∼ ψ = (Γ ∶ ϕ) ⊢ ψ × (Γ ∶ ψ) ⊢ ϕ
-\end{code}
+  ϕ ∼ ψ = (Γ ⊢ ϕ → Γ ⊢ ψ) × (Γ ⊢ ψ → Γ ⊢ ϕ)
 
-\begin{code}
+  --  ∼-refl : ∀ (ϕ : Formula) → ϕ ∼ ϕ
+  --  ∼-refl _ = axiom Z , (axiom Z)
   ∼-refl : ∀ (ϕ : Formula) → ϕ ∼ ϕ
-  ∼-refl _ = axiom Z , (axiom Z)
-\end{code}
-
-\begin{code}
+  ∼-refl _ = (λ x → x) , (λ x → x)
+  
   ∼-sym : ∀ {ϕ ψ : Formula} → ϕ ∼ ψ → ψ ∼ ϕ
   ∼-sym (A , B) = B , A
-\end{code}
 
-\begin{code}
-  ⊢trans : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ) ⊢ γ → (Γ ∶ γ) ⊢ ψ → (Γ ∶ ϕ) ⊢ ψ
-  ⊢trans A B = ∨-elim _ _ _ (∨-introʳ A) (exchange (weakening B)) (axiom Z)
-\end{code}
-
-\begin{code}
+  --  ⊢trans : ∀ {ϕ ψ γ : Formula} → (Γ ∶ ϕ) ⊢ γ → (Γ ∶ γ) ⊢ ψ → (Γ ∶ ϕ) ⊢ ψ
+  --  ⊢trans A B = ∨-elim _ _ _ (∨-introʳ A) (exchange (weakening B)) (axiom Z)
+  ⊢trans : ∀ {ϕ ψ γ : Formula} → (Γ ⊢ ϕ → Γ ⊢ ψ) → (Γ ⊢ ψ → Γ ⊢ γ) → (Γ ⊢ ϕ → Γ ⊢ γ)
+  ⊢trans x y z = y (x z)
+  
   ∼-trans : ∀ {ϕ ψ γ : Formula} → ϕ ∼ γ → γ ∼ ψ → ϕ ∼ ψ
   ∼-trans x y = ⊢trans (proj₁ x) (proj₁ y) , ⊢trans (proj₂ y) (proj₂ x)
-\end{code}
+
+
+  ---------------------------------------------------------
+  -- Lindenbaum-Tarski algebra is defined as the quotioent
+  -- algebra obtained by factoring the algebra of formulas
+  -- by the defined equivalence relation.
+  ---------------------------------------------------------
+  LindenbaumTarski : Type
+  LindenbaumTarski = Formula / _∼_
+
+
+  --------------------------------------------------
+  -- The equivalence relation ∼ respects operations
+  --------------------------------------------------
+  --  ∼-respects-∧ : ∀ (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∧ b) ∼ (a' ∧ b')
+  --  ∼-respects-∧ a a' b b' x y = ∧-intro (⊢trans (∧-elimˡ (axiom Z)) (proj₁ x))
+  --                                       (⊢trans (∧-elimʳ (axiom Z)) (proj₁ y)) ,
+  --                               ∧-intro (⊢trans (∧-elimˡ (axiom Z)) (proj₂ x))
+  --                                       (⊢trans (∧-elimʳ (axiom Z)) (proj₂ y))
+  ∼-respects-∧ : ∀ (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∧ b) ∼ (a' ∧ b')
+  ∼-respects-∧ a a' b b' x y = (λ z → ∧-intro (proj₁ x (∧-elimˡ z)) (proj₁ y (∧-elimʳ z))) ,
+                               (λ z → ∧-intro (proj₂ x (∧-elimˡ z)) (proj₂ y (∧-elimʳ z)))
+
+  --  ∼-respects-∨ : ∀ (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∨ b) ∼ (a' ∨ b')
+  --  ∼-respects-∨ a a' b b' x y = ∨-elim _ _ _ (axiom Z)
+  --                                            (exchange (weakening (∨-introʳ (proj₁ x))))
+  --                                            (exchange (weakening (∨-introˡ (proj₁ y)))) ,
+  --                               ∨-elim _ _ _ (axiom Z)
+  --                                            (exchange (weakening (∨-introʳ (proj₂ x))))
+  --                                            (exchange (weakening (∨-introˡ (proj₂ y))))
+  ∼-respects-∨ : ∀ (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∨ b) ∼ (a' ∨ b')
+  ∼-respects-∨ a a' b b' A B = (λ x → ∨-elim x (λ x → ∨-introʳ (proj₁ A x)) λ x → ∨-introˡ (proj₁ B x)) ,
+                                λ x → ∨-elim x (λ x → ∨-introʳ (proj₂ A x)) λ x → ∨-introˡ (proj₂ B x)
+
+  --  ∼-respects-¬ : ∀ (a a' : Formula) → a ∼ a' → (¬ a) ∼ (¬ a')
+  --  ∼-respects-¬ a a' x = ¬-intro (⊥-intro (exchange (weakening (proj₂ x))) (weakening (axiom Z))) ,
+  --                        ¬-intro (⊥-intro (exchange (weakening (proj₁ x))) (weakening (axiom Z)))
+  ∼-respects-¬ : ∀ (a a' : Formula) → a ∼ a' → (¬ a) ∼ (¬ a')
+  ∼-respects-¬ a a' A = (λ x → ¬-intro (λ y → ⊥-intro (proj₂ A y) x)),
+                        (λ x → ¬-intro (λ y → ⊥-intro (proj₁ A y) x))
+
+
+  -------------------------------------------------------------------
+  -- Definition: Binary operations and propositional constants in LT
+  -------------------------------------------------------------------
   
-  {- Lindenbaum-Tarski algebra -}
+  _⋀_ : LindenbaumTarski → LindenbaumTarski → LindenbaumTarski
+  A ⋀ B = setQuotBinOp ∼-refl ∼-refl _∧_ ∼-respects-∧ A B
+
+  _⋁_ : LindenbaumTarski  → LindenbaumTarski → LindenbaumTarski
+  A ⋁ B = setQuotBinOp ∼-refl ∼-refl _∨_ ∼-respects-∨ A B
+
+  ¬/_ : LindenbaumTarski → LindenbaumTarski
+  ¬/ A = setQuotUnaryOp ¬_ ∼-respects-¬ A
   
-\begin{code}
-  LT : Type
-  LT = Formula / _∼_
-\end{code}
-
-  -- Binary operations and propositional constants
-
-\begin{code}
-  lemma1 : ∀ (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∧ b) ∼ (a' ∧ b')
-  lemma1 a a' b b' x y = ∧-intro (⊢trans (∧-elimˡ (axiom Z)) (proj₁ x))
-                                 (⊢trans (∧-elimʳ (axiom Z)) (proj₁ y)) ,
-                         ∧-intro (⊢trans (∧-elimˡ (axiom Z)) (proj₂ x))
-                                 (⊢trans (∧-elimʳ (axiom Z)) (proj₂ y))
-\end{code}
-
-\begin{code}
-  lemma2 : ∀ (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∨ b) ∼ (a' ∨ b')
-  lemma2 a a' b b' x y = ∨-elim _ _ _ (axiom Z)
-                                      (exchange (weakening (∨-introʳ (proj₁ x))))
-                                      (exchange (weakening (∨-introˡ (proj₁ y)))) ,
-                         ∨-elim _ _ _ (axiom Z)
-                                      (exchange (weakening (∨-introʳ (proj₂ x))))
-                                      (exchange (weakening (∨-introˡ (proj₂ y))))
-\end{code}
-
-\begin{code}
-  lemma3 : ∀ (a a' : Formula) → a ∼ a' → (¬ a) ∼ (¬ a')
-  lemma3 a a' x = ¬-intro (⊥-intro (∧-intro (exchange (weakening (proj₂ x))) (weakening (axiom Z)))) ,
-                  ¬-intro (⊥-intro (∧-intro (exchange (weakening (proj₁ x))) (weakening (axiom Z))))
-\end{code}
-
-
-\begin{code}
-  _⋀_ : LT → LT → LT
-  A ⋀ B = setQuotBinOp ∼-refl ∼-refl _∧_ lemma1 A B
-\end{code}
-
-\begin{code}
-  _⋁_ : LT → LT → LT
-  A ⋁ B = setQuotBinOp ∼-refl ∼-refl _∨_ lemma2 A B
-\end{code}
-
-\begin{code}
-  ¬/_ : LT → LT
-  ¬/ A = setQuotUnaryOp ¬_ lemma3 A
-\end{code}
-
-\begin{code}
-  ⊤/ : LT
+  ⊤/ : LindenbaumTarski
   ⊤/ = [ ⊤ ]
-\end{code}
-
-\begin{code}
-  ⊥/ : LT
-  ⊥/ = [ ⊥ ]
-\end{code}
   
-  -- Commutativity
+  ⊥/ : LindenbaumTarski
+  ⊥/ = [ ⊥ ]
 
-\begin{code}
-  ⋀-comm : ∀ (A B : LT) → A ⋀ B ≡ B ⋀ A
+  
+  -- Commutativity on ⋀  
+  ⋀-comm : ∀ (A B : LindenbaumTarski) → A ⋀ B ≡ B ⋀ A
   ⋀-comm = elimProp2 (λ _ _ → squash/ _ _) λ ϕ ψ → eq/ _ _ (∼-sym (∧-comm , ∧-comm))
-\end{code}
 
-\begin{code}
-  ⋁-comm : ∀ (A B : LT) → A ⋁ B ≡ B ⋁ A
+  -- Commutativity on ⋁
+  ⋁-comm : ∀ (A B : LindenbaumTarski) → A ⋁ B ≡ B ⋁ A
   ⋁-comm = elimProp2 (λ _ _ → squash/ _ _) λ ϕ ψ → eq/ _ _ (∼-sym (∨-comm , ∨-comm))
-\end{code}
 
-  -- Associativity
-
-\begin{code}
-  ⋀-assoc : ∀ (A B C : LT) → (A ⋀ B) ⋀ C ≡ A ⋀ (B ⋀ C)
+  -- Associativity on ⋀
+  ⋀-assoc : ∀ (A B C : LindenbaumTarski) → A ⋀ (B ⋀ C) ≡ (A ⋀ B) ⋀ C
   ⋀-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∧-assoc1 , ∧-assoc2)
-\end{code}
 
-\begin{code}
-  ⋁-assoc : ∀ (A B C : LT) → (A ⋁ B) ⋁ C ≡ A ⋁ (B ⋁ C)
+  --Associativity on ⋁
+  ⋁-assoc : ∀ (A B C : LindenbaumTarski) → A ⋁ (B ⋁ C) ≡ (A ⋁ B) ⋁ C
   ⋁-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∨-assoc1 , ∨-assoc2)
-\end{code}
 
-%  -- Distributivity
-
-\begin{code}
-  ⋀-dist : ∀ (A B C : LT) → A ⋀ (B ⋁ C) ≡ (A ⋀ B) ⋁ (A ⋀ C)
+  -- Distributivity over ⋀
+  ⋀-dist : ∀ (A B C : LindenbaumTarski) → A ⋀ (B ⋁ C) ≡ (A ⋀ B) ⋁ (A ⋀ C)
   ⋀-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∧-dist1 , ∧-dist2)
-\end{code}
 
-\begin{code}
-  ⋁-dist : ∀ (A B C : LT) → A ⋁ (B ⋀ C) ≡ (A ⋁ B) ⋀ (A ⋁ C)
+  --Distributivity over ⋁
+  ⋁-dist : ∀ (A B C : LindenbaumTarski) → A ⋁ (B ⋀ C) ≡ (A ⋁ B) ⋀ (A ⋁ C)
   ⋁-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∨-dist1 , ∨-dist2)
-\end{code}
 
-  -- Inverse element
 
-\begin{code}
+  -- Definition: Superweakening
   superweakening : ∀ (Γ : ctxt) → Γ ⊢ ⊤
   superweakening ∅ = ⊤-intro
   superweakening (Δ ∶ x) = weakening (superweakening Δ)
-\end{code}
 
-\begin{code}
-  ⋀-comp : ∀ (A : LT) → A ⋀ ¬/ A ≡ ⊥/
-  ⋀-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (⊥-intro (axiom Z) , ⊥-elim)
-\end{code}
+
+-----------------------------------------------------------------------------------------------------------------------------
+-- Inverse element (Not needed anymore since DistLattice uses identity?)
+-----------------------------------------------------------------------------------------------------------------------------
+--  ⋀-inv : ∀ (A : LindenbaumTarski) → A ⋀ ¬/ A ≡ ⊥/
+--  ⋀-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (⊥-intro (∧-elimˡ (axiom Z)) (∧-elimʳ (axiom Z)) , ¬-elim (axiom Z))
+  ⋀-inv : ∀ (A : LindenbaumTarski) → A ⋀ ¬/ A ≡ ⊥/
+  ⋀-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ((λ x → ⊥-intro (∧-elimˡ x) (∧-elimʳ x)) , λ x → ¬-elim x)
   
-\begin{code}
-  ⋁-comp : ∀ (A : LT) → A ⋁ ¬/ A ≡ ⊤/
-  ⋁-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (superweakening _ , LEM)
-\end{code}
+--  ⋁-inv : ∀ (A : LindenbaumTarski) → A ⋁ ¬/ A ≡ ⊤/
+--  ⋁-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (superweakening _ , LEM)
+  ⋁-inv : ∀ (A : LindenbaumTarski) → A ⋁ ¬/ A ≡ ⊤/
+  ⋁-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ((λ x → superweakening _) , λ x → LEM)
+-----------------------------------------------------------------------------------------------------------------------------
 
-  -- Absorbtion
+  -- Absorbtion law ⋁
+  --  ⋁-abs : ∀ (A B : LindenbaumTarski) → (A ⋀ B) ⋁ B ≡ B
+  --  ⋁-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ (∨-elim _ _ _ (axiom Z) (∧-elimʳ (axiom Z)) (axiom Z) , ∨-introˡ (axiom Z))
+  ⋁-abs : ∀ (A B : LindenbaumTarski) → (A ⋀ B) ⋁ B ≡ B
+  ⋁-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ ((λ x → ∨-elim x ∧-elimʳ λ a → a) , ∨-introˡ) 
 
-\begin{code}
-  ⋀-abs : ∀ (A B : LT) → (A ⋁ B) ⋀ B ≡ B
-  ⋀-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ ((∧-elimʳ (axiom Z)) , ∧-intro (∨-introˡ (axiom Z)) (axiom Z))
-\end{code}
+  -- Absorbtion law ⋀
+  --  ⋀-abs : ∀ (A B : LindenbaumTarski) → A ⋀ (A ⋁ B) ≡ A
+  --  ⋀-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ (∧-elimˡ (axiom Z) , ∧-intro (axiom Z) (∨-introʳ (axiom Z)))
+  ⋀-abs : ∀ (A B : LindenbaumTarski) → A ⋀ (A ⋁ B) ≡ A
+  ⋀-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ (∧-elimˡ , λ x → ∧-intro x (∨-introʳ x))
 
-\begin{code}
-  ⋁-abs : ∀ (A B : LT) → (A ⋀ B) ⋁ B ≡ B
-  ⋁-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ (∨-elim _ _ _ (axiom Z) (∧-elimʳ (axiom Z)) (axiom Z) , ∨-introˡ (axiom Z))
-\end{code}
+  -- Identity law ⋁
+  --  ⋁-id : ∀ (A : LindenbaumTarski) → A ⋁ ⊥/ ≡ A
+  --  ⋁-id = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (∨-elim _ _ _ (axiom Z) (axiom Z) (¬-elim (axiom Z)) , ∨-introʳ (axiom Z))
+  ⋁-id : ∀ (A : LindenbaumTarski) → A ⋁ ⊥/ ≡ A
+  ⋁-id = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ((λ x → ∨-elim x (λ y → y) ¬-elim) , ∨-introʳ)
 
-%<*sound>
-\begin{code}
+  -- Identity law ⋀
+  --  ⋀-id : ∀ (A : LindenbaumTarski) → A ⋀ ⊤/ ≡ A
+  --  ⋀-id = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (∧-elimˡ (axiom Z) , ∧-intro (axiom Z) (superweakening _))
+  ⋀-id : ∀ (A : LindenbaumTarski) → A ⋀ ⊤/ ≡ A
+  ⋀-id = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (∧-elimˡ , λ x → ∧-intro x (superweakening _))
+
+
+  ------------------------------------------------------------
+  -- If ϕ is provable in Γ then [ϕ] should be the same as ⊤/.
+  -- We can view this as a form of soundness.
+  ------------------------------------------------------------
+  --  sound : ∀ {ϕ : Formula} → Γ ⊢ ϕ → [ ϕ ] ≡ ⊤/
+  --  sound x = eq/ _ _ (superweakening _ , weakening x)
   sound : ∀ {ϕ : Formula} → Γ ⊢ ϕ → [ ϕ ] ≡ ⊤/
-  sound x = eq/ _ _ (superweakening _ , weakening x)
-\end{code}
-%</sound>
+  sound x = eq/ _ _ ((λ _ → superweakening _) , λ _ → x )
+
+
+  -------------------------------------------------------------
+  -- By proving the Lindenbaum-Tarski algebra can be viewed as
+  -- a distributive lattice, we prove that it is also boolean
+  -- since a distributive lattice is boolean.
+  -------------------------------------------------------------
+
+  isSet-LT : ∀ (A B : LindenbaumTarski) → isProp(A ≡ B)
+  isSet-LT A B = squash/ _ _
+
+  --  LT-isDistLattice : IsDistLattice ⊥/ ⊤/ _⋁_ _⋀_
+  --  LT-isDistLattice = makeIsDistLattice∧lOver∨l isSet-LT ⋁-assoc ⋁-id ⋁-comm ⋀-assoc ⋀-id ⋀-comm ⋀-abs ⋀-dist
+
+  LindenbaumTarski-DistLattice : DistLattice _
+  LindenbaumTarski-DistLattice = makeDistLattice∧lOver∨l ⊥/ ⊤/ _⋁_ _⋀_ isSet-LT ⋁-assoc ⋁-id ⋁-comm ⋀-assoc ⋀-id ⋀-comm ⋀-abs ⋀-dist
+
+
+  {-
+  open DistLattice         -- DistLattice (not in scope) -> DistLatticeStr? IsDistLattice?
+
+  LindenbaumTarski-Boolean : (x y : fst LindenbaumTarski-DistLattice) -> x ∨l y ≡ 1l
+  LindenbaumTarski-Boolean x y = {!!}
+  -}

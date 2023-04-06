@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2023.3.17)  21 MAR 2023 12:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2023.3.17)  6 APR 2023 13:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -514,6 +514,8 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 286.
 )
 \Hy@SectionHShift=\skip63
+) (/usr/share/texlive/texmf-dist/tex/latex/graphics/lscape.sty
+Package: lscape 2000/10/22 v3.01 Landscape Pages (DPC)
 )
 \c@theorem=\count294
 \c@definition=\count295
@@ -630,22 +632,22 @@ Package newunicodechar Warning: Redefining Unicode character on input line 106.
 ) (/home/croos/Desktop/exjobb/thesis/thesis.aux)
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
  ABD: EveryShipout initializing macros (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count310
@@ -665,14 +667,14 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
  (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-LaTeX Info: Redefining \microtypecontext on input line 28.
+LaTeX Info: Redefining \microtypecontext on input line 29.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `basictext'.
-LaTeX Info: Redefining \showhyphens on input line 28.
+LaTeX Info: Redefining \showhyphens on input line 29.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -680,7 +682,7 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
 )
 \AtBeginShipoutBox=\box70
-Package hyperref Info: Link coloring OFF on input line 28.
+Package hyperref Info: Link coloring OFF on input line 29.
  (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
  (/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
@@ -690,9 +692,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count316
 )
-LaTeX Info: Redefining \ref on input line 28.
-LaTeX Info: Redefining \pageref on input line 28.
-LaTeX Info: Redefining \nameref on input line 28.
+LaTeX Info: Redefining \ref on input line 29.
+LaTeX Info: Redefining \pageref on input line 29.
+LaTeX Info: Redefining \nameref on input line 29.
  (/home/croos/Desktop/exjobb/thesis/thesis.out) (/home/croos/Desktop/exjobb/thesis/thesis.out)
 \@outlinefile=\write5
 \openout5 = `thesis.out'.
@@ -700,13 +702,13 @@ LaTeX Info: Redefining \nameref on input line 28.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (/home/croos/Desktop/exjobb/thesis/thesis.toc
-LaTeX Font Info:    Trying to load font information for U+msa on input line 4.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 3.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 4.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 3.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
@@ -718,178 +720,142 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.40 \newpage
+l.41 \newpage
               [1]
 Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `cmss' (encoding: OT1).
+(microtype)             `cmtt' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.106 \end{definition}
-                       [1]
+l.87 \begin{verbatim}
+                      [1] [2]
+LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 133.
+ (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 133.
 Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `cmtt' (encoding: OT1).
+(microtype)             `cmss' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+ [3] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
-LaTeX Font Info:    Trying to load font information for U+bbold on input line 110.
+LaTeX Font Info:    Trying to load font information for U+bbold on input line 186.
  (/usr/share/texlive/texmf-dist/tex/latex/bbold/Ubbold.fd) (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
- (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+ [4] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
-LaTeX Font Info:    Trying to load font information for OMS+cmss on input line 140.
-LaTeX Font Info:    No file OMScmss.fd. on input line 140.
+LaTeX Font Info:    Trying to load font information for OMS+cmss on input line 214.
+LaTeX Font Info:    No file OMScmss.fd. on input line 214.
 
 
 LaTeX Font Warning: Font shape `OMS/cmss/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbraceleft' on input line 140.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 150.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\top' on input line 150.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 150.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 150.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\bot' on input line 150.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 150.
+(Font)              for symbol `textbraceleft' on input line 214.
 
 (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][][][] 
- []
+ [5] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][][][] 
- []
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
-
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
-
-
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
+ [6] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 308.
 
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\top' on input line 308.
 
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 308.
 
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 308.
 
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\bot' on input line 308.
 
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 308.
 
+(/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
+ [7] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex) [8]
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
-
-
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
-
-
-Overfull \hbox (89.42473pt too wide) in paragraph at lines 155--155
- [][] 
- []
-
-[2] (/home/croos/Desktop/exjobb/thesis/thesis.bbl) [3]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 180.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 180.
+ [9] [10] [11] (/home/croos/Desktop/exjobb/thesis/thesis.bbl) [12]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 625.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 625.
  (/home/croos/Desktop/exjobb/thesis/thesis.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 180.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 180.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 625.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 625.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 82EEE29643D0C16030FAC8709A3F8B8E;1257.
+(rerunfilecheck)             Checksum: F95FA1F1707A2AF208783C224F00C1EF;1614.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 180.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 625.
  ) 
 Here is how much of TeX's memory you used:
- 21799 strings out of 481239
- 421419 string characters out of 5920377
- 773773 words of memory out of 5000000
- 36477 multiletter control sequences out of 15000+600000
- 540311 words of font info for 66 fonts, out of 8000000 for 9000
+ 22079 strings out of 481239
+ 426886 string characters out of 5920377
+ 738098 words of memory out of 5000000
+ 36667 multiletter control sequences out of 15000+600000
+ 542211 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 60i,13n,69p,975b,412s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/bbold-type1/bbold10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on /home/croos/Desktop/exjobb/thesis/thesis.pdf (5 pages, 144222 bytes).
+ 60i,30n,69p,975b,580s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/bbold-type1/bbold10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on /home/croos/Desktop/exjobb/thesis/thesis.pdf (14 pages, 196512 bytes).
 PDF statistics:
- 188 PDF objects out of 1000 (max. 8388607)
- 166 compressed objects within 2 object streams
- 29 named destinations out of 1000 (max. 500000)
- 15005 words of extra memory for PDF output out of 17280 (max. 10000000)
+ 275 PDF objects out of 1000 (max. 8388607)
+ 240 compressed objects within 3 object streams
+ 45 named destinations out of 1000 (max. 500000)
+ 19653 words of extra memory for PDF output out of 20736 (max. 10000000)
 

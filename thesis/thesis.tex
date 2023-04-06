@@ -14,6 +14,7 @@
 \usepackage{microtype}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{lscape}
 \DisableLigatures[-]{family=tt*}
 
 \newcommand\myeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily def}}}{=}}}
@@ -54,8 +55,87 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Agda proof assistant}
+Agda is a dependently typed programming language based on intuitionistic type theory. By encoding mathematical propositions as types and their proofs as programs, we can ensure that our reasoning is correct and consistent. Agda's type system also provides powerful tools for automatically checking the correctness of proofs\cite{BoveDybjer2008}.
+
+\subsection{Propositions as types}
+Propositions as types associates logical propositions with types in a programming language. It is based on the idea that a proof of a proposition is analogous to a program that satisfies the type associated with the proposition.
+
+In this context, the introduction and elimination rules for logical connectives can be seen as operations that construct and deconstruct values of the corresponding types. For example, the introduction rule for conjunction says that if we have proofs of two propositions, we can construct a proof of their conjunction by pairing the two proofs together. This can be seen as a function that takes two values of the corresponding types and returns a pair value.
+
+On the other hand, the elimination rule for conjunction says that if we have a proof of a conjunction, we can extract proofs of its two conjuncts by projecting the pair onto each component. This can be seen as a function that takes a pair value and returns two values of the corresponding types.
+
+This is similar to the concept of product types in programming languages, where a product type is a type that represents a pair of values. The introduction form of a product type is a pair, and the elimination forms are projection functions that extract the individual components of the tuple. This chart summarizes the correspondence between proposition and types and between proofs and programs.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{c | c}
+        Prop & Type \\
+        \hline
+        $\top$ & unit \\
+        $\bot$ & void \\
+        $\phi_1 \wedge \phi_2$ & $\tau_1 \times \tau_2$ \\
+        $\phi_1 \supset \phi_2$ & $\tau_1 \to \tau_2$ \\
+        $\phi_1 \vee \phi_2$ & $\tau_1 + \tau_2$
+    \end{tabular}
+    \caption{Propositions as types}
+\end{table}
+
+This allows us to reason about logical propositions in terms of programming language types, and to use the tools and techniques of programming languages like \Agda to reason about logical proofs.
+
+\subsection{Simply typed functions and datatypes}
+A data declaration is used to introduce datatypes, including their name, type, and constructors along with their types. An example of this is the declaration of the boolean type:
+\begin{verbatim}
+    data Bool : Set where
+        true  : Bool
+        false : Bool
+\end{verbatim}
+This states that \texttt{Bool} is a data type with \texttt{true} and \texttt{false} as constructors. Functions over this datatype \texttt{Bool} can be defined using pattern matching, similar to Haskell. For instance we can define a function \texttt{not} for \texttt{Bool} as
+\begin{verbatim}
+    data not : Bool \to Bool
+        not true  = false
+        not false = true
+\end{verbatim}
+We start by defining the type of not as a function from \texttt{Bool} to \texttt{Bool} and then we define the function by using pattern matching on the arguments. Agda checks that the pattern covers all cases and will not accept a function with missing patterns.
+
+The natural numbers can be defined as the datatype:
+\begin{verbatim}
+    data N : Set where
+        zero : N
+        suc  : N \to N
+\end{verbatim}
+A natural number is either zero or a successor of another natural number. This is called an \textit{inductively defined type}. We can define addition on the natural numbers with a recursive function.
+\begin{verbatim}
+    data _+_ : N \to N \to N
+        zero    + m = m
+        (suc n) + m = suc (n + m)
+\end{verbatim}
+If a name contains underscores (\_) in the definition, the underscores represent where the arguments go. So in this case we get an infix operator and we write m + n instead of + m n, which would have been the case if the name was just +. We can set the precedence of an infix operator with an \texttt{infix} declaration:
+\begin{verbatim}
+    infix 25 _+_
+\end{verbatim}
+
+Datatypes can also be parameterized by other types. The type of lists with elements of an arbitrary type is defined as:
+\begin{verbatim}
+    infix 20 _::_
+    data List (A : Set) : Set where
+        []   : List A
+        _::_ : A \to List A \to List A
+\end{verbatim}
 
 
+\subsection{Dependent types}
+
+A dependent type is a type that depends on elements of another type. An example of a dependent type is a dependent function, where the result type depends on the value of the argument.  In Agda, this is denoted by (x : A) $\to$ B, representing functions that take an argument x of type A and produce a result of type B. A special case is when x itself is a type. For instance, we can define the identity function
+\begin{verbatim}
+    id : (A : Set) \to A \to A
+    id A x = x
+\end{verbatim}
+This function takes a type argument A and an element x of type A, and returns x. In \Agda it is possible to use implicit arguments. To declare an argument as implicit we use curly braces instead of parenthesis when declaring the type argument. In particular, \{A : Set\} $\to$ B means the same thing as (A : Set) $\to$ B, but we don't need to provide the type explicitly, the type checker will try to infer it for us. We can now redefine the identity function above as
+\begin{verbatim}
+    id : {A : Set} \to A \to A
+    id x = x
+\end{verbatim}
+and now we no longer need to supply the type when the function is applied.
 
 
 
@@ -64,14 +144,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Propositional calculus in Agda}
-Propositional calculus is a formal system that consists of a set of propositional constants, symbols, inference rules, and axioms. The symbols in propositional calculus represent logical connectives and parenthesis.
 
-The inference rules of propositional calculus define how these symbols can be used. These inference rules specify how to construct well-formed formulas that follow the syntax of the system.
+Propositional calculus is a formal system that consists of a set of propositional constants, symbols, inference rules, and axioms. The symbols in propositional calculus represent logical connectives and parentheses, and are used to construct well-formed formulas that follow the syntax of the system. The inference rules of propositional calculus specify how these symbols can be used to derive additional statements from the initial assumptions, which are given by the axioms of the system.
 
-The axioms of propositional calculus are the initial statements or assumptions from which we can derive additional statements using the inference rules.
-
-The semantics of propositional calculus define how the expressions in the system correspond to truth values, typically "true" or "false".
-
+The semantics of propositional calculus define how the expressions in the system correspond to truth values, typically "true" or "false". 
 
 %% Formulas %%
 
@@ -105,7 +181,7 @@ Note that we have omitted the common logical connectives $\rightarrow$ and $\lef
     The formula $\top$ should be thought of as the proposition that is always true, and the formula $\bot$ interpreted as the proposition that is always false.
 \end{definition}
 
-We can represent the concept of a well formed formula in \Agda as a \Type
+We represent the concept of a well formed formula in \Agda as a data type.
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{form}
 
@@ -122,10 +198,9 @@ We can represent the concept of a well formed formula in \Agda as a \Type
     \end{itemize}
 \end{definition}
 
-In \Agda we can define a context \Type
+In \Agda we can define a data type for context.
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{ctxt}
-
 We also need a way to determine if a given formula is in a given context. 
 \begin{definition}[Lookup]
     For all contexts $\Gamma$ and all formulas $\phi$ and $\psi$
@@ -134,8 +209,7 @@ We also need a way to determine if a given formula is in a given context.
         \item if $\phi \in \Gamma$, then $\phi \in \Gamma \cup \{\psi\}$.
     \end{itemize}
 \end{definition}
-
-We represent this as a \Type in \Agda
+We represent this as a data type in \Agda
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{lookup}
 
@@ -144,23 +218,394 @@ We represent this as a \Type in \Agda
 
 \subsection{Inference rules}
 
-\subsubsection{Conjunction}
-\subsubsection{Disjunction}
-\subsubsection{Negation}
-\subsubsection{Rules for $\top$ and $\bot$}
-\subsubsection{Axiom}
-\subsubsection{Law of excluded middle}
-\subsubsection{Structural rules}
+For the inference rules we introduce a data type for provability
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{rules}
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{vdash}
+\hspace{40mm}$\vdots$
+\vspace{2mm}\newline
+where we will define our inference rules on the form
+\begin{verbatim}
+    rulename : {... : ctxt} {... : Formula}
+            -> premise.1
+            -> premise.2
+                  :
+            -> premise.n
+            -> conclusion
+\end{verbatim}
+
+
+\subsubsection{Conjunction}
+
+We can represent the regular introduction rule
+\begin{mathpar}
+    \inferrule*[Right=\scriptsize $\wedge$-I]
+        {\Gamma \vdash \phi \\ \Gamma \vdash \psi }
+        {\Gamma \vdash \phi \wedge \psi}
+\end{mathpar}
+for conjunction in \Agda as follows:
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conji}
+The accompanying elimination rules
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\wedge$-E$_1$]
+        {\Gamma \vdash \phi \wedge \psi}
+        {\Gamma \vdash \phi}
+    \hspace{10mm}
+    \inferrule*[right=\scriptsize $\wedge$-E$_2$]
+        {\Gamma \vdash \phi \wedge \psi}
+        {\Gamma \vdash \psi}
+\end{mathpar}
+are represented as
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conje1}
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conje2}
+
+
+\subsubsection{Disjunction}
+
+The introduction rules for disjunction
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-I$_1$]
+        {\Gamma \vdash \psi}
+        {\Gamma \vdash \phi \vee \psi}
+    \hspace{10mm}
+    \inferrule*[right=\scriptsize $\vee$-I$_2$]
+        {\Gamma \vdash \phi}
+        {\Gamma \vdash \phi \vee \psi}
+\end{mathpar}
+are represented in \Agda as follows:
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disji1}
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disji2}
+The eliminination rule
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-E]
+        {\Gamma \vdash \phi \vee \psi \\ 
+         \inferrule* {[\Gamma \vdash \phi] \\\\ \vdots \\\\ \Gamma \vdash \gamma} {} \\
+         \inferrule* {[\Gamma \vdash \psi] \\\\ \vdots \\\\ \Gamma \vdash \gamma} {}}
+        {\Gamma \vdash \gamma}
+\end{mathpar}
+is represented in \Agda as
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disje}
+
+
+\subsubsection{Negation}
+
+If assuming some formula $\phi$ is provable in $\Gamma$ leads to a contradiction, it must be that $\Gamma \vdash \neg \phi$. This is due to the duality of propositional calculus. We can consider this a negation introduction
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\neg$-I]
+        {[\Gamma \vdash \varphi] \\\\ \vdots \\\\ \Gamma \vdash \bot}
+        {\Gamma \vdash \neg \varphi}
+\end{mathpar}
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\neg$-E]
+        {\Gamma \vdash \phi \\ \Gamma \vdash \neg \phi}
+        {\Gamma \vdash \bot}
+\end{mathpar}
+and implement it in \Agda.
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{neg}
+
+
+\subsubsection{$\top$ and $\bot$}
+
+The rule for introducing $\top$ is a nullary rule, meaning it has no premise. The empty set always proves $\top$,
+%\begin{mathpar}
+%    \inferrule*[right=\scriptsize $\top$ I]
+%        { }{\emptyset \vdash \top}
+%\end{mathpar}
+and we represent this rule in agda as
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{top}
+
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\bot$-E]
+        {\Gamma \vdash \bot}
+        {\Gamma \vdash \phi}
+\end{mathpar}
+We represent these rules in agda as follows:
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{bote}
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{boti}
+
+
+\subsubsection{Law of excluded middle}
+
+The law of excluded middle states that for every proposition, either this proposition is true or its negation is true. The rule
+\begin{mathpar}
+    \inferrule*[right=\scriptsize LEM]
+        { }{\Gamma \vdash \phi \vee \neg \phi}
+\end{mathpar}
+is formalized in \Agda as
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LEM}
+
+
+\subsubsection{Weakening}
+
+Weakening is a structural rule that states that we can extend the hypothesis with additional members,
+\begin{mathpar}
+    \inferrule*[right=\scriptsize weakening]
+        {\Gamma \vdash \phi}
+        {\Gamma , \psi \vdash \phi}
+\end{mathpar}
+and we can represent this in \Agda as
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{weak}
 
 
 %% Properties of propositional calc %%
 
 \subsection{Properties of a propositional calculus}
 
+We prove some properties of propositional calculus
+
+\subsubsection{Commutativity}
+First we prove commutativity for conjunction, that is, we want to show that if $\Gamma \vdash \phi \wedge \psi$ then $\Gamma \vdash \psi \wedge \phi$. We can to this by natural deduction, using the rules defined earlier
+
+% COMMUTATIVITY conjunction
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\wedge$-I]
+        {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+            {\Gamma \vdash \phi \wedge \psi}
+            {\Gamma \vdash \psi}
+            \quad
+         \inferrule*[right=\scriptsize $\wedge$-E$_1$]
+            {\Gamma \vdash \phi \wedge \psi}
+            {\Gamma \vdash \phi}}
+        {\Gamma \vdash \psi \wedge \phi}
+\end{mathpar}
+and we write the proof in \Agda as
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{comm-conj}
+
+Next we show that disjunction is commutative, first by natural deduction
+
+% COMMUTATIVITY disjunction
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-E]
+        {\Gamma \vdash \phi \vee \psi \\ 
+         \inferrule*[right=\scriptsize $\vee$-I$_1$]
+            {[\Gamma \vdash \phi]}
+            {\Gamma \vdash \psi \vee \phi} \\
+        \inferrule*[right=\scriptsize $\vee$-I$_2$]
+            {[\Gamma \vdash \psi]}
+            {\Gamma \vdash \psi \vee \phi}}
+        {\Gamma \vdash \psi \vee \phi}
+\end{mathpar}
+and then by \Agda proof.
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{comm-disj}
 
 
+\subsubsection{Associativity}
+
+% ASSOCIATIVITY conjunction
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\wedge$-I]
+        {T_{\wedge 1} \\ T_{\wedge 2}}
+        {\Gamma \vdash (\phi \wedge \psi) \wedge \gamma}
+\end{mathpar}
+$T_{\wedge 1}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\wedge$-I]
+        {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+               {\Gamma \vdash \phi \wedge (\psi \wedge \gamma)}
+                {\Gamma \vdash \psi \wedge \gamma}}
+            {\Gamma \vdash \psi} \\
+         \inferrule*[right=\scriptsize $\wedge$-E$_1$]
+            {\Gamma \vdash \phi \wedge (\psi \wedge \gamma)}
+            {\Gamma \vdash \phi}}
+        {\Gamma \vdash \phi \wedge \psi}
+\end{mathpar}
+$T_{\wedge 2}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\wedge$-E$_2$]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                {\Gamma \vdash \phi \wedge (\psi \wedge \gamma)}
+                {\Gamma \vdash \psi \wedge \gamma}}
+            {\Gamma \vdash \gamma}
+\end{mathpar}
+
+
+% ASSOCIATIVITY disjunction
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-E]
+        {\Gamma \vdash \phi \vee (\psi \vee \gamma) \\
+         T_{\vee 1} \\
+         T_{\vee 2}}
+        {\Gamma \vdash (\phi \vee \psi) \vee \gamma}
+\end{mathpar}
+$T_{\vee 1}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize$\vee$-I$_2$]
+        {\inferrule*[right=\scriptsize$\vee$-I$_2$]
+            {[\Gamma \vdash \phi]}
+            {\Gamma \vdash \phi \vee \psi}}
+        {\Gamma \vdash (\phi \vee \psi) \vee \gamma}
+\end{mathpar}
+$T_{\vee 2}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize$\vee$-E]
+        {\Gamma \vdash \psi \vee \gamma \\
+         \inferrule*[right=\scriptsize$\vee$-I$_2$]
+            {\inferrule*[right=\scriptsize$\vee$-I$_1$]
+                {[\Gamma \vdash \psi]}
+                {\Gamma \vdash \phi \vee \psi}}
+            {\Gamma \vdash (\phi \vee \psi) \vee \gamma} \\
+         \inferrule*[right=\scriptsize$\vee$-I$_1$]
+            {[\Gamma \vdash \gamma]}
+            {\Gamma \vdash (\phi \vee \psi) \vee \gamma}}
+        {\Gamma \vdash (\phi \vee \psi) \vee \gamma}
+\end{mathpar}
+
+
+
+\subsubsection{Distributivity}
+
+$\Gamma \vdash \phi \wedge (\psi \vee \gamma) \to \Gamma \vdash (\phi \wedge \psi) \vee (\phi \vee \gamma):$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-E]
+        {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+            {\Gamma \vdash \phi \wedge (\psi \vee \gamma)}
+            {\Gamma \vdash \psi \vee \gamma} \\ 
+         T_{\wedge dist1} \\ 
+         T'_{\wedge dist1}}
+        {\Gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
+\end{mathpar}
+
+$T_{\wedge dist1}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-I$_1$]
+        {\inferrule*[right=\scriptsize $\wedge$-I]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                {\Gamma \vdash \phi \wedge (\psi \vee \gamma)}
+                {\Gamma \vdash \phi} \\
+                [\Gamma \vdash \psi]}
+            {\Gamma \vdash \phi \wedge \psi}}
+        {\Gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
+\end{mathpar}
+
+$T'_{\wedge dist1}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-I$_2$]
+            {\inferrule*[right=\scriptsize $\wedge$-I]
+                {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                    {\Gamma \vdash \phi \wedge (\psi \vee \gamma)}
+                    {\Gamma \vdash \phi} \\
+                 [\Gamma \vdash \gamma]}
+                {\Gamma \vdash \phi \wedge \gamma}}
+            {\Gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
+\end{mathpar}
+
+$\Gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma) \to \Gamma \vdash \phi \wedge (\psi \vee \gamma):$
+
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\wedge$-I]
+        {T_{\wedge dist2} \\ T'_{\wedge dist2}}
+        {\Gamma \vdash \phi \wedge (\psi \vee \gamma)}
+\end{mathpar}
+
+$T_{\wedge dist2}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-E]
+        {\Gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma) \\
+         \inferrule*[right=\scriptsize $\wedge$-E$_1$]
+            {[\Gamma \vdash \phi \wedge \psi]}
+            {\Gamma \vdash \phi} \\
+         \inferrule*[right=\scriptsize $\wedge$-E$_1$]
+            {[\Gamma \vdash \phi \wedge \gamma]}
+            {\Gamma \vdash \phi}}
+        {\Gamma \vdash \phi}
+\end{mathpar}
+
+$T'_{\wedge dist2}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-E]
+        {\Gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma) \\
+         \inferrule*[right=\scriptsize $\vee$-I$_2$]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                {[\Gamma \vdash \phi \wedge \psi]}
+                {\Gamma \vdash \psi}}
+            {\Gamma \vdash \psi \vee \gamma}
+         \inferrule*[right=\scriptsize $\vee$-I$_1$]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                {[\Gamma \vdash \phi \wedge \gamma]}
+                {\Gamma \vdash \gamma}}
+            {\Gamma \vdash \psi \vee \gamma}}
+        {\Gamma \vdash \psi \vee \gamma}
+\end{mathpar}
+
+$\Gamma \vdash \phi \vee (\psi \wedge \gamma) \to \Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)$:
+
+\begin{mathpar}
+    \inferrule*[right=\scriptsize$\vee$-E]
+        {\Gamma \vdash \phi \vee (\psi \wedge \gamma) \\
+         T_{\vee dist1} \\
+         T'_{\vee dist1}}
+        {\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
+\end{mathpar}
+
+$T_{\vee dist1}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize$\wedge$-I]
+        {\inferrule*[right=\scriptsize $\vee$-I$_2$]
+            {[\Gamma \vdash \phi]}
+            {\Gamma \vdash \phi \vee \psi} \\
+         \inferrule*[right=\scriptsize $\vee$-I$_2$]
+            {[\Gamma \vdash \phi]}
+            {\Gamma \vdash (\phi \vee \gamma)}}
+        {\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
+\end{mathpar}
+
+$T'_{\vee dist1}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\wedge$-I]
+        {\inferrule*[right=\scriptsize $\vee$-I$_1$]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                {[\Gamma \vdash \psi \wedge \gamma]}
+                {\Gamma \vdash \psi}}
+            {\Gamma \vdash (\phi \vee \psi)} \\
+         \inferrule*[right=\scriptsize $\vee$-I$_1$]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                {[\Gamma \vdash \psi \wedge \gamma]}
+                {\Gamma \vdash \gamma}}
+            {\Gamma \vdash (\phi \vee \gamma)}}
+        {\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
+\end{mathpar}
+
+$\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma) \to \Gamma \vdash \phi \vee (\psi \wedge \gamma)$:
+
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-E]
+        {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+            {\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}{\Gamma \vdash \phi \vee \psi} \\
+         \inferrule*[right=\scriptsize $\vee$-I$_2$]
+            {[\Gamma \vdash \phi]}
+            {\Gamma \vdash \phi \vee (\psi \wedge \gamma)} \\
+         T_{\vee dist2}}
+        {\Gamma \vdash \phi \vee (\psi \wedge \gamma)}
+\end{mathpar}
+
+$T_{\vee dist2}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-E]
+        {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+            {\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
+            {\Gamma \vdash \phi \vee \gamma} \\
+         \inferrule*[right=\scriptsize $\vee$-I$_2$]
+            {[\Gamma \vdash \phi]}
+            {\Gamma \vdash \phi \vee (\psi \wedge \gamma)} \\
+         T_{\vee dist2}}
+        {\Gamma \vdash \phi \vee (\psi \wedge \gamma)}
+\end{mathpar}
+
+$T'_{\vee dist2}$
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\vee$-I$_1$]
+        {\inferrule*[right=\scriptsize $\wedge$-I]
+            {[\Gamma \vdash \psi] \\ [\Gamma \vdash \gamma]}
+            {\Gamma \vdash \psi \wedge \gamma}}
+        {\Gamma \vdash \phi \vee (\psi \wedge \gamma)}
+\end{mathpar}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,13 +613,13 @@ We represent this as a \Type in \Agda
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Lindenbaum-Tarski algebra}
-[What is LT?]
 
 \subsection{Representing Lindenbaum Tarski algebra in Agda}
 \subsection{Proof that the Lindenbaum Tarski algebra is Boolean}
 \subsection{Soundness}
 
-
+% References
+\newpage
 \bibliography{refs}
 
 \end{document}

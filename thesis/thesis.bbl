@@ -1,5 +1,11 @@
 \begin{thebibliography}{1}
 
+\bibitem{BoveDybjer2008}
+Ana Bove and Peter Dybjer.
+\newblock Dependent types at work, 2008.
+\newblock URL:
+  \url{https://www.cse.chalmers.se/~peterd/papers/DependentTypesAtWork.pdf}.
+
 \bibitem{vanDalen}
 Dick van Dalen.
 \newblock {\em Logic and structure}.
