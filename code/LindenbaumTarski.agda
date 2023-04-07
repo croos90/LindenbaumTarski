@@ -29,7 +29,7 @@ infix  35  _∧_
 infix  30  _∨_
 infixl 36  ¬_
 infix  20  _⊢_
-infix  25  _∶_
+infix  23  _∶_
  
 
 -- Definition: Context
@@ -46,7 +46,7 @@ data _∈_ : Formula → ctxt → Type where
 
 -- {-# NO_POSITIVITY_CHECK #-}
 
--- Definition: Inference rules
+-- Definition: Provability
 data _⊢_ : ctxt → Formula → Type where
   ∧-I : {Γ : ctxt} {ϕ ψ : Formula}
       → Γ ⊢ ϕ
@@ -163,7 +163,7 @@ module _ {Γ : ctxt} where
                  (∨-E (axiom Z)
                       (∨-I₂ (axiom Z))
                       (∨-I₁ (∨-I₂ (axiom Z))))
-                 (∨-I₁  (∨-I₁ (axiom Z)))
+                 (∨-I₁ (∨-I₁ (axiom Z)))
 --  ∨-assoc2 : ∀ {ϕ ψ γ : Formula} → Γ ⊢ (ϕ ∨ ψ) ∨ γ → Γ ⊢ ϕ ∨ (ψ ∨ γ)
 --  ∨-assoc2 x = ∨-E x (λ y → ∨-E y ∨-I₂ λ z → ∨-I₁ (∨-I₂ z)) λ y → ∨-I₁ (∨-I₁ y)
 
@@ -328,20 +328,6 @@ module _ {Γ : ctxt} where
   superweakening (Δ ∶ x) = weakening (superweakening Δ)
 
 
------------------------------------------------------------------------------------------------------------------------------
--- Inverse element (Not needed anymore since DistLattice uses identity?)
------------------------------------------------------------------------------------------------------------------------------
-  ⋀-inv : ∀ (A : LindenbaumTarski) → A ⋀ ¬/ A ≡ ⊥/
-  ⋀-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (¬-E (∧-E₁ (axiom Z)) (∧-E₂ (axiom Z)) , ⊥-E (axiom Z))
---  ⋀-inv : ∀ (A : LindenbaumTarski) → A ⋀ ¬/ A ≡ ⊥/
---  ⋀-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ((λ x → ¬-E (∧-E₁ x) (∧-E₂ x)) , λ x → ⊥-E x)
-  
-  ⋁-inv : ∀ (A : LindenbaumTarski) → A ⋁ ¬/ A ≡ ⊤/
-  ⋁-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (superweakening _ , LEM)
---  ⋁-inv : ∀ (A : LindenbaumTarski) → A ⋁ ¬/ A ≡ ⊤/
---  ⋁-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ((λ x → superweakening _) , λ x → LEM)
------------------------------------------------------------------------------------------------------------------------------
-
   -- Absorbtion law ⋁
   ⋁-abs : ∀ (A B : LindenbaumTarski) → (A ⋀ B) ⋁ B ≡ B
   ⋁-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ (∨-E (axiom Z) (∧-E₂ (axiom Z)) (axiom Z) , ∨-I₁ (axiom Z))
@@ -379,10 +365,8 @@ module _ {Γ : ctxt} where
 
   -------------------------------------------------------------
   -- By proving the Lindenbaum-Tarski algebra can be viewed as
-  -- a distributive lattice, we prove that it is also boolean
-  -- since a distributive lattice is boolean.
+  -- a distributive lattice, we prove that it is also boolean.
   -------------------------------------------------------------
-
   isSet-LT : ∀ (A B : LindenbaumTarski) → isProp(A ≡ B)
   isSet-LT A B = squash/ _ _
 
@@ -399,3 +383,15 @@ module _ {Γ : ctxt} where
   LindenbaumTarski-Boolean : (x y : fst LindenbaumTarski-DistLattice) -> x ∨l y ≡ 1l
   LindenbaumTarski-Boolean x y = {!!}
   -}
+
+
+  -- Complemented
+  ⋀-inv : ∀ (A : LindenbaumTarski) → A ⋀ ¬/ A ≡ ⊥/
+  ⋀-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (¬-E (∧-E₁ (axiom Z)) (∧-E₂ (axiom Z)) , ⊥-E (axiom Z))
+--  ⋀-inv : ∀ (A : LindenbaumTarski) → A ⋀ ¬/ A ≡ ⊥/
+--  ⋀-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ((λ x → ¬-E (∧-E₁ x) (∧-E₂ x)) , λ x → ⊥-E x)
+  
+  ⋁-inv : ∀ (A : LindenbaumTarski) → A ⋁ ¬/ A ≡ ⊤/
+  ⋁-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (superweakening _ , LEM)
+--  ⋁-inv : ∀ (A : LindenbaumTarski) → A ⋁ ¬/ A ≡ ⊤/
+--  ⋁-inv = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ ((λ x → superweakening _) , λ x → LEM)
