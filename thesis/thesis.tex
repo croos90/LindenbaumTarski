@@ -361,12 +361,14 @@ The weakening rule in \Agda:
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{weakening}
 
+The structural rule exchange lets us permute the formulas in the context. We will use a stricter version of exchange, where we can permut the two formulas at the end only. This is easier to implement and still suits our needs.
 \begin{mathpar}
     \inferrule*[right=\scriptsize exchange]
         {\Gamma , \phi , \psi \vdash \gamma}
         {\Gamma , \psi , \phi \vdash \gamma}
 \end{mathpar}
 
+The exchange rule in \Agda:
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{exchange}
 
 
@@ -433,189 +435,18 @@ and then by \Agda proof.
 
 \subsubsection{Distributivity}
 
-Denote $\Gamma' = \Gamma \cup \{\phi \wedge (\psi \vee \gamma)\}$
-\begin{mathpar}
-    \mprset{sep=0.5em}
-    \inferrule*[right=\scriptsize $\vee$-E]
-        {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-            {\Gamma' \vdash \phi \wedge (\psi \vee \gamma)}
-            {\Gamma' \vdash \psi \vee \gamma} \\ 
-         \inferrule*[]
-            {}
-            {\mathcal{D}_1 \\\\ \Gamma',\psi \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}\\ 
-            \inferrule*[]
-            {}
-            {\mathcal{D}_2 \\\\ \Gamma',\gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}}
-        {\Gamma' \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
-\end{mathpar}
-
-$\mathcal{D}_1$
-\begin{mathpar}
-    \inferrule*[right=\scriptsize $\vee$-I$_1$]
-        {\inferrule*[right=\scriptsize $\wedge$-I]
-            {\inferrule*[right=\scriptsize weakening]
-                {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
-                    {\inferrule*[right=\scriptsize axiom]
-                        {\phi \wedge (\psi \vee \gamma) \in \Gamma'}
-                        {\Gamma' \vdash \phi \wedge (\psi \vee \gamma)}}
-                    {\Gamma' \vdash \phi}}
-                {\Gamma',\psi \vdash \phi} \\
-             \inferrule*[right=\scriptsize axiom]
-                {\psi \in \Gamma' ,\psi}
-                {\Gamma',\psi \vdash \psi}}
-            {\Gamma',\psi \vdash \phi \wedge \psi}}
-        {\Gamma'\psi \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
-\end{mathpar}
-
-$\mathcal{D}_2$
-\begin{mathpar}
-    \inferrule*[right=\scriptsize $\vee$-I$_1$]
-            {\inferrule*[right=\scriptsize $\wedge$-I]
-                {\inferrule*[right=\scriptsize weakening]
-                    {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
-                        {\inferrule*[right=\scriptsize axiom]
-                            {\phi \wedge (\psi \vee \gamma)\in\Gamma'}
-                            {\Gamma' \vdash \phi \wedge (\psi \vee \gamma)}}
-                        {\Gamma' \vdash \phi}}
-                    {\Gamma',\gamma \vdash \phi} \\
-                 \inferrule*[right=\scriptsize axiom]
-                    {\gamma \in \Gamma',\gamma}
-                    {\Gamma',\gamma \vdash \gamma}}
-                {\Gamma',\gamma \vdash \phi \wedge \gamma}}
-            {\Gamma'\gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
-\end{mathpar}
-
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conj-dist1}
-
-$\Gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma) \to \Gamma \vdash \phi \wedge (\psi \vee \gamma):$
-
-Denote $\Gamma'= \Gamma \cup (\phi \wedge \psi) \vee (\phi \wedge \gamma)$
-
-\begin{mathpar}
-    \inferrule*[right=\scriptsize $\wedge$-I]
-        {\inferrule*[]{}{\mathcal{D}_1 \\\\ \Gamma' \vdash \phi} \\
-         \inferrule*[]{}{\mathcal{D}_2 \\\\ \Gamma' \vdash \psi \vee \gamma}}
-        {\Gamma' \vdash \phi \wedge (\psi \vee \gamma)}
-\end{mathpar}
-
-$\mathcal{D}_1$
-\begin{mathpar}
-    \inferrule*[right=\scriptsize $\vee$-E]
-        {\inferrule*[right=\scriptsize axiom]
-            {(\phi \wedge \psi) \vee (\phi \wedge \gamma)\in \Gamma'}
-            {\Gamma' \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)} \\
-         \inferrule*[right=\scriptsize $\wedge$-E$_1$]
-            {\inferrule*[right=\scriptsize axiom]
-                {\phi \wedge \psi \in \Gamma', \phi \wedge \psi}
-                {\Gamma', \phi \wedge \psi \vdash \phi \wedge \psi}}
-            {\Gamma',\phi \wedge \psi \vdash \phi} \\
-        \inferrule*[right=\scriptsize $\wedge$-E$_1$]
-            {\inferrule*[right=\scriptsize axiom]
-                {\phi \wedge \gamma \in \Gamma', \phi \wedge \gamma}
-                {\Gamma', \phi \wedge \gamma \vdash \phi \wedge \gamma}}
-            {\Gamma',\phi \wedge \gamma \vdash \phi}}
-        {\Gamma' \vdash \phi}
-\end{mathpar}
-
-$\mathcal{D}_2$
-\begin{mathpar}
-    \inferrule*[right=\scriptsize $\vee$-E]
-        {\inferrule*[right=\scriptsize axiom]
-            {(\phi \wedge \psi) \vee (\phi \wedge \gamma)\in \Gamma'}
-            {\Gamma' \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)} \\
-         \inferrule*[right=\scriptsize $\vee$-I$_2$]
-            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-                {\inferrule*[right=\scriptsize axiom]
-                    {\phi \wedge \psi \in \Gamma', \phi \wedge \psi}
-                    {\Gamma', \phi \wedge \psi \vdash \phi \wedge \psi}}
-                {\Gamma',\phi \wedge \psi \vdash \psi}}
-            {\Gamma',\phi \wedge \psi \vdash \psi \vee \gamma}
-         \inferrule*[right=\scriptsize $\vee$-I$_1$]
-            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-                {\inferrule*[right=\scriptsize axiom]
-                    {\phi \wedge \gamma \in \Gamma', \phi \wedge \gamma}
-                    {\Gamma', \phi \wedge \gamma \vdash \phi \wedge \gamma}}
-                {\Gamma',\phi \wedge \gamma \vdash \gamma}}
-            {\Gamma',\phi \wedge \gamma \vdash \psi \vee \gamma}}
-        {\Gamma' \vdash \psi \vee \gamma}
-\end{mathpar}
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conj-dist2}
 
 $\Gamma \vdash \phi \vee (\psi \wedge \gamma) \to \Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)$:
 
-\begin{mathpar}
-    \inferrule*[right=\scriptsize$\vee$-E]
-        {\Gamma \vdash \phi \vee (\psi \wedge \gamma) \\
-         T_{\vee dist1} \\
-         T'_{\vee dist1}}
-        {\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
-\end{mathpar}
-
-$T_{\vee dist1}$
-\begin{mathpar}
-    \inferrule*[right=\scriptsize$\wedge$-I]
-        {\inferrule*[right=\scriptsize $\vee$-I$_2$]
-            {[\Gamma \vdash \phi]}
-            {\Gamma \vdash \phi \vee \psi} \\
-         \inferrule*[right=\scriptsize $\vee$-I$_2$]
-            {[\Gamma \vdash \phi]}
-            {\Gamma \vdash (\phi \vee \gamma)}}
-        {\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
-\end{mathpar}
-
-$T'_{\vee dist1}$
-\begin{mathpar}
-    \inferrule*[right=\scriptsize $\wedge$-I]
-        {\inferrule*[right=\scriptsize $\vee$-I$_1$]
-            {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
-                {[\Gamma \vdash \psi \wedge \gamma]}
-                {\Gamma \vdash \psi}}
-            {\Gamma \vdash (\phi \vee \psi)} \\
-         \inferrule*[right=\scriptsize $\vee$-I$_1$]
-            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-                {[\Gamma \vdash \psi \wedge \gamma]}
-                {\Gamma \vdash \gamma}}
-            {\Gamma \vdash (\phi \vee \gamma)}}
-        {\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
-\end{mathpar}
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disj-dist1}
 
 $\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma) \to \Gamma \vdash \phi \vee (\psi \wedge \gamma)$:
 
-\begin{mathpar}
-    \inferrule*[right=\scriptsize $\vee$-E]
-        {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
-            {\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}{\Gamma \vdash \phi \vee \psi} \\
-         \inferrule*[right=\scriptsize $\vee$-I$_2$]
-            {[\Gamma \vdash \phi]}
-            {\Gamma \vdash \phi \vee (\psi \wedge \gamma)} \\
-         T_{\vee dist2}}
-        {\Gamma \vdash \phi \vee (\psi \wedge \gamma)}
-\end{mathpar}
 
-$T_{\vee dist2}$
-\begin{mathpar}
-    \inferrule*[right=\scriptsize $\vee$-E]
-        {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-            {\Gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
-            {\Gamma \vdash \phi \vee \gamma} \\
-         \inferrule*[right=\scriptsize $\vee$-I$_2$]
-            {[\Gamma \vdash \phi]}
-            {\Gamma \vdash \phi \vee (\psi \wedge \gamma)} \\
-         T_{\vee dist2}}
-        {\Gamma \vdash \phi \vee (\psi \wedge \gamma)}
-\end{mathpar}
-
-$T'_{\vee dist2}$
-\begin{mathpar}
-    \inferrule*[right=\scriptsize $\vee$-I$_1$]
-        {\inferrule*[right=\scriptsize $\wedge$-I]
-            {[\Gamma \vdash \psi] \\ [\Gamma \vdash \gamma]}
-            {\Gamma \vdash \psi \wedge \gamma}}
-        {\Gamma \vdash \phi \vee (\psi \wedge \gamma)}
-\end{mathpar}
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disj-dist2}
 
@@ -778,7 +609,7 @@ We use a function from the \CubicalAgda library to define the Lindenbaum-Tarski 
                 \inferrule*[]{}{\mathcal{D}' \\\\ \Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\psi \vdash (\phi \vee \psi) \vee \gamma} \\
              \inferrule*[right=\scriptsize$\vee$-I$_1$]
                 {\inferrule*[right=\scriptsize axiom]
-                    {\gamma \in \Gamma', \gamma}
+                    {\gamma \in \Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\gamma}
                     {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\gamma \vdash \gamma}}
                 {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\gamma \vdash (\phi \vee \psi) \vee \gamma}}
             {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma\vdash (\phi \vee \psi) \vee \gamma}
@@ -793,6 +624,213 @@ We use a function from the \CubicalAgda library to define the Lindenbaum-Tarski 
                     {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\psi \vdash \phi \vee \psi}}
                 {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\psi \vdash (\phi \vee \psi) \vee \gamma} 
     \end{mathpar}
+
+    \subsection{Derivation of $\Gamma,\phi \wedge (\psi \vee \gamma) \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)$}
+    \begin{mathpar}
+        \mprset{sep=1em}
+        \inferrule*[right=\scriptsize $\vee$-E]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \wedge (\psi \vee \gamma) \in \Gamma,\phi \wedge (\psi \vee \gamma)}
+                    {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \phi \wedge (\psi \vee \gamma)}}
+                {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \psi \vee \gamma} \\ 
+             \inferrule*[]
+                {}
+                {\mathcal{D}_1 \\\\ \Gamma,\phi \wedge (\psi \vee \gamma),\psi \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}\\ 
+                \inferrule*[]
+                {}
+                {\mathcal{D}_2 \\\\ \Gamma,\phi \wedge (\psi \vee \gamma),\gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}}
+            {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
+    \end{mathpar}
+    
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-I$_1$, lab=\large $\mathcal{D}_1$]
+            {\inferrule*[right=\scriptsize $\wedge$-I]
+                {\inferrule*[right=\scriptsize weakening]
+                    {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                        {\inferrule*[right=\scriptsize axiom]
+                            {\phi \wedge (\psi \vee \gamma) \in \Gamma,\phi \wedge (\psi \vee \gamma)}
+                            {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \phi \wedge (\psi \vee \gamma)}}
+                        {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \phi}}
+                    {\Gamma,\phi \wedge (\psi \vee \gamma),\psi \vdash \phi} \\
+                 \inferrule*[right=\scriptsize axiom]
+                    {\psi \in \Gamma,\phi \wedge (\psi \vee \gamma),\psi}
+                    {\Gamma,\phi \wedge (\psi \vee \gamma),\psi \vdash \psi}}
+                {\Gamma,\phi \wedge (\psi \vee \gamma),\psi \vdash \phi \wedge \psi}}
+            {\Gamma,\phi \wedge (\psi \vee \gamma),\psi \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
+    \end{mathpar}
+    
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-I$_1$, lab=\large $\mathcal{D}_2$]
+                {\inferrule*[right=\scriptsize $\wedge$-I]
+                    {\inferrule*[right=\scriptsize weakening]
+                        {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                            {\inferrule*[right=\scriptsize axiom]
+                                {\phi \wedge (\psi \vee \gamma)\in\Gamma'}
+                                {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \phi \wedge (\psi \vee \gamma)}}
+                            {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \phi}}
+                        {\Gamma,\phi \wedge (\psi \vee \gamma),\gamma \vdash \phi} \\
+                     \inferrule*[right=\scriptsize axiom]
+                        {\gamma \in \Gamma,\phi \wedge (\psi \vee \gamma),\gamma}
+                        {\Gamma,\phi \wedge (\psi \vee \gamma),\gamma \vdash \gamma}}
+                    {\Gamma,\phi \wedge (\psi \vee \gamma),\gamma \vdash \phi \wedge \gamma}}
+                {\Gamma,\phi \wedge (\psi \vee \gamma),\gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
+    \end{mathpar}
+
+
+    \subsection{Derivation of $\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma) \vdash \phi \wedge (\psi \vee \gamma)$}
+
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\wedge$-I]
+            {\inferrule*[]{}{\mathcal{D}_1 \\\\ \Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma) \vdash \phi} \\
+             \inferrule*[]{}{\mathcal{D}_2 \\\\ \Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma) \vdash \psi \vee \gamma}}
+            {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma) \vdash \phi \wedge (\psi \vee \gamma)}
+    \end{mathpar}
+    
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-E,lab=\large $\mathcal{D}_1$]
+            {\inferrule*[right=\scriptsize axiom]
+                {(\phi \wedge \psi) \vee (\phi \wedge \gamma)\in \Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma)}
+                {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma) \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)} \\
+             \inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \wedge \psi \in \Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma), \phi \wedge \psi}
+                    {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma), \phi \wedge \psi \vdash \phi \wedge \psi}}
+                {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma),\phi \wedge \psi \vdash \phi} \\
+            \inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \wedge \gamma \in \Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma), \phi \wedge \gamma}
+                    {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma), \phi \wedge \gamma \vdash \phi \wedge \gamma}}
+                {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma),\phi \wedge \gamma \vdash \phi}}
+            {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma) \vdash \phi}
+    \end{mathpar}
+    
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-E, lab=\large $\mathcal{D}_2$]
+            {\inferrule*[right=\scriptsize axiom]
+                {(\phi \wedge \psi) \vee (\phi \wedge \gamma)\in \Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma)}
+                {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma) \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)} \\
+             \inferrule*[right=\scriptsize $\vee$-I$_2$]
+                {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {\phi \wedge \psi \in \Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma), \phi \wedge \psi}
+                        {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma), \phi \wedge \psi \vdash \phi \wedge \psi}}
+                    {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma),\phi \wedge \psi \vdash \psi}}
+                {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma),\phi \wedge \psi \vdash \psi \vee \gamma}
+             \inferrule*[right=\scriptsize $\vee$-I$_1$]
+                {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {\phi \wedge \gamma \in \Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma), \phi \wedge \gamma}
+                        {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma), \phi \wedge \gamma \vdash \phi \wedge \gamma}}
+                    {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma),\phi \wedge \gamma \vdash \gamma}}
+                {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma),\phi \wedge \gamma \vdash \psi \vee \gamma}}
+            {\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma) \vdash \psi \vee \gamma}
+    \end{mathpar}
+
+
+    \subsection{Derivation of $\Gamma,\phi \vee (\psi \wedge \gamma) \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)$}
+
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize$\vee$-E]
+            {\inferrule*[right=\scriptsize axiom]
+                {\phi \vee (\psi \wedge \gamma) \in \Gamma,\phi \vee (\psi \wedge \gamma)}
+                {\Gamma,\phi \vee (\psi \wedge \gamma) \vdash \phi \vee (\psi \wedge \gamma)} \\
+             \inferrule*[] {} {\mathcal{D}_1 \\\\ \Gamma,\phi \vee (\psi \wedge \gamma) \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma) }\\
+             \inferrule*[]{}{\mathcal{D}_2 \\\\ \Gamma,\phi \vee (\psi \wedge \gamma) \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
+            {\Gamma,\phi \vee (\psi \wedge \gamma) \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
+    \end{mathpar}
+    
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize$\wedge$-I, lab=\large $\mathcal{D}_1$]
+            {\inferrule*[right=\scriptsize $\vee$-I$_2$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \in \Gamma,\phi \vee (\psi \wedge \gamma),\phi}
+                    {\Gamma,\phi \vee (\psi \wedge \gamma),\phi \vdash \phi}}
+                {\Gamma,\phi \vee (\psi \wedge \gamma),\phi \vdash \phi \vee \psi} \\
+             \inferrule*[right=\scriptsize $\vee$-I$_2$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \in \Gamma,\phi \vee (\psi \wedge \gamma),\phi}
+                    {\Gamma,\phi \vee (\psi \wedge \gamma), \phi \vdash \phi}}
+                {\Gamma,\phi \vee (\psi \wedge \gamma),\phi \vdash (\phi \vee \gamma)}}
+            {\Gamma,\phi \vee (\psi \wedge \gamma),\phi \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
+    \end{mathpar}
+    
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\wedge$-I, lab=\large $\mathcal{D}_2$]
+            {\inferrule*[right=\scriptsize $\vee$-I$_1$]
+                {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {\psi \wedge \gamma \in \Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma}
+                        {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash \psi \wedge \gamma}}
+                    {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash \psi}}
+                {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash (\phi \vee \psi)} \\
+             \inferrule*[right=\scriptsize $\vee$-I$_1$]
+                {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {\psi \wedge \gamma \in \Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma}
+                        {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash \psi \wedge \gamma}}
+                    {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash \gamma}}
+                {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash (\phi \vee \gamma)}}
+            {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
+    \end{mathpar}
+    
+    \newpage
+    \subsection{Derivation of $\Gamma,(\phi \vee \psi) \wedge (\phi \vee \gamma),\phi \vdash \phi \vee (\psi \wedge \gamma)$}
+    Denote $\Gamma' = \Gamma \cup \{(\phi \vee \psi) \wedge (\phi \vee \gamma)\}$
+
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-E]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {(\phi \vee \psi) \wedge (\phi \vee \gamma) \in \Gamma' }
+                    {\Gamma' \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
+                {\Gamma' \vdash \phi \vee \psi} \\
+             \inferrule*[right=\scriptsize $\vee$-I$_2$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \in \Gamma',\phi}
+                    {\Gamma',\phi \vdash \phi}}
+                {\Gamma',\phi \vdash \phi \vee (\psi \wedge \gamma)} \\
+             \inferrule*[]{}{\mathcal{D} \\\\ \Gamma',\psi \vdash \phi \vee (\psi \wedge \gamma)}}
+            {\Gamma',\phi \vdash \phi \vee (\psi \wedge \gamma)}
+    \end{mathpar}
+    
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-E, lab=\large $\mathcal{D}$]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                {\inferrule*[right=\scriptsize weakening]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {(\phi \vee \psi) \wedge (\phi \vee \gamma)\in \Gamma'}
+                        {\Gamma' \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
+                    {\Gamma',\psi \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
+                {\Gamma',\psi \vdash \phi \vee \gamma} \\
+             \inferrule*[right=\scriptsize $\vee$-I$_2$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \in \Gamma',\psi,\phi}    
+                    {\Gamma',\psi,\phi \vdash \phi}}
+                {\Gamma',\psi,\phi\vdash \phi \vee (\psi \wedge \gamma)} \\
+             \inferrule*[]{}{\mathcal{D}'}}
+            {\Gamma',\psi,\phi \vdash \phi \vee (\psi \wedge \gamma)}
+    \end{mathpar}
+    
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-I$_1$, lab=\large $\mathcal{D}'$]
+            {\inferrule*[right=\scriptsize $\wedge$-I]
+                {\inferrule*[right=\scriptsize weakening]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {\psi \in \Gamma',\psi}
+                        {\Gamma',\psi \vdash \psi}}
+                    {\Gamma',\psi,\gamma \vdash \psi}
+                     \\
+                \inferrule*[right=\scriptsize axiom]
+                    {\gamma \in \Gamma',\psi,\gamma}
+                    {\Gamma',\psi,\gamma \vdash \gamma}}
+                {\Gamma',\psi,\gamma \vdash \psi \wedge \gamma}}
+            {\Gamma',\psi,\gamma \vdash \phi \vee (\psi \wedge \gamma)}
+    \end{mathpar}
+
+
+
+
     \end{landscape}
 
     \section{LindenbaumTarski.agda}
