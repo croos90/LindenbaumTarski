@@ -110,7 +110,7 @@ If a name contains underscores (\_) in the definition, the underscores represent
 
 \ExecuteMetaData[agda/latex/examples.tex]{infix}
 
-Datatypes can also be parameterized by other types. The type of lists with elements of an arbitrary type is defined as:
+Datatypes can also be parameterized by other types. For instance, the type of lists with elements of an arbitrary type is defined as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{list}
 
@@ -129,7 +129,7 @@ Note that we no longer need to supply the type when the function is applied.
 
 
 \subsection{Cubical Agda}
-In this project we will be dealing with quotients, and for that we need to use \CubicalAgda. This extends \Agda with features from Cubical Type Theory, which is needed when we deal with quotients.\cite{AgdaDoc} We use only a small part of the \agdaCubical library, and any cubical theory is beyond this thesis.
+In this project we will be dealing with quotient types, and for that we need to use \CubicalAgda. This extends \Agda with features from Cubical Type Theory, which is needed when we deal with quotients.\cite{AgdaDoc} We use only a small part of the \agdaCubical library, and any cubical theory is beyond this thesis.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -162,8 +162,8 @@ Note that we have omitted the common logical connectives $\rightarrow$ and $\lef
     \phi \leftrightarrow \psi &\myeq (\neg \phi \vee \psi) \wedge (\neg \psi \vee \phi),
 \end{align*}making them reduntant. It is possible to choose an even smaller set of connectives \cite{vanDalen}, but we choose this as it is convenient.
 
-\begin{definition}[Well formed formula]
-    The set of well formed formulas is inductively defined as
+\begin{definition}[Well formed formula]\label{wellformed}
+    The set of well formed formulas is inductively defined as follows:
     \begin{itemize}
         \item any propositional constant $p_0,p_1,\hdots,p_n$ is a well formed formula,
         \item $\top$ and $\bot$ are well formed formulas,
@@ -175,7 +175,7 @@ Note that we have omitted the common logical connectives $\rightarrow$ and $\lef
     The formula $\top$ should be thought of as the proposition that is always true, and the formula $\bot$ interpreted as the proposition that is always false.
 \end{definition}
 
-We represent the concept of a well formed formula in \Agda as a data type.
+We define well formed formulas in \Agda as a data type:
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{form}
 
@@ -185,14 +185,14 @@ We represent the concept of a well formed formula in \Agda as a data type.
 \subsection{Context}
 
 \begin{definition}[Context]
-    A set of sentences in the language $\mathcal{L}$. The set is defined inductively as
+    A context is a set of sentences in the language $\mathcal{L}$. The set is defined inductively as follows:
     \begin{itemize}
         \item the empty set is a context
         \item if $\Gamma$ is a context, then $\Gamma \cup \{\phi\}$ is also a context, where $\phi$ a formula.
     \end{itemize}
 \end{definition}
 
-In \Agda we can define a data type for context.
+In \Agda we will interpret $\Gamma \cup \{\phi\}$ as $\Gamma : \phi$. Lets define the data type for context in \Agda:
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{ctxt}
 We also need a way to determine if a given formula is in a given context. 
@@ -203,7 +203,7 @@ We also need a way to determine if a given formula is in a given context.
         \item if $\phi \in \Gamma$, then $\phi \in \Gamma \cup \{\psi\}$.
     \end{itemize}
 \end{definition}
-We represent this as a data type in \Agda
+We represent this as a data type in \Agda as follows:
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{lookup}
 
@@ -212,12 +212,13 @@ We represent this as a data type in \Agda
 
 \subsection{Inference rules}
 
-For the inference rules we introduce a data type for provability
+For the inference rules we introduce a data type for provability:
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{provability}
 \hspace{40mm}$\vdots$
-\vspace{4mm}\newline
-where we will define our inference rules on the following form:
+\vspace{4mm}
+
+We will define the inference rules as inhabitants of this type. They will be on the form:
 \begin{verbatim}
     rulename : { ... : ctxt} { ... : Formula}
             -> premise.1
@@ -238,26 +239,25 @@ where we will define our inference rules on the following form:
     \inferrule*[right=\scriptsize LEM]
         { }{\Gamma \vdash \phi \vee \neg \phi}
 \end{mathpar}
-
-The law of excluded middle in \Agda:
+In \Agda, we define this as follows:
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LEM}
 
 
 \subsubsection{Logical connectives}
 
-Rules for the logical connectives come in pairs of introduction and elimination rules, a part from $\top$, which has only an introduction rule, and $\bot$, which has only an elimination rule. These rules are based on \cite{vanDalen}.
+Rules for the logical connectives come in pairs of introduction and elimination rules, apart from $\top$, which has only an introduction rule, and $\bot$, which has only an elimination rule. These rules are based on \cite{vanDalen}.
 
-The introductory rule for conjunction states that if there is a derivation of $\phi$ in the context $\Gamma$, and a derivation of $\psi$ in the context $\Gamma$, then we can conclude that there is a derivation of $\phi \wedge \psi$ in $\Gamma$.
+The introduction rule for conjunction states that if there is a derivation of $\phi$ from $\Gamma$, and a derivation of $\psi$ from $\Gamma$, then we can conclude that there is a derivation of $\phi \wedge \psi$ from $\Gamma$.
 \begin{mathpar}
     \inferrule*[Right=\scriptsize $\wedge$-I]
         {\Gamma \vdash \phi \\ \Gamma \vdash \psi }
         {\Gamma \vdash \phi \wedge \psi}
 \end{mathpar}
 
-The conjunction introduction rule in \Agda:
+The conjunction introduction rule is formalised in \Agda as follows:
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conjI}
 
-The accompanying elimination rules says that if there is some derivation concluding in $\phi \wedge \psi$ in $\Gamma$, then we can conclude that there is a derivation of $\phi$ and a derivation of $\psi$ in $\Gamma$.
+The accompanying elimination rules says that if there is some derivation concluding in $\phi \wedge \psi$ from $\Gamma$, then we can conclude that there is a derivation of $\phi$, and a derivation of $\psi$, from $\Gamma$.
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\wedge$-E$_1$]
         {\Gamma \vdash \phi \wedge \psi}
@@ -268,12 +268,12 @@ The accompanying elimination rules says that if there is some derivation conclud
         {\Gamma \vdash \psi}
 \end{mathpar}
 
-The conjunction elimination rules in \Agda:
+In \Agda, the conjunction eliminations rules are defined as follows:
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conjE1}
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conjE2}
 
-For disjunction we have two introductory rules. If $\Gamma$ proves some formula $\psi$, then $\Gamma$ proves $\phi \vee \psi$. In the same way $\Gamma$ proves $\phi \vee \psi$ if $\Gamma$ proves $\phi$.
+For disjunction we have two introductory rules. If we can deduce som fomula $\psi$ from $\Gamma$, then we can also deduce $\phi \vee \psi$ from $\Gamma$. In the same way, if we can deduce $\psi$ from $\Gamma$, then we can decuce $\phi \vee \psi$ from $\Gamma$ as well.
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\vee$-I$_1$]
         {\Gamma \vdash \psi}
@@ -284,12 +284,12 @@ For disjunction we have two introductory rules. If $\Gamma$ proves some formula 
         {\Gamma \vdash \phi \vee \psi}
 \end{mathpar}
 
-The disjunction introduction rules in \Agda:
+We formalise the two disjunction introduction rules in \Agda as follows:
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disjI1}
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disjI2}
 
-The eliminination rule for disjunction is a bit more complicated. If $\Gamma$ proves $\phi \vee \psi$, then we can conclude $\Gamma$ proves $\gamma$ if the extended contexts $\Gamma, \phi$ and $\Gamma, \psi$ both prove $\gamma$.
+The eliminination rule for disjunction is a bit more involved. If $\phi \vee \psi$ can be deduced from $\Gamma$, then we can conclude $\Gamma \vdash \gamma$ if the extended contexts $\Gamma, \phi$ and $\Gamma, \psi$ both conclude in $\gamma$.
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\vee$-E]
         {\Gamma \vdash \phi \vee \psi \\ 
@@ -301,10 +301,11 @@ The eliminination rule for disjunction is a bit more complicated. If $\Gamma$ pr
 The disjunction elimination rule in \Agda:
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disjE}
+
 \begin{definition}
-    A context $\Gamma$ is inconsistent if $\Gamma \vdash \bot$. A context that is not inconsistent, i.e. $\Gamma \not\vdash \bot$, is called consistent.
+    A context $\Gamma$ is inconsistent if $\Gamma \vdash \phi$ and $\Gamma \vdash \neg \phi$, or equivalently $\Gamma \vdash \bot$. A context that is not inconsistent, is called consistent.
 \end{definition}
-This definition and the law of excluded middle together motivates the introduction and elimination rules for negation.
+The definition of inconsistency and the law of excluded middle together motivates the introduction and elimination rules for negation.
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\neg$-I]
         {\Gamma, \phi \vdash \bot}
@@ -314,12 +315,15 @@ This definition and the law of excluded middle together motivates the introducti
         {\Gamma \vdash \phi \\ \Gamma \vdash \neg \phi}
         {\Gamma \vdash \bot}
 \end{mathpar}
-The negation rules in \Agda:
+
+In \Agda, we define the negation introduction rule as follows:
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{negI}
+
+The negation elimination rule is defined in \Agda as follows:
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{negE}
 
-Since $\top$ is always trivially true it can be introduced with no premise.
+In Definition \ref{wellformed} we mentioned that $\top$ should be thought of as the proposition that is always true. In particular, it is trivially true in all contexts, and should be introduced with no premise.
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\top$ I]
         { }{\Gamma \vdash \top}
@@ -335,7 +339,7 @@ If a context is inconsistent one can derive anything from it, which leads to the
         {\Gamma \vdash \phi}
 \end{mathpar}
 
-The $\bot$ elimination rule in \Agda:
+The $\bot$ elimination rule is formalised in \Agda as follows:
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{botE}
 
 
@@ -348,18 +352,18 @@ Weakening is a structural rule that states that we can extend the hypothesis wit
         {\Gamma , \psi \vdash \phi}
 \end{mathpar}
 
-The weakening rule in \Agda:
+In \Agda, we define the rule of weakening as follows:
 
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{weakening}
 
-The structural rule exchange lets us permute the formulas in the context. We will use a stricter version of exchange, where we can permute the two formulas at the end only. This is easier to implement and still suits our needs.
+The structural rule of exchange allows us to permute the formulas in the context. However, we will be using a stricter version of exchange, where we can only permute the two formulas at the end of the context. This version is easier to implement and still satisfies our needs.
 \begin{mathpar}
     \inferrule*[right=\scriptsize exchange]
         {\Gamma , \phi , \psi \vdash \gamma}
         {\Gamma , \psi , \phi \vdash \gamma}
 \end{mathpar}
 
-The exchange rule in \Agda:
+We define this exchange rule in \Agda as follows:
 \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{exchange}
 
 
@@ -409,24 +413,24 @@ And the corresponding \Agda proof of the lemma:
 \end{theorem}
 
 \begin{proof}
-    Reflexivity follows from the axiom rule and definition \ref{lookup}.
+    Reflexivity follows from immediately from the axiom rule:
     \begin{mathpar}
         \inferrule*[right=\scriptsize axiom]
             {\phi \in \Gamma, \phi}
             {\Gamma ,\phi \vdash \phi}
     \end{mathpar}
-    This gives the \Agda proof:
+    The corresponding \Agda proof for reflexivity:
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{refl}
-    It should be clear that $\Gamma, \phi \vdash \psi \text{ and } \Gamma , \psi \vdash \phi$ is just a pair of proofs, hence it does not matter in which order we give them. This means that the relation is also symmetric.
+    It should be clear that $\Gamma, \phi \vdash \psi \text{ and } \Gamma , \psi \vdash \phi$ is just a pair of proofs, hence it does not matter in which order we give them. This means that the relation is also symmetric. We formalise this in \Agda as follows:
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{sym}
-    For transitivity we need to prove that, given $\phi \sim \gamma$ and $\gamma \sim \psi$, it holds that $\phi \sim \psi$. By definition \ref{eq-def} we have proof of
+    For transitivity we need to prove that, given $\phi \sim \gamma$ and $\gamma \sim \psi$, it holds that $\phi \sim \psi$. By definition \ref{eq-def} we have the following:
     \begin{enumerate}[label=(\roman*)]
         \item $\Gamma, \phi \vdash \gamma$,
         \item $\Gamma, \gamma \vdash \phi$,
         \item $\Gamma, \gamma \vdash \psi$, and
         \item $\Gamma, \psi \vdash \gamma$.
     \end{enumerate}
-    Now we can apply Lemma \ref{trans-lemma} on (i) and (iii) to get $\Gamma, \phi \vdash \psi$, and again to (iv) and (ii) to get $\Gamma, \psi \vdash \phi$. The proof in \Agda is straight forward.
+    Now we can apply Lemma \ref{trans-lemma} on (i) and (iii) to conclude $\Gamma, \phi \vdash \psi$, and again to (iv) and (ii) to conclude $\Gamma, \psi \vdash \phi$. The proof in \Agda:
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{trans}
 \end{proof}
 
