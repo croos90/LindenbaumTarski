@@ -1,0 +1,19 @@
+module examples where
+
+  data Bool : Type where
+    true  : Bool
+    false : Bool
+
+  not : Bool → Bool
+  not true  = false
+  not false = true
+
+  data Nat : Type where
+    zero : Nat
+    suc  : Nat → Nat
+
+  _+_ : Nat → Nat → Nat
+  zero + m = m
+  suc n + m = suc (n + m)
+
+  infix 25 _+_
