@@ -3,7 +3,7 @@
 # .tex files generated from .lagda files
 generated = \
   agda/latex/LindenbaumTarski.tex \
-  # agda/latex/Benchmarks.tex \
+  agda/latex/examples.tex \
 
 
 all: thesis.tex $(generated) refs.bib

@@ -454,6 +454,48 @@ module _ {Γ : ctxt} where
 \end{code}
 %</trans>
 
+%<*comm-eq-conj>
+\begin{code}
+  comm-eq-∧ : ∀ {ϕ ψ : Formula} → ϕ ∧ ψ ∼ ψ ∧ ϕ
+  comm-eq-∧ = ∧-comm , ∧-comm
+\end{code}
+%</comm-eq-conj>
+
+%<*comm-eq-disj>
+\begin{code}
+  comm-eq-∨ : ∀ {ϕ ψ : Formula} → ϕ ∨ ψ ∼ ψ ∨ ϕ
+  comm-eq-∨ = ∨-comm , ∨-comm
+\end{code}
+%</comm-eq-disj>
+
+%<*ass-eq-conj>
+\begin{code}
+  ass-eq-∧ : ∀ {ϕ ψ γ : Formula} → ϕ ∧ (ψ ∧ γ) ∼ (ϕ ∧ ψ) ∧ γ
+  ass-eq-∧ = ∧-assoc1 , ∧-assoc2
+\end{code}
+%</ass-eq-conj>
+
+%<*ass-eq-disj>
+\begin{code}
+  ass-eq-∨ : ∀ {ϕ ψ γ : Formula} → ϕ ∨ (ψ ∨ γ) ∼ (ϕ ∨ ψ) ∨ γ
+  ass-eq-∨ = ∨-assoc1 , ∨-assoc2
+\end{code}
+%</ass-eq-disj>
+
+%<*dist-eq-conj>
+\begin{code}
+  dist-eq-∧ : ∀ {ϕ ψ γ : Formula} → ϕ ∧ (ψ ∨ γ) ∼ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)
+  dist-eq-∧ = ∧-dist1 , ∧-dist2
+\end{code}
+%</dist-eq-conj>
+
+%<*dist-eq-disj>
+\begin{code}
+  dist-eq-∨ : ∀ {ϕ ψ γ : Formula} → ϕ ∨ (ψ ∧ γ) ∼ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)
+  dist-eq-∨ = ∨-dist1 , ∨-dist2
+\end{code}
+%</dist-eq-disj>
+
 \begin{code}
   ---------------------------------------------------------
   -- Lindenbaum-Tarski algebra is defined as the quotioent
