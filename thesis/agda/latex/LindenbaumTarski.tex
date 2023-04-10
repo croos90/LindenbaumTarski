@@ -1996,7 +1996,7 @@
 \AgdaSymbol{(}\AgdaInductiveConstructor{axiom}\AgdaSpace{}%
 \AgdaInductiveConstructor{Z}\AgdaSymbol{)))}\<%
 \end{code}
-%<eq-respects-neg>
+%</eq-respects-neg>
 
 \begin{code}%
 \>[0]\AgdaComment{--\ \ ∼-respects-¬\ :\ ∀\ (a\ a'\ :\ Formula)\ →\ a\ ∼\ a'\ →\ (¬\ a)\ ∼\ (¬\ a')}\<%
@@ -2119,10 +2119,10 @@
 \end{code}
 %</LT-bot>
  
-\begin{code}%
-%
-\>[2]\AgdaComment{--\ Commutativity\ on\ ⋀\ \ }\<%
-\\
+
+  -- Commutativity on LT 
+  %<*LT-comm>
+  \begin{code}%
 %
 \>[2]\AgdaFunction{⋀-comm}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -2166,9 +2166,6 @@
 %
 \\[\AgdaEmptyExtraSkip]%
 %
-\>[2]\AgdaComment{--\ Commutativity\ on\ ⋁}\<%
-\\
-%
 \>[2]\AgdaFunction{⋁-comm}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaSymbol{∀}\AgdaSpace{}%
@@ -2207,12 +2204,12 @@
 \AgdaSymbol{(}\AgdaFunction{∨-comm}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaFunction{∨-comm}\AgdaSymbol{))}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
-%
-\>[2]\AgdaComment{--\ Associativity\ on\ ⋀}\<%
-\\
+\end{code}
+  %</LT-comm>
+
+  -- Associativity on LT
+  %<*LT-ass>
+  \begin{code}%
 %
 \>[2]\AgdaFunction{⋀-assoc}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -2262,9 +2259,6 @@
 %
 \\[\AgdaEmptyExtraSkip]%
 %
-\>[2]\AgdaComment{--Associativity\ on\ ⋁}\<%
-\\
-%
 \>[2]\AgdaFunction{⋁-assoc}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaSymbol{∀}\AgdaSpace{}%
@@ -2309,12 +2303,12 @@
 \AgdaSymbol{(}\AgdaFunction{∨-assoc1}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaFunction{∨-assoc2}\AgdaSymbol{)}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
-%
-\>[2]\AgdaComment{--\ Distributivity\ over\ ⋀}\<%
-\\
+\end{code}
+%</LT-ass>
+
+  -- Distributivity over LT
+  %<*LT-dist>
+  \begin{code}%
 %
 \>[2]\AgdaFunction{⋀-dist}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -2366,9 +2360,6 @@
 %
 \\[\AgdaEmptyExtraSkip]%
 %
-\>[2]\AgdaComment{--Distributivity\ over\ ⋁}\<%
-\\
-%
 \>[2]\AgdaFunction{⋁-dist}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaSymbol{∀}\AgdaSpace{}%
@@ -2415,11 +2406,10 @@
 \AgdaSymbol{(}\AgdaFunction{∨-dist1}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaFunction{∨-dist2}\AgdaSymbol{)}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
-%
-\\[\AgdaEmptyExtraSkip]%
+\end{code}
+  %</LT-dist>
+
+\begin{code}%
 %
 \>[2]\AgdaComment{--\ Definition:\ Superweakening}\<%
 \\
@@ -2450,11 +2440,9 @@
 \AgdaInductiveConstructor{weakening}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{superweakening}\AgdaSpace{}%
 \AgdaBound{Δ}\AgdaSymbol{)}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
-%
-\\[\AgdaEmptyExtraSkip]%
+\end{code}
+
+\begin{code}%
 %
 \>[2]\AgdaComment{--\ Absorbtion\ law\ ⋁}\<%
 \\

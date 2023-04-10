@@ -556,7 +556,7 @@ module _ {Γ : ctxt} where
   ∼-respects-¬ a a' x = ¬-I (¬-E (exchange (weakening (proj₂ x))) (weakening (axiom Z))) ,
                         ¬-I (¬-E (exchange (weakening (proj₁ x))) (weakening (axiom Z)))
 \end{code}
-%<eq-respects-neg>
+%</eq-respects-neg>
 
 \begin{code}
 --  ∼-respects-¬ : ∀ (a a' : Formula) → a ∼ a' → (¬ a) ∼ (¬ a')
@@ -604,38 +604,48 @@ module _ {Γ : ctxt} where
 \end{code}
 %</LT-bot>
  
-\begin{code}
-  -- Commutativity on ⋀  
+
+  -- Commutativity on LT 
+  %<*LT-comm>
+  \begin{code}
   ⋀-comm : ∀ (A B : LindenbaumTarski) → A ⋀ B ≡ B ⋀ A
   ⋀-comm = elimProp2 (λ _ _ → squash/ _ _) λ ϕ ψ → eq/ _ _ (∼-sym (∧-comm , ∧-comm))
 
-  -- Commutativity on ⋁
   ⋁-comm : ∀ (A B : LindenbaumTarski) → A ⋁ B ≡ B ⋁ A
   ⋁-comm = elimProp2 (λ _ _ → squash/ _ _) λ ϕ ψ → eq/ _ _ (∼-sym (∨-comm , ∨-comm))
+  \end{code}
+  %</LT-comm>
 
-  -- Associativity on ⋀
+  -- Associativity on LT
+  %<*LT-ass>
+  \begin{code}
   ⋀-assoc : ∀ (A B C : LindenbaumTarski) → A ⋀ (B ⋀ C) ≡ (A ⋀ B) ⋀ C
   ⋀-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∧-assoc1 , ∧-assoc2)
 
-  --Associativity on ⋁
   ⋁-assoc : ∀ (A B C : LindenbaumTarski) → A ⋁ (B ⋁ C) ≡ (A ⋁ B) ⋁ C
   ⋁-assoc = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∨-assoc1 , ∨-assoc2)
+\end{code}
+%</LT-ass>
 
-  -- Distributivity over ⋀
+  -- Distributivity over LT
+  %<*LT-dist>
+  \begin{code}
   ⋀-dist : ∀ (A B C : LindenbaumTarski) → A ⋀ (B ⋁ C) ≡ (A ⋀ B) ⋁ (A ⋀ C)
   ⋀-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∧-dist1 , ∧-dist2)
 
-  --Distributivity over ⋁
   ⋁-dist : ∀ (A B C : LindenbaumTarski) → A ⋁ (B ⋀ C) ≡ (A ⋁ B) ⋀ (A ⋁ C)
   ⋁-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ (∨-dist1 , ∨-dist2)
+  \end{code}
+  %</LT-dist>
 
-
+\begin{code}
   -- Definition: Superweakening
   superweakening : ∀ (Γ : ctxt) → Γ ⊢ ⊤
   superweakening ∅ = ⊤-I
   superweakening (Δ ∶ x) = weakening (superweakening Δ)
+\end{code}
 
-
+\begin{code}
   -- Absorbtion law ⋁
   ⋁-abs : ∀ (A B : LindenbaumTarski) → (A ⋀ B) ⋁ B ≡ B
   ⋁-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ (∨-E (axiom Z) (∧-E₂ (axiom Z)) (axiom Z) , ∨-I₁ (axiom Z))
