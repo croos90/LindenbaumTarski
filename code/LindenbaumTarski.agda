@@ -50,9 +50,11 @@ data _⊢_ : ctxt → Formula → Type where
       → Γ ⊢ ϕ
       → Γ ⊢ ψ
       → Γ ⊢ ϕ ∧ ψ
+      
   ∧-E₁ : {Γ : ctxt} {ϕ ψ : Formula}
        → Γ ⊢ ϕ ∧ ψ
        → Γ ⊢ ϕ
+       
   ∧-E₂ : {Γ : ctxt} {ϕ ψ : Formula}
        → Γ ⊢ ϕ ∧ ψ
        → Γ ⊢ ψ
@@ -60,9 +62,11 @@ data _⊢_ : ctxt → Formula → Type where
   ∨-I₁ : {Γ : ctxt} {ϕ ψ : Formula}
        → Γ ⊢ ψ
        → Γ ⊢ ϕ ∨ ψ
+       
   ∨-I₂ : {Γ : ctxt} {ϕ ψ : Formula}
        → Γ ⊢ ϕ
        → Γ ⊢ ϕ ∨ ψ
+       
   ∨-E : {Γ : ctxt} {ϕ ψ γ : Formula}
       → Γ ⊢ ϕ ∨ ψ
       → Γ ∶ ϕ ⊢ γ
@@ -72,6 +76,7 @@ data _⊢_ : ctxt → Formula → Type where
   ¬-I : {Γ : ctxt} {ϕ : Formula}
       → Γ ∶ ϕ ⊢ ⊥
       → Γ ⊢ ¬ ϕ
+      
   ¬-E : {Γ : ctxt} {ϕ : Formula}
       → Γ ⊢ ϕ
       → Γ ⊢ ¬ ϕ
@@ -93,9 +98,11 @@ data _⊢_ : ctxt → Formula → Type where
   weakening : {Γ : ctxt} {ϕ ψ : Formula}
             → Γ ⊢ ψ
             → Γ ∶ ϕ ⊢ ψ
+            
   exchange : {Γ : ctxt} {ϕ ψ γ : Formula}
            → (Γ ∶ ϕ) ∶ ψ ⊢ γ
            → (Γ ∶ ψ) ∶ ϕ ⊢ γ
+           
 --  contraction : {Γ : ctxt} {ϕ ψ : Formula}
 --              → ((Γ ∶ ϕ) ∶ ϕ) ⊢ ψ
 --              → (Γ ∶ ϕ) ⊢ ψ
@@ -156,8 +163,8 @@ module _ {Γ : ctxt} where
                        
   ∧-ass2 : ∀ {ϕ ψ γ : Formula} → Γ ∶ (ϕ ∧ ψ) ∧ γ ⊢ ϕ ∧ (ψ ∧ γ)
   ∧-ass2 = ∧-I (∧-E₁ (∧-E₁ (axiom Z)))
-                 (∧-I (∧-E₂ (∧-E₁ (axiom Z)))
-                      (∧-E₂ (axiom Z)))
+               (∧-I (∧-E₂ (∧-E₁ (axiom Z)))
+                    (∧-E₂ (axiom Z)))
 
   ∼-ass-∧ : ∀ {ϕ ψ γ : Formula} → ϕ ∧ (ψ ∧ γ) ∼ (ϕ ∧ ψ) ∧ γ
   ∼-ass-∧ = ∧-ass1 , ∧-ass2
@@ -271,47 +278,6 @@ module _ {Γ : ctxt} where
   ⊥/ : LindenbaumTarski
   ⊥/ = [ ⊥ ]
 
- 
-  -- Commutativity on ∧/  
-  ∧/-comm : ∀ (A B : LindenbaumTarski) → A ∧/ B ≡ B ∧/ A
-  ∧/-comm = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ ∼-comm-∧
-
-  -- Commutativity on ∨/
-  ∨/-comm : ∀ (A B : LindenbaumTarski) → A ∨/ B ≡ B ∨/ A
-  ∨/-comm = elimProp2 (λ _ _ → squash/ _ _) λ ϕ ψ → eq/ _ _ ∼-comm-∨
-
-  -- Associativity on ∧/
-  ∧/-ass : ∀ (A B C : LindenbaumTarski) → A ∧/ (B ∧/ C) ≡ (A ∧/ B) ∧/ C
-  ∧/-ass = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ∼-ass-∧
-
-  --Associativity on ∨/
-  ∨/-ass : ∀ (A B C : LindenbaumTarski) → A ∨/ (B ∨/ C) ≡ (A ∨/ B) ∨/ C
-  ∨/-ass = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ∼-ass-∨
-
-  -- Distributivity over ∧/
-  ∧/-dist : ∀ (A B C : LindenbaumTarski) → A ∧/ (B ∨/ C) ≡ (A ∧/ B) ∨/ (A ∧/ C)
-  ∧/-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ∼-dist-∧
-
-  --Distributivity over ∨/
-  ∨/-dist : ∀ (A B C : LindenbaumTarski) → A ∨/ (B ∧/ C) ≡ (A ∨/ B) ∧/ (A ∨/ C)
-  ∨/-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ∼-dist-∨
-
-  -- Absorbtion law ∧/
-  ∧/-abs : ∀ (A B : LindenbaumTarski) → A ∧/ (A ∨/ B) ≡ A
-  ∧/-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ (∧-E₁ (axiom Z) , ∧-I (axiom Z) (∨-I₂ (axiom Z)))
-
-  -- Absorbtion law ∨/
-  ∨/-abs : ∀ (A B : LindenbaumTarski) → (A ∧/ B) ∨/ B ≡ B
-  ∨/-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ (∨-E (axiom Z) (∧-E₂ (axiom Z)) (axiom Z) , ∨-I₁ (axiom Z))
-
-  -- Identity law ∨/
-  ∨/-id : ∀ (A : LindenbaumTarski) → A ∨/ ⊥/ ≡ A
-  ∨/-id = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (∨-E (axiom Z) (axiom Z) (⊥-E (axiom Z)) , ∨-I₂ (axiom Z))
-
-  -- Identity law ∧/
-  ∧/-id : ∀ (A : LindenbaumTarski) → A ∧/ ⊤/ ≡ A
-  ∧/-id = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (∧-E₁ (axiom Z) , ∧-I (axiom Z) ⊤-I)
-
 
   ------------------------------------------------------------
   -- If ϕ is provable in Γ then [ϕ] should be the same as ⊤/.
@@ -327,12 +293,6 @@ module _ {Γ : ctxt} where
   -- a complemented distributive lattice, we prove that it is
   -- also boolean.
   -------------------------------------------------------------
-  
-  isSet-LT : ∀ (A B : LindenbaumTarski) → isProp(A ≡ B)
-  isSet-LT A B = squash/ _ _
-
-  --  LT-isDistLattice : IsDistLattice ⊥/ ⊤/ _⋁_ _⋀_
-  --  LT-isDistLattice = makeIsDistLattice∧lOver∨l isSet-LT ⋁-assoc ⋁-id ⋁-comm ⋀-assoc ⋀-id ⋀-comm ⋀-abs ⋀-dist
 
   LindenbaumTarski-DistLattice : DistLattice _
   LindenbaumTarski-DistLattice = makeDistLattice∧lOver∨l
@@ -349,19 +309,53 @@ module _ {Γ : ctxt} where
                                  ∧/-comm
                                  ∧/-abs
                                  ∧/-dist
+    where
+        isSet-LT : ∀ (A B : LindenbaumTarski) → isProp(A ≡ B)
+        isSet-LT A B = squash/ _ _
+
+        ∧/-comm : ∀ (A B : LindenbaumTarski) → A ∧/ B ≡ B ∧/ A
+        ∧/-comm = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ ∼-comm-∧
+
+        ∨/-comm : ∀ (A B : LindenbaumTarski) → A ∨/ B ≡ B ∨/ A
+        ∨/-comm = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ ∼-comm-∨
+
+        ∧/-ass : ∀ (A B C : LindenbaumTarski) → A ∧/ (B ∧/ C) ≡ (A ∧/ B) ∧/ C
+        ∧/-ass = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ∼-ass-∧
+
+        ∨/-ass : ∀ (A B C : LindenbaumTarski) → A ∨/ (B ∨/ C) ≡ (A ∨/ B) ∨/ C
+        ∨/-ass = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ∼-ass-∨
+
+        ∧/-dist : ∀ (A B C : LindenbaumTarski) → A ∧/ (B ∨/ C) ≡ (A ∧/ B) ∨/ (A ∧/ C)
+        ∧/-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ∼-dist-∧
+
+        ∨/-dist : ∀ (A B C : LindenbaumTarski) → A ∨/ (B ∧/ C) ≡ (A ∨/ B) ∧/ (A ∨/ C)
+        ∨/-dist = elimProp3 (λ _ _ _ → squash/ _ _) λ _ _ _ → eq/ _ _ ∼-dist-∨
+
+        ∧/-abs : ∀ (A B : LindenbaumTarski) → A ∧/ (A ∨/ B) ≡ A
+        ∧/-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ (∧-E₁ (axiom Z) , ∧-I (axiom Z) (∨-I₂ (axiom Z)))
+
+        ∨/-abs : ∀ (A B : LindenbaumTarski) → (A ∧/ B) ∨/ B ≡ B
+        ∨/-abs = elimProp2 (λ _ _ → squash/ _ _) λ _ _ → eq/ _ _ (∨-E (axiom Z) (∧-E₂ (axiom Z)) (axiom Z) , ∨-I₁ (axiom Z))
+
+        ∨/-id : ∀ (A : LindenbaumTarski) → A ∨/ ⊥/ ≡ A
+        ∨/-id = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (∨-E (axiom Z) (axiom Z) (⊥-E (axiom Z)) , ∨-I₂ (axiom Z))
+
+        ∧/-id : ∀ (A : LindenbaumTarski) → A ∧/ ⊤/ ≡ A
+        ∧/-id = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (∧-E₁ (axiom Z) , ∧-I (axiom Z) ⊤-I)
 
 
-  {-
-  open DistLattice         -- DistLattice (not in scope) -> DistLatticeStr? IsDistLattice?
-
-  LindenbaumTarski-Boolean : (x y : fst LindenbaumTarski-DistLattice) -> x ∨l y ≡ 1l
-  LindenbaumTarski-Boolean x y = {!!}
-  -}
-
-
-  -- Complemented
-  ∧/-comp : ∀ (A : LindenbaumTarski) → A ∧/ ¬/ A ≡ ⊥/
-  ∧/-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (¬-E (∧-E₁ (axiom Z)) (∧-E₂ (axiom Z)) , ⊥-E (axiom Z))
   
-  ∨/-comp : ∀ (A : LindenbaumTarski) → A ∨/ ¬/ A ≡ ⊤/
-  ∨/-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (⊤-I , LEM)
+  open DistLatticeStr (snd LindenbaumTarski-DistLattice)
+
+  LindenbaumTarski-DistLattice-supremum : (x : fst LindenbaumTarski-DistLattice) → x ∨l ¬/ x ≡ 1l
+  LindenbaumTarski-DistLattice-supremum x = ∨/-comp x
+    where
+        ∨/-comp : ∀ (A : LindenbaumTarski) → A ∨/ ¬/ A ≡ ⊤/
+        ∨/-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (⊤-I , LEM)
+      
+
+  LindenbaumTarski-DistLattice-infimum : (x : fst LindenbaumTarski-DistLattice) → x ∧l ¬/ x ≡ 0l
+  LindenbaumTarski-DistLattice-infimum x = ∧/-comp x
+    where
+        ∧/-comp : ∀ (A : LindenbaumTarski) → A ∧/ ¬/ A ≡ ⊥/
+        ∧/-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (¬-E (∧-E₁ (axiom Z)) (∧-E₂ (axiom Z)) , ⊥-E (axiom Z))
