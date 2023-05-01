@@ -5,7 +5,6 @@ generated = \
   agda/latex/LindenbaumTarski.tex \
   agda/latex/examples.tex \
 
-
 all: thesis.tex $(generated) refs.bib
 	rubber -d thesis.tex
 

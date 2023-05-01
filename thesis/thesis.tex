@@ -25,6 +25,7 @@
 \newtheorem{definition}{Definition}[section]
 \newtheorem{lemma}{Lemma}[section]
 \newtheorem{proposition}{Proposition}
+\newtheorem{agdadef}{Agda definition}
 
 \input{macros}
 
@@ -38,7 +39,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{abstract}
-
+    This thesis focuses on formalizing the Lindenbaum-Tarski algebra in Cubical Agda, an area of mathematical logic that involves the quotienting of the algebra of formulas by an equivalence relation defined in terms of provability. To achieve this goal, we first formalize classical propositional logic and its properties in Agda, and define the equivalence relation on formulas. We then proceed to define the Lindenbaum-Tarski algebra in Cubical Agda and prove its soundness and properties. In particular, we show that the algebra is a complemented distributive lattice, which implies that it is boolean.
 \end{abstract}
 
 \tableofcontents
@@ -53,6 +54,16 @@
 
 \section{Introduction}
 
+\Agda is a powerful dependently typed programming language that is based on Martin Löf's type theory. Its strong typing and dependent types make it an ideal proof assistant for formalizing mathematical proofs.\cite{AgdaDoc} Formalizing mathematics in Agda provides several benefits, such as creating machine-checkable proofs that ensure the correctness of a proof and detecting errors or gaps in reasoning that may not be apparent through traditional mathematical proofs. This deepens our understanding and verification of mathematical concepts and proofs. In Section 2, we will provide a brief introduction to \Agda and types.
+
+The Lindenbaum-Tarski algebra is an area of mathematical logic that involves factoring the algebra of formulas by an equivalence relation defined in terms of provability.\cite{wikipedia} The Lindenbaum-Tarski algebra of a context $\Gamma$ consists of the equivalence classes of formulas in $\Gamma$. In this thesis, we aim to formalize the Lindenbaum-Tarski algebra in \CubicalAgda, which is a variant of \Agda that is extended with cubical type theory.
+
+The first step towards our goal is to formalize classical propositional logic and its properties in \Agda, defining the equivalence relation on formulas such that two formulas are equivalent if and only if they are provably equivalent in the context. This will be the focus of Section 3.
+
+In Section 4, we will move on to define the Lindenbaum-Tarski algebra in Cubical Agda, proving soundness and some properties of the algebra. Our primary goal will be to formalize that the algebra is a boolean algebra. We will use the fact that a boolean algebra can be viewed as a complemented distributive lattice to formalize that the Lindenbaum-Tarski algebra is boolean.
+
+This formalization will provide the \agdaCubical library with a formalisation of Lindenbaum-Tarski algebra, that is currently missing, and allow for the verification of mathematical proofs related to Lindenbaum-Tarski algebra in the future.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,16 +71,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Agda proof assistant}
-Agda is a dependently typed programming language based on intuitionistic type theory. By encoding mathematical propositions as types and their proofs as programs, we can ensure that our reasoning is correct and consistent. Agda's type system also provides powerful tools for automatically checking the correctness of proofs\cite{BoveDybjer2008}.
+
+Agda is a powerful dependently typed programming language that is based on Martin Löf's type theory. It allows us to encode mathematical propositions as types and their proofs as programs, ensuring the correctness and consistency of our reasoning. The language's strong type system also provides powerful tools for automatically verifying the correctness of proofs.\cite{BoveDybjer2008}
+
+Furthermore, Agda is a total language, which means that any program e of type T will always terminate with a value in T. This guarantees the absence of runtime errors and prevents the creation of nonterminating programs, unless explicitly requested by the programmer.\cite{AgdaDoc}
+
 
 \subsection{Propositions as types}
-Propositions as types associates logical propositions with types in a programming language. It is based on the idea that a proof of a proposition is analogous to a program that satisfies the type associated with the proposition.
 
-In this context, the introduction and elimination rules for logical connectives can be seen as operations that construct and deconstruct values of the corresponding types. For example, the introduction rule for conjunction says that if we have proofs of two propositions, we can construct a proof of their conjunction by pairing the two proofs together. This can be seen as a function that takes two values of the corresponding types and returns a pair value.
+Propositions as types is a concept that links logical propositions with types in a programming language. It is based on the idea that a proof of a proposition is analogous to a program that satisfies the type associated with the proposition.
 
-On the other hand, the elimination rule for conjunction says that if we have a proof of a conjunction, we can extract proofs of its two conjuncts by projecting the pair onto each component. This can be seen as a function that takes a pair value and returns two values of the corresponding types.
+In this context, the introduction and elimination rules for logical connectives can be viewed as operations that construct and deconstruct values of the corresponding types. For instance, the introduction rule for conjunction states that given proofs of two propositions, we can construct a proof of their conjunction by pairing the two proofs together. This can be seen as a function that takes two values of the corresponding types and returns a pair value.
 
-This is similar to the concept of product types in programming languages, where a product type is a type that represents a pair of values. The introduction form of a product type is a pair, and the elimination forms are projection functions that extract the individual components of the tuple. This chart summarizes the correspondence between proposition and types and between proofs and programs.
+Conversely, the elimination rule for conjunction says that given a proof of a conjunction, we can extract proofs of its two conjuncts by projecting the pair onto each component. This can be viewed as a function that takes a pair value and returns two values of the corresponding types.
+
+This is similar to the concept of product types in programming languages, where a product type represents a pair of values. The introduction form of a product type is a pair, and the elimination forms are projection functions that extract the individual components of the tuple. Table 1 summarizes the correspondence between propositions and types and between proofs and programs.
 
 \begin{table}[h!]
     \centering
@@ -87,32 +103,32 @@ This is similar to the concept of product types in programming languages, where 
 
 This allows us to reason about logical propositions in terms of programming language types, and to use the tools and techniques of programming languages like \Agda to reason about logical proofs.
 
+
 \subsection{Simply typed functions and datatypes}
-A data declaration is used to introduce datatypes, including their name, type, and constructors along with their types. An example of this is the declaration of the boolean type:
+
+A data declaration introduces a new datatype with its name, type, and constructors, along with their types. For instance, the boolean type can be defined as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{bool}
-
-This states that \texttt{Bool} is a data type with \texttt{true} and \texttt{false} as constructors. Functions over this datatype \texttt{Bool} can be defined using pattern matching, similar to Haskell. For instance we can define a function \texttt{not} for \texttt{Bool} as follows:
+Here, \texttt{Bool} is the name of the datatype, and \texttt{true} and \texttt{false} are its constructors. Functions over the datatype \texttt{Bool} can be defined using pattern matching, similar to \Haskell. For example, the \texttt{not} function can be defined as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{not}
+We start by defining the type of \texttt{not} as a function from \texttt{Bool} to \texttt{Bool} and then we define the function by pattern matching on the arguments. \Agda ensures that the pattern covers all cases and will not accept a function with missing patterns.
 
-We start by defining the type of not as a function from \texttt{Bool} to \texttt{Bool} and then we define the function by using pattern matching on the arguments. Agda checks that the pattern covers all cases and will not accept a function with missing patterns.
-
-The natural numbers can be defined as the datatype:
+The natural numbers can be defined as an inductively defined type, as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{nat}
-
-A natural number is either zero or a successor of another natural number. This is called an \textit{inductively defined type}. We can define addition on the natural numbers with a recursive function.
+Here, \texttt{zero} represents the natural number $0$, and \texttt{suc} $n$ represents the successor of the natural number $n$. We can define addition on natural numbers using a recursive function, as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{add}
 
-If a name contains underscores (\_) in the definition, the underscores represent where the arguments go. So in this case we get an infix operator and we write m + n instead of + m n, which would have been the case if the name was just +. We can set the precedence of an infix operator with an \texttt{infix} declaration:
+If a name contains underscores ('\_') in the definition, they represent where the arguments go. So in this case we get an infix operator, and we write 'm + n' instead of '+ m n', which would have been the case if the name was just '+'. We can set the precedence of an infix operator with an \texttt{infix} declaration:
 
 \ExecuteMetaData[agda/latex/examples.tex]{infix}
 
 Datatypes can also be parameterized by other types. For instance, the type of lists with elements of an arbitrary type is defined as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{list}
+This declares the datatype \texttt{List} as a function of a type $A$ that maps to the type \texttt{List} $A$. It has two constructors, '[ ]' for an empty list and '::' for a list that has an element of type $A$ followed by a list of type \texttt{List} $A$. The underscore before '::' is a placeholder for the first argument of the constructor (an element of type $A$), and the underscore after '::' is a placeholder for the second argument of the constructor (a list of type \texttt{List} $A$).
 
 
 \subsection{Dependent types}
@@ -120,16 +136,16 @@ Datatypes can also be parameterized by other types. For instance, the type of li
 A dependent type is a type that depends on elements of another type. An example of a dependent type is a dependent function, where the result type depends on the value of the argument.  In Agda, this is denoted by (x : A) $\to$ B, representing functions that take an argument x of type A and produce a result of type B. A special case is when x itself is a type. For instance, we can define the identity function
 
 \ExecuteMetaData[agda/latex/examples.tex]{id1}
-
 This function takes a type argument A and an element x of type A, and returns x. In \Agda it is possible to use implicit arguments. To declare an argument as implicit we use curly braces instead of parenthesis when declaring the type argument. In particular, \{A : Set\} $\to$ B means the same thing as (A : Set) $\to$ B, but we don't need to provide the type explicitly, the type checker will try to infer it for us. We can now redefine the identity function above as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{id2}
-
 Note that we no longer need to supply the type when the function is applied.
 
 
 \subsection{Cubical Agda}
-In this project we will be dealing with quotient types, and for that we need to use \CubicalAgda. This extends \Agda with features from Cubical Type Theory, which is needed when we deal with set quotients.\cite{AgdaDoc} We use only a small part of the \agdaCubical library, and any cubical theory is beyond this thesis.
+
+In this project, we will be working with quotient types, which requires us to use Cubical Agda. Cubical Agda is an extension of Agda that incorporates features from Cubical Type Theory, which is necessary for dealing with set quotients.\cite{AgdaDoc} However, it is important to note that we will only be using a small portion of the \agdaCubical library, and any cubical theory is beyond the scope of this thesis.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,14 +154,18 @@ In this project we will be dealing with quotient types, and for that we need to 
 
 \section{Propositional calculus in Agda}
 
-Propositional calculus is a formal system that consists of a set of propositional constants, symbols, inference rules, and axioms. The symbols in propositional calculus represent logical connectives and parentheses, and are used to construct well-formed formulas that follow the syntax of the system. The inference rules of propositional calculus specify how these symbols can be used to derive additional statements from the initial assumptions, which are given by the axioms of the system.
 
-The semantics of propositional calculus define how the expressions in the system correspond to truth values, typically "true" or "false". 
+
+Propositional calculus is a formal system that consists of a set of propositional constants, symbols, inference rules, and axioms. The symbols in propositional calculus represent logical connectives and parentheses, and are used to construct well-formed formulas that follow the syntax of the system. The inference rules specify how these symbols can be used to derive additional statements from the initial assumptions, which are given by the axioms of the system. 
+
+The reader is expected to be somewhat familiar with propositional calculus and natural deduction, if not they can refer to \cite{carlstrom} or \cite{vanDalen} which are the basis for most of the definitions and rules used in this section.
 
 
 %% Formulas %%
 
 \subsection{Formulas}
+
+In order to represent propositional calculus in \Agda we first need to define the type for well-formed formulas and the language in which we express them.
 
 \begin{definition}[Language]\label{language}
     The language $\mathcal{L}$ of propositional calculus consists of
@@ -155,12 +175,11 @@ The semantics of propositional calculus define how the expressions in the system
         \item auxiliary symbols: (, ).
     \end{itemize}
 \end{definition}
-
 Note that we have omitted the common logical connectives $\rightarrow$ and $\leftrightarrow$. This is becuase we can define them using other connectives, 
 \begin{align*}
     \phi \rightarrow \psi &\myeq \neg \phi \vee \psi, \\
     \phi \leftrightarrow \psi &\myeq (\neg \phi \vee \psi) \wedge (\neg \psi \vee \phi),
-\end{align*}making them reduntant. It is possible to choose an even smaller set of connectives \cite{vanDalen}, but we choose this as it is convenient.
+\end{align*}making them reduntant. It is possible to choose an even smaller set of connectives \cite{vanDalen}, but we choose this set as it is convenient.
 
 \begin{definition}[Well formed formula]\label{wellformed}
     The set of well formed formulas is inductively defined as follows:
@@ -175,15 +194,17 @@ Note that we have omitted the common logical connectives $\rightarrow$ and $\lef
     The formula $\top$ should be thought of as the proposition that is always true, and the formula $\bot$ interpreted as the proposition that is always false.
 \end{definition}
 
-We define well formed formulas in \Agda as a data type:
+Now we are ready to define the type for well-formed formulas in \Agda using the definition above.
+\begin{agdadef}[Formula]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{form}
+\end{agdadef}
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{form}
+
 
 
 %% Context %%
 
 \subsection{Context}
-
 \begin{definition}[Context]
     A context is a set of sentences in the language $\mathcal{L}$. The set is defined inductively as follows:
     \begin{itemize}
@@ -191,42 +212,36 @@ We define well formed formulas in \Agda as a data type:
         \item if $\Gamma$ is a context, then $\Gamma \cup \{\phi\}$ is also a context, where $\phi$ a formula.
     \end{itemize}
 \end{definition}
+We will sometimes write $\Gamma, \phi$ instead of $\Gamma \cup \{\phi\}$, but they should both be thought of as the latter. In \Agda we will interpret $\Gamma \cup \{\phi\}$ as $\Gamma : \phi$. Lets define the data type for context in \Agda.
 
-We will sometimes write $\Gamma, \phi$ instead of $\Gamma \cup \{\phi\}$, but they should both be thought of as the latter. In \Agda we will interpret $\Gamma \cup \{\phi\}$ as $\Gamma : \phi$. Lets define the data type for context in \Agda:
-
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{ctxt}
+\begin{agdadef}[Context]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{ctxt}
+\end{agdadef}
 We also need a way to determine if a given formula is in a given context. 
-\begin{definition}[Lookup]\label{lookup}
+\begin{definition}\label{lookup}
     For all contexts $\Gamma$ and all formulas $\phi$ and $\psi$
     \begin{itemize}
         \item $\phi \in \Gamma \cup \{\phi\}$,
         \item if $\phi \in \Gamma$, then $\phi \in \Gamma \cup \{\psi\}$.
     \end{itemize}
 \end{definition}
-We represent this as a data type in \Agda as follows:
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{lookup}
+\begin{agdadef}[Lookup]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{lookup}
+\end{agdadef}
 
 
 %% Inference rules %%
 
 \subsection{Inference rules}
 
-For the inference rules we introduce a data type for provability:
+Inference rules are used to derive new propositions from existing ones. In order to formalize the process of proving propositions in our system, we introduce a new data type for provability. This data type has as its inhabitants all of the possible inference rules that can be used to prove a given proposition.
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{provability}
-\hspace{40mm}$\vdots$
-\vspace{4mm}
+\begin{agdadef} $ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{provability}
+    \hspace{40mm}$\vdots$
+\end{agdadef}
 
-We will define the inference rules as inhabitants of this type. They will be on the form:
-\begin{verbatim}
-    rulename : { ... : ctxt} { ... : Formula}
-            -> premise.1
-            -> premise.2
-                  :
-            -> premise.n
-            -> conclusion
-\end{verbatim}
 
 
 \subsubsection{Law of excluded middle}
@@ -234,13 +249,17 @@ We will define the inference rules as inhabitants of this type. They will be on 
 \begin{definition}
     The law of excluded middle states that for every proposition, either the proposition or its negation is true.
 \end{definition}
-
+This principle is equivalent to the statement that $\phi \vee \neg \phi$ is a tautology, where $\phi$ is any proposition. Given the above definition, we can introduce an inference rule for LEM. This rule requires no premise, as LEM is a tautology.
 \begin{mathpar}
     \inferrule*[right=\scriptsize LEM]
         { }{\Gamma \vdash \phi \vee \neg \phi}
 \end{mathpar}
-In \Agda, we define this as follows:
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LEM}
+
+\begin{agdadef}[Law of excluded middle]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LEM}
+\end{agdadef}
+
+By using the LEM inference rule in our system, we can derive new propositions and prove theorems based on the principle of excluded middle.
 
 
 \subsubsection{Logical connectives}
@@ -254,10 +273,13 @@ The introduction rule for conjunction states that if there is a derivation of $\
         {\Gamma \vdash \phi \wedge \psi}
 \end{mathpar}
 
-The conjunction introduction rule is formalised in \Agda as follows:
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conjI}
+\begin{agdadef}[Conjunction introduction]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conjI}
+\end{agdadef}
 
-The accompanying elimination rules says that if there is some derivation concluding in $\phi \wedge \psi$ from $\Gamma$, then we can conclude that there is a derivation of $\phi$, and a derivation of $\psi$, from $\Gamma$.
+
+The corresponding elimination rules says that if there is some derivation concluding in $\phi \wedge \psi$ from $\Gamma$, then we can conclude that there is a derivation of $\phi$, and a derivation of $\psi$, from $\Gamma$.
+
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\wedge$-E$_1$]
         {\Gamma \vdash \phi \wedge \psi}
@@ -268,12 +290,12 @@ The accompanying elimination rules says that if there is some derivation conclud
         {\Gamma \vdash \psi}
 \end{mathpar}
 
-In \Agda, the conjunction eliminations rules are defined as follows:
+\begin{agdadef}[Conjunction elimination]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conjE1}
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conjE2}
+\end{agdadef}
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conjE1}
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conjE2}
-
-For disjunction we have two introductory rules. If we can deduce som fomula $\psi$ from $\Gamma$, then we can also deduce $\phi \vee \psi$ from $\Gamma$. In the same way, if we can deduce $\psi$ from $\Gamma$, then we can decuce $\phi \vee \psi$ from $\Gamma$ as well.
+For disjunction, we have two introduction rules. If we can derive a formula $\phi$ from $\Gamma$, then we can also derive $\phi \vee \psi$ from $\Gamma$. Similarly, if we can derive $\psi$ from $\Gamma$, then we can also derive $\phi \vee \psi$ from $\Gamma$.
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\vee$-I$_1$]
         {\Gamma \vdash \psi}
@@ -284,10 +306,12 @@ For disjunction we have two introductory rules. If we can deduce som fomula $\ps
         {\Gamma \vdash \phi \vee \psi}
 \end{mathpar}
 
-We formalise the two disjunction introduction rules in \Agda as follows:
+\begin{agdadef}[Disjunction introduction]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disjI1}
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disjI2}
+\end{agdadef}
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disjI1}
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disjI2}
+
 
 The eliminination rule for disjunction is a bit more involved. If $\phi \vee \psi$ can be deduced from $\Gamma$, then we can conclude $\Gamma \vdash \gamma$ if the extended contexts $\Gamma, \phi$ and $\Gamma, \psi$ both conclude in $\gamma$.
 \begin{mathpar}
@@ -298,9 +322,11 @@ The eliminination rule for disjunction is a bit more involved. If $\phi \vee \ps
         {\Gamma \vdash \gamma}
 \end{mathpar}
 
-The disjunction elimination rule in \Agda:
+\begin{agdadef}[Disjunction elimination]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disjE}
+\end{agdadef}
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disjE}
+
 
 \begin{definition}
     A context $\Gamma$ is inconsistent if $\Gamma \vdash \phi$ and $\Gamma \vdash \neg \phi$, or equivalently $\Gamma \vdash \bot$. A context that is not inconsistent, is called consistent.
@@ -316,21 +342,24 @@ The definition of inconsistency and the law of excluded middle together motivate
         {\Gamma \vdash \bot}
 \end{mathpar}
 
-In \Agda, we define the negation introduction rule as follows:
+\begin{agdadef}[Negation introduction]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{negI}
+\end{agdadef}
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{negI}
+\begin{agdadef}[Negation elimination]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{negE}
+\end{agdadef}
 
-The negation elimination rule is defined in \Agda as follows:
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{negE}
 
-In Definition \ref{wellformed} we mentioned that $\top$ should be thought of as the proposition that is always true. In particular, it is trivially true in all contexts, and should be introduced with no premise.
+In Definition \ref{wellformed} we mentioned that $\top$ should be thought of as the proposition that is always true. In particular, it is a tautology and as such trivially true in all contexts, and should be introduced with no premise.
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\top$ I]
         { }{\Gamma \vdash \top}
 \end{mathpar}
 
-The $\top$ introduction rule in \Agda:
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{topI}
+\begin{agdadef}[$\top$ introduction]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{topI}
+\end{agdadef}
 
 If a context is inconsistent one can derive anything from it, which leads to the elimination rule for $\bot$.
 \begin{mathpar}
@@ -339,22 +368,26 @@ If a context is inconsistent one can derive anything from it, which leads to the
         {\Gamma \vdash \phi}
 \end{mathpar}
 
-The $\bot$ elimination rule is formalised in \Agda as follows:
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{botE}
+\begin{agdadef}[$\bot$ elimination]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{botE}
+\end{agdadef}
+
 
 
 \subsubsection{Structural rules}
 
-Weakening is a structural rule that states that we can extend the hypothesis with additional members,
+Weakening is a structural rule that states that we can extend the hypothesis with additional members.
 \begin{mathpar}
     \inferrule*[right=\scriptsize weakening]
         {\Gamma \vdash \phi}
         {\Gamma , \psi \vdash \phi}
 \end{mathpar}
 
-In \Agda, we define the rule of weakening as follows:
+\begin{agdadef}[Weakening]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{weakening}
+\end{agdadef}
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{weakening}
+
 
 The structural rule of exchange allows us to permute the formulas in the context. However, we will be using a stricter version of exchange, where we can only permute the two formulas at the end of the context. This version is easier to implement and still satisfies our needs.
 \begin{mathpar}
@@ -363,8 +396,9 @@ The structural rule of exchange allows us to permute the formulas in the context
         {\Gamma , \psi , \phi \vdash \gamma}
 \end{mathpar}
 
-We define this exchange rule in \Agda as follows:
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{exchange}
+\begin{agdadef}[Exchange]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{exchange}
+\end{agdadef}
 
 
 
@@ -372,7 +406,7 @@ We define this exchange rule in \Agda as follows:
 
 \subsection{Properties of a propositional calculus}
 
-We prove some properties of propositional calculus
+In this section we aim to prove some properties of propositional calculus as they will be important later.
 
 \subsubsection{Equivalence relation}
 
@@ -380,15 +414,19 @@ We prove some properties of propositional calculus
     Let $S$ be the set of all the sentences of $\mathcal{L}$. Define the relation $\sim$ such that for $\phi,\psi \in S$,
     $$\phi \sim \psi \qquad \text{iff} \qquad \Gamma, \phi \vdash \psi \text{ and } \Gamma , \psi \vdash \phi$$
 \end{definition}
-This is represented in \Agda as a product type.
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{eq}
+Because the definition of the relation is a pair it is natural to defin it in \Agda as a product type.
 
-Before we prove that this is an equivalence relation we will prove a lemma.
+\begin{agdadef}[Equivalence relation]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{eq}
+\end{agdadef}
+
+
+Before we prove that this is an equivalence relation we will prove a useful lemma.
 \begin{lemma}\label{trans-lemma}
     Given $\Gamma, \phi \vdash \psi$ and $\Gamma, \psi \vdash \gamma$, it follows that $\Gamma, \phi \vdash \gamma$
 \end{lemma}
 \begin{proof}
-    This is done through natural deduction
+    This is done through natural deduction using the deduction rules defined previously.
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\vee$-E]
             {\inferrule*[right=\scriptsize $\vee$-i$_2$]
@@ -404,8 +442,10 @@ Before we prove that this is an equivalence relation we will prove a lemma.
                 {\Gamma , \phi, \gamma \vdash \gamma}}
             {\Gamma, \phi \vdash \gamma}
     \end{mathpar}
+\end{proof}
 
-    The corresponding \Agda proof of the lemma:
+\begin{proof}[Agda proof]
+    $\:$
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{trans-lemma}
 \end{proof}
 
@@ -414,32 +454,39 @@ Before we prove that this is an equivalence relation we will prove a lemma.
 \end{theorem}
 
 \begin{proof}
-    Reflexivity follows from immediately from the axiom rule:
+    It follows immediately from the axiom rule,
     \begin{mathpar}
         \inferrule*[right=\scriptsize axiom]
             {\phi \in \Gamma, \phi}
             {\Gamma ,\phi \vdash \phi}
     \end{mathpar}
-    The corresponding \Agda proof for reflexivity:
-    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{refl}
-    It should be clear that $\Gamma, \phi \vdash \psi \text{ and } \Gamma , \psi \vdash \phi$ is just a pair of proofs, hence it does not matter in which order we give them. This means that the relation is also symmetric. We formalise this in \Agda as follows:
-    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{sym}
-    For transitivity we need to prove that, given $\phi \sim \gamma$ and $\gamma \sim \psi$, it holds that $\phi \sim \psi$. By definition \ref{eq-def} we have the following:
+    that $\varphi \sim \varphi$, so the relation is reflexive.
+
+    It should be clear that $\Gamma, \phi \vdash \psi \text{ and } \Gamma , \psi \vdash \phi$ is just a pair of proofs, hence it does not matter in which order we give them. This means that the relation is also symmetric.
+
+    In order to prove transitivity we need to show that, given $\phi \sim \gamma$ and $\gamma \sim \psi$, it holds that $\phi \sim \psi$. By definition \ref{eq-def} we have the following:
     \begin{enumerate}[label=(\roman*)]
         \item $\Gamma, \phi \vdash \gamma$,
         \item $\Gamma, \gamma \vdash \phi$,
-        \item $\Gamma, \gamma \vdash \psi$, and
+        \item $\Gamma, \gamma \vdash \psi$,
         \item $\Gamma, \psi \vdash \gamma$.
     \end{enumerate}
-    Now we can apply Lemma \ref{trans-lemma} on (i) and (iii) to conclude $\Gamma, \phi \vdash \psi$, and again to (iv) and (ii) to conclude $\Gamma, \psi \vdash \phi$. The proof in \Agda:
+    Now we can apply Lemma \ref{trans-lemma} on (i) and (iii) to conclude $\Gamma, \phi \vdash \psi$, and again to (iv) and (ii) to conclude $\Gamma, \psi \vdash \phi$. Thus we have shown that $\varphi \sim \psi$.
+    
+\end{proof}
+
+\begin{proof}[Agda proof]
+    $\:$
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{refl}
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{sym}
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{trans}
 \end{proof}
 
 
 \subsubsection{Commutativity}
 
-\begin{proposition}
-    $\phi \wedge \psi \sim \psi \wedge \phi$
+\begin{proposition}\label{conj-comm}
+    Conjunction is commutative, that is $\phi \wedge \psi \sim \psi \wedge \phi$.
 \end{proposition}
 
 \begin{proof} We need to show $\Gamma, \phi \wedge \psi \vdash \psi \wedge \phi$ and $\Gamma, \psi \wedge \phi \vdash \phi \wedge \psi$. To show $\Gamma, \phi \wedge \psi \vdash \psi \wedge \phi$, we have:
@@ -458,15 +505,17 @@ Before we prove that this is an equivalence relation we will prove a lemma.
         {\Gamma \vdash \psi \wedge \phi}
 \end{mathpar}
 
-The other proof is identical up to renaming of the formulas, so we omitt it. Together they prove $\phi \wedge \psi \sim \psi \wedge \phi$. This corresponds to the \Agda proof:
-
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conj-comm}
-Thus, we have shown that the two statements are equivalent in \Agda:
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{comm-eq-conj}
+The proof of the second part is identical up to renaming of the formulas, so we omit it. Together they prove the equivalence $\phi \wedge \psi \sim \psi \wedge \phi$. 
 \end{proof}
 
-\begin{proposition}
-    $\phi \vee \psi \sim \psi \vee \phi$
+\begin{proof}[Agda proof]
+    $\:$
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conj-comm}
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{comm-eq-conj}
+\end{proof}
+
+\begin{proposition}\label{disj-comm}
+    Disjunction is commutative, that is $\phi \vee \psi \sim \psi \vee \phi$.
 \end{proposition}
 
 \begin{proof}
@@ -489,75 +538,378 @@ Thus, we have shown that the two statements are equivalent in \Agda:
                 {\Gamma',\psi \vdash \psi \vee \phi}}
             {\Gamma' \vdash \psi \vee \phi}
     \end{mathpar}
+    Thus we have shown $\Gamma, \phi \vee \psi \vdash \psi \vee \phi$ and $\Gamma, \psi \vee \phi \vdash \phi \vee \psi$, so we have the equivalence $\phi \vee \psi \sim \psi \vee \phi$. 
 
-    Therefore, we have shown $\Gamma, \phi \vee \psi \vdash \psi \vee \phi$ and $\Gamma, \psi \vee \phi \vdash \phi \vee \psi$. Hence, $\phi \vee \psi \sim \psi \vee \phi$. In \Agda we can write the corresponding proof as follows:
+\end{proof}
+\begin{proof}[Agda proof]
+    $\:$
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disj-comm}
-    Then, we show that the equivalence of the statements hold in \Agda:
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{comm-eq-disj}
-
 \end{proof}
 
 
 \subsubsection{Associativity}
 
 \begin{proposition}
-    $\phi \wedge (\psi \wedge \gamma) \sim (\phi \wedge \psi) \wedge \gamma$
+    Conjunction is associative, $\phi \wedge (\psi \wedge \gamma) \sim (\phi \wedge \psi) \wedge \gamma$.
 \end{proposition}
 
 \begin{proof}
-    We need to show $\Gamma, \phi \wedge (\psi \wedge \gamma) \vdash (\phi \wedge \psi) \wedge \gamma$ and $\Gamma, (\phi \wedge \psi) \wedge \gamma \vdash \phi \wedge (\psi \wedge \gamma)$. Using natural deduction, we can prove both statements. Since the two proofs are very similar, we will only present the first one. However, the complete deduction tree is too large to include here, but can be found in \ref{A1} for reference. In \Agda, the corresponding proof of the first entailment is:
+    We need to show $\Gamma, \phi \wedge (\psi \wedge \gamma) \vdash (\phi \wedge \psi) \wedge \gamma$ and $\Gamma, (\phi \wedge \psi) \wedge \gamma \vdash \phi \wedge (\psi \wedge \gamma)$. Using natural deduction, we can prove both statements. Since the two proofs are very similar, we will only present the first one. 
+
+    Let $\Gamma' = \Gamma \cup \{\phi \wedge (\psi \wedge \gamma)\}$. Then we can make a deduction $\mathcal{D}_1$ concluding in $\Gamma' \vdash \varphi \wedge \psi$,
+
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\wedge$-I]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                   {\inferrule*[right=\scriptsize axiom]
+                        {\phi \wedge (\psi \wedge \gamma) \in \Gamma'}
+                        {\Gamma' \vdash \phi \wedge (\psi \wedge \gamma)}}
+                    {\Gamma' \vdash \psi \wedge \gamma}}
+                {\Gamma' \vdash \psi} \\
+             \inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \wedge (\psi \wedge \gamma) \in \Gamma'}
+                    {\Gamma' \vdash \phi \wedge (\psi \wedge \gamma)}}
+                {\Gamma' \vdash \phi}}
+            {\Gamma' \vdash \phi \wedge \psi}
+    \end{mathpar}
+and another deduction $\mathcal{D}_2$ concluding in $\Gamma' \vdash \gamma$,
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {\phi \wedge (\psi \wedge \gamma) \in \Gamma'}
+                        {\Gamma' \vdash \phi \wedge (\psi \wedge \gamma)}}
+                    {\Gamma' \vdash \psi \wedge \gamma}}
+                {\Gamma' \vdash \gamma}
+    \end{mathpar}
+Now, with the derivations $\mathcal{D}_1$ and $\mathcal{D}_2$ we can, using conjunction introduction, conclude that $\Gamma' \vdash (\phi \wedge \psi) \wedge \gamma$,
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\wedge$-I]
+            {\mathcal{D}_1 \\ \mathcal{D}_2}
+            {\Gamma' \vdash (\phi \wedge \psi) \wedge \gamma}
+    \end{mathpar}
+Thus we have shown that $\Gamma, \phi \wedge (\psi \wedge \gamma) \vdash (\phi \wedge \psi) \wedge \gamma$. Together with the omitted proof we get the equivalence $\phi \wedge (\psi \wedge \gamma) \sim (\phi \wedge \psi) \wedge \gamma$.
+\end{proof}
+
+\begin{proof}[Agda proof]
+    $\:$
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conj-ass1}
-    The proof of the second entailment in \Agda:
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conj-ass2}
-    Therefore, we can conclude that the following equivalence holds:
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{ass-eq-conj}
 \end{proof}
 
 \begin{proposition}
-    $\phi \vee (\psi \vee \gamma) \sim (\phi \vee \psi) \vee \gamma$
+    Disjunction is associative, $\phi \vee (\psi \vee \gamma) \sim (\phi \vee \psi) \vee \gamma$.
 \end{proposition}
 
 \begin{proof}
-    We need to show $\Gamma, \phi \vee (\psi \vee \gamma) \vdash (\phi \vee \psi) \vee \gamma$ and $\Gamma, (\phi \vee \psi) \vee \gamma \vdash \phi \wedge (\psi \vee \gamma)$ Proof is done through natural deduction. The proofs are very similar and we have therefore opted to omitt the second proof, and we refer the reader to \ref{A2} for details on the first one. In \Agda we write the proofs as follows, the first entailment:
+    We need to show $\Gamma, \phi \vee (\psi \vee \gamma) \vdash (\phi \vee \psi) \vee \gamma$ and $\Gamma, (\phi \vee \psi) \vee \gamma \vdash \phi \vee (\psi \vee \gamma)$. Proof is done through natural deduction. Let $\Gamma' = \Gamma \cup \{\phi \vee (\psi \vee \gamma)\}$,
+    
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-E]
+            {\inferrule*[right=\scriptsize axiom]
+                {\phi \vee (\psi \vee \gamma) \in \Gamma'}
+                {\Gamma' \vdash \phi \vee (\psi \vee \gamma)} \\
+            \mathcal{D}_1 \\
+            \mathcal{D}_2}
+            {\Gamma' \vdash (\phi \vee \psi) \vee \gamma}
+    \end{mathpar}
+    Here we need $\mathcal{D}_1$ to be a deduction of $\Gamma', \phi \vdash (\phi \vee \psi) \vee \gamma$ and and $\mathcal{D}_2$ a deduction of $\Gamma', \psi \vee \gamma\vdash (\phi \vee \psi) \vee \gamma$. We can construct $\mathcal{D}_1$ as follows:
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize$\vee$-I$_2$]
+                {\inferrule*[right=\scriptsize$\vee$-I$_2$]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {\phi \in \Gamma',\phi}
+                        {\Gamma', \phi \vdash \phi}}
+                    {\Gamma', \phi \vdash \phi \vee \psi}}
+                {\Gamma', \phi \vdash (\phi \vee \psi) \vee \gamma}
+    \end{mathpar}
+    Now, let $\Gamma'' = \Gamma' \cup \{\psi \vee \gamma\}$, then $\mathcal{D}_2$ is constructed as follows:
+    \begin{mathpar}
+        \mprset{sep=1em}
+        \inferrule*[right=\scriptsize$\vee$-E]
+            {\inferrule*[right=\scriptsize axiom]
+                {\psi \vee \gamma \in \Gamma''}
+                {\Gamma'' \vdash \psi \vee \gamma} \\
+                \inferrule*[right=\scriptsize$\vee$-I$_2$]
+                    {\inferrule*[right=\scriptsize$\vee$-I$_1$]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {\psi \in \Gamma'', \psi}
+                        {\Gamma'',\psi \vdash \psi}}
+                    {\Gamma'',\psi \vdash \phi \vee \psi}}
+                    {\Gamma'',\psi \vdash (\phi \vee \psi) \vee \gamma}  \\
+             \inferrule*[right=\scriptsize$\vee$-I$_1$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\gamma \in \Gamma'',\gamma}
+                    {\Gamma'',\gamma \vdash \gamma}}
+                {\Gamma'',\gamma \vdash (\phi \vee \psi) \vee \gamma}}
+            {\Gamma''\vdash (\phi \vee \psi) \vee \gamma}
+    \end{mathpar}
+
+    The proof of $\Gamma, (\phi \vee \psi) \vee \gamma \vdash \phi \vee (\psi \vee \gamma)$ is identical when relabeling the formulas and using that disjunction is commutative as proven earlier. With these results we get the equivalence $\phi \vee (\psi \vee \gamma) \sim (\phi \vee \psi) \vee \gamma$.
+
+\end{proof}
+
+\begin{proof}[Agda proof] $\:$
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disj-ass1}
-    The proof of the second entailment in \Agda:
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disj-ass2}
-    With these two results we have proven $\phi \vee (\psi \vee \gamma) \sim (\phi \vee \psi) \vee \gamma$. In \Agda, the equivalence is shown as follows:
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{ass-eq-disj}
 \end{proof}
 
 
+\subsubsection{Distributivity}\label{dist-section}
 
-
-\subsubsection{Distributivity}
-
-\begin{proposition}
-    $\phi \wedge (\psi \vee \gamma) \sim (\phi \wedge \psi) \vee (\phi \wedge \gamma)$
+\begin{proposition}\label{conj-dist}
+    Distribution over conjunction holds, that is the equivalence $\phi \wedge (\psi \vee \gamma) \sim (\phi \wedge \psi) \vee (\phi \wedge \gamma)$ holds.
 \end{proposition}
 
 \begin{proof}
-    We need to show $\Gamma, \phi \wedge (\psi \vee \gamma) \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)$ and $\Gamma, (\phi \wedge \psi) \vee (\phi \wedge \gamma) \vdash \phi \wedge (\psi \vee \gamma)$. For the natural deductions, please refer to \ref{A3} and \ref{A4}, together they show $\phi \wedge (\psi \vee \gamma) \sim (\phi \wedge \psi) \vee (\phi \wedge \gamma)$. The corresponding Agda proof of the first entailment is:
+    First we show that $\Gamma, \phi \wedge (\psi \vee \gamma) \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)$. Let $\Gamma_1 = \Gamma \cup \{\phi \wedge (\psi \vee \gamma)\}$, then
+    
+    \begin{mathpar}
+        \mprset{sep=1em}
+        \inferrule*[right=\scriptsize $\vee$-E]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \wedge (\psi \vee \gamma) \in \Gamma_1}
+                    {\Gamma_1 \vdash \phi \wedge (\psi \vee \gamma)}}
+                {\Gamma_1 \vdash \psi \vee \gamma} \\ 
+            \mathcal{D}_1 \\ 
+            \mathcal{D}_2}
+            {\Gamma_1 \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
+    \end{mathpar}
+    where $\mathcal{D}_1$ is a derivation concluding in $\Gamma_1,\psi \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)$ and $\mathcal{D}_2$ a derivaton concluding in $\Gamma_1,\gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)$. We start by performing the derivation $\mathcal{D}_1$:
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-I$_2$]
+            {\inferrule*[right=\scriptsize $\wedge$-I]
+                {\inferrule*[right=\scriptsize weakening]
+                    {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                        {\inferrule*[right=\scriptsize axiom]
+                            {\phi \wedge (\psi \vee \gamma) \in \Gamma_1}
+                            {\Gamma_1 \vdash \phi \wedge (\psi \vee \gamma)}}
+                        {\Gamma_1 \vdash \phi}}
+                    {\Gamma_1, \psi \vdash \phi} \\
+                 \inferrule*[right=\scriptsize axiom]
+                    {\psi \in \Gamma_1, \psi}
+                    {\Gamma_1,\psi \vdash \psi}}
+                {\Gamma_1,\psi \vdash \phi \wedge \psi}}
+            {\Gamma_1,\psi \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
+    \end{mathpar}
+    Then we derive $\mathcal{D}_2$:
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-I$_1$]
+                {\inferrule*[right=\scriptsize $\wedge$-I]
+                    {\inferrule*[right=\scriptsize weakening]
+                        {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                            {\inferrule*[right=\scriptsize axiom]
+                                {\phi \wedge (\psi \vee \gamma)\in\Gamma_1}
+                                {\Gamma_1 \vdash \phi \wedge (\psi \vee \gamma)}}
+                            {\Gamma_1 \vdash \phi}}
+                        {\Gamma_1,\gamma \vdash \phi} \\
+                     \inferrule*[right=\scriptsize axiom]
+                        {\gamma \in \Gamma_1,\gamma}
+                        {\Gamma_1,\gamma \vdash \gamma}}
+                    {\Gamma_1,\gamma \vdash \phi \wedge \gamma}}
+                {\Gamma_1,\gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
+    \end{mathpar}
+
+    This proves the first part of the equivalence. Now let $\Gamma_2 = \Gamma \cup \{(\phi \wedge \psi) \vee (\phi \wedge \gamma)\}$, then we want to show $\Gamma_2 \vdash \phi \wedge (\psi \vee \gamma)$. This means that if we can find derivations $\mathcal{D}_1'$ concluding in $\Gamma_2 \vdash \phi$ and $\mathcal{D}_2'$ concluding in $\Gamma_2 \vdash (\psi \vee \gamma)$ we can apply conjunction introduction to get the desired result.
+
+    We will start with the derivation tree $\mathcal{D}_1'$:
+
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\wedge$-E$_1$, lab=$\mathcal{D}_1''$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \wedge \psi \in \Gamma_2, \phi \wedge \psi}
+                    {\Gamma_2, \phi \wedge \psi \vdash \phi \wedge \psi}}
+                {\Gamma_2,\phi \wedge \psi \vdash \phi}
+                \quad
+        \inferrule*[right=\scriptsize $\wedge$-E$_1$, lab=$\mathcal{D}_1'''$]
+            {\inferrule*[right=\scriptsize axiom]
+                {\phi \wedge \gamma \in \Gamma_2, \phi \wedge \gamma}
+                {\Gamma_2, \phi \wedge \gamma \vdash \phi \wedge \gamma}}
+            {\Gamma_2,\phi \wedge \gamma \vdash \phi}
+    \end{mathpar}
+
+    \begin{mathpar}
+        \inferrule*[right= \scriptsize $\vee$-E, lab=$\mathcal{D}_1'$]
+            {\inferrule*[right=\scriptsize axiom]
+            {(\phi \wedge \psi) \vee (\phi \wedge \gamma)\in \Gamma_2}
+            {\Gamma_2 \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)} \\
+            \mathcal{D}_1'' \\
+            \mathcal{D}_1'''}
+            {\Gamma_2 \vdash \phi}
+    \end{mathpar}
+
+Next we construct the derivation tree $\mathcal{D}_2'$ as follows:
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-I$_2$, lab=$\mathcal{D}_2''$]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \wedge \psi \in \Gamma_2, \phi \wedge \psi}
+                    {\Gamma_2, \phi \wedge \psi \vdash \phi \wedge \psi}}
+                {\Gamma_2,\phi \wedge \psi \vdash \psi}}
+            {\Gamma_2,\phi \wedge \psi \vdash \psi \vee \gamma}
+        \quad
+    \inferrule*[right=\scriptsize $\vee$-I$_1$, lab=$\mathcal{D}_2'''$]
+        {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+            {\inferrule*[right=\scriptsize axiom]
+                {\phi \wedge \gamma \in \Gamma_2, \phi \wedge \gamma}
+                {\Gamma_2, \phi \wedge \gamma \vdash \phi \wedge \gamma}}
+            {\Gamma_2,\phi \wedge \gamma \vdash \gamma}}
+        {\Gamma_2,\phi \wedge \gamma \vdash \psi \vee \gamma}
+    \end{mathpar}
+    
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-E, lab=$\mathcal{D}_2'$]
+            {\inferrule*[right=\scriptsize axiom]
+                {(\phi \wedge \psi) \vee (\phi \wedge \gamma)\in \Gamma_2}
+                {\Gamma_2 \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)} \\
+                \mathcal{D}_2'' \\
+                \mathcal{D}_2'''}
+            {\Gamma_2 \vdash \psi \vee \gamma}
+    \end{mathpar}
+
+Lastly we put them together with conjunction introduction to get the desired result.
+\begin{mathpar}
+    \inferrule*[right=\scriptsize $\wedge$-I]
+        {\mathcal{D}_1' \\ \mathcal{D}_2'}
+        {\Gamma_2 \vdash \phi \wedge (\psi \vee \gamma)}
+\end{mathpar}
+This concludes the proof that $\phi \wedge (\psi \vee \gamma) \sim (\phi \wedge \psi) \vee (\phi \wedge \gamma)$.
+\end{proof}
+
+\begin{proof}[Agda proof]
+    $\:$
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conj-dist1}
-    In \Agda, the second entailment is formalised as follows:
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{conj-dist2}
-    We can combine these two proofs to show equivalence in \Agda:
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{dist-eq-conj}
 \end{proof}
 
-\begin{proposition}
-    $\phi \vee (\psi \wedge \gamma) \sim (\phi \vee \psi) \wedge (\phi \vee \gamma)$
+\begin{proposition}\label{disj-dist}
+    Distribution over disjunction holds, that is the equivalence $\phi \vee (\psi \wedge \gamma) \sim (\phi \vee \psi) \wedge (\phi \vee \gamma)$ holds.
 \end{proposition}
 
 \begin{proof}
-    We aim to show $\Gamma, \phi \vee (\psi \wedge \gamma) \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)$ and $\Gamma, (\phi \vee \psi) \wedge (\phi \vee \gamma) \vdash \phi \vee (\psi \wedge \gamma)$. For the deduction details please refer to \ref{A5} and \ref{A6}. The following is the proof of the first entailment in \Agda:
-    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disj-dist1}
-    The second entailment is shown in \Agda as follows:
-    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disj-dist2}
-    We can thus conclude that the two statements are equivalent:
-    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{dist-eq-disj}
+    We aim to show $\Gamma, \phi \vee (\psi \wedge \gamma) \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)$ and $\Gamma, (\phi \vee \psi) \wedge (\phi \vee \gamma) \vdash \phi \vee (\psi \wedge \gamma)$. 
+    
+    Let $\Gamma_1 = \Gamma \cup \{\phi \vee (\psi \wedge \gamma)\}$. We want to use disjunction elimination here, so we want to find derivations $\mathcal{D}_1$ and $\mathcal{D}_2$, such that
+
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize$\vee$-E]
+            {\inferrule*[right=\scriptsize axiom]
+                {\phi \vee (\psi \wedge \gamma) \in \Gamma_1}
+                {\Gamma_1 \vdash \phi \vee (\psi \wedge \gamma)} \\
+             \mathcal{D}_1 \\
+             \mathcal{D}_2}
+            {\Gamma_1 \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
+    \end{mathpar}
+    This means $\mathcal{D}_1$ should conclude with $\Gamma_1,\phi \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)$. We construct $\mathcal{D}_1$ as follows:
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize$\wedge$-I]
+            {\inferrule*[right=\scriptsize $\vee$-I$_2$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \in \Gamma_1,\phi}
+                    {\Gamma_1,\phi \vdash \phi}}
+                {\Gamma_1,\phi \vdash \phi \vee \psi} \\
+             \inferrule*[right=\scriptsize $\vee$-I$_2$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \in \Gamma_1,\phi}
+                    {\Gamma_1, \phi \vdash \phi}}
+                {\Gamma_1,\phi \vdash (\phi \vee \gamma)}}
+            {\Gamma_1,\phi \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
+    \end{mathpar}
+    Then we need to construct $\mathcal{D}_2$, concluding in $\Gamma_1,\psi \wedge \gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)$. This can be done as follows:
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\wedge$-I]
+            {\inferrule*[right=\scriptsize $\vee$-I$_1$]
+                {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {\psi \wedge \gamma \in \Gamma_1,\psi \wedge \gamma}
+                        {\Gamma_1,\psi \wedge \gamma \vdash \psi \wedge \gamma}}
+                    {\Gamma_1,\psi \wedge \gamma \vdash \psi}}
+                {\Gamma_1,\psi \wedge \gamma \vdash (\phi \vee \psi)} \\
+             \inferrule*[right=\scriptsize $\vee$-I$_1$]
+                {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {\psi \wedge \gamma \in \Gamma_1,\psi \wedge \gamma}
+                        {\Gamma_1,\psi \wedge \gamma \vdash \psi \wedge \gamma}}
+                    {\Gamma_1,\psi \wedge \gamma \vdash \gamma}}
+                {\Gamma_1,\psi \wedge \gamma \vdash (\phi \vee \gamma)}}
+            {\Gamma_1,\psi \wedge \gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
+    \end{mathpar}
+    This proves $\Gamma, \phi \vee (\psi \wedge \gamma) \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)$. To prove the second part we let $\Gamma_2 = \Gamma \cup \{(\phi \vee \psi) \wedge (\phi \vee \gamma)\}$, and then we find $\mathcal{D}_1'$ and $\mathcal{D}_2'$ such that
+
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-E]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {(\phi \vee \psi) \wedge (\phi \vee \gamma) \in \Gamma_2 }
+                    {\Gamma_2 \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
+                {\Gamma_2 \vdash \phi \vee \psi} \\
+             \mathcal{D}_1' \\
+             \mathcal{D}_2'}
+            {\Gamma_2 \vdash \phi \vee (\psi \wedge \gamma)}
+    \end{mathpar}
+    The derivation $\mathcal{D}_1'$ should conclude in $\Gamma_2, \phi \vdash \phi\vee (\psi \wedge \gamma)$. This is done as follows:
+    \begin{mathpar}
+        \inferrule*[right= \scriptsize $\vee$-I$_2$]
+            {\inferrule*[right= \scriptsize axiom]
+                {\phi \in \Gamma_2, \phi}
+                {\Gamma_2, \phi \vdash \phi}}
+            {\Gamma_2, \phi \vdash \phi\vee (\psi \wedge \gamma)}
+    \end{mathpar}
+    To derive $\mathcal{D}_2'$, concluding in $\Gamma_2,\psi \vdash \phi \vee (\psi \wedge \gamma)$, we need to use disjunction eliminaiton again. In order to do that we need to find derivations $\mathcal{D}_2''$, concluding in $\Gamma_2,\psi,\phi \vdash \phi \vee (\psi \wedge \gamma)$, and $\mathcal{D}_2'''$, concluding in $\Gamma_2,\psi,\gamma \vdash \phi \vee (\psi \wedge \gamma)$, such that this derivation $\mathcal{D}_2'$ holds.
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-E]
+            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
+                {\inferrule*[right=\scriptsize weakening]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {(\phi \vee \psi) \wedge (\phi \vee \gamma)\in \Gamma_2}
+                        {\Gamma_2 \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
+                    {\Gamma_2,\psi \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
+                {\Gamma_2,\psi \vdash \phi \vee \gamma} \\
+             \mathcal{D}_2'' \\
+             \mathcal{D}_2'''}
+            {\Gamma_2,\psi \vdash \phi \vee (\psi \wedge \gamma)}
+    \end{mathpar}
+    We can derive $\mathcal{D}_2''$ as follows:
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-I$_2$]
+                {\inferrule*[right=\scriptsize axiom]
+                    {\phi \in \Gamma',\psi,\phi}    
+                    {\Gamma',\psi,\phi \vdash \phi}}
+                {\Gamma',\psi,\phi\vdash \phi \vee (\psi \wedge \gamma)}
+    \end{mathpar}
+    And derivation $\mathcal{D}_2'''$ is done in the following way:
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-I$_1$]
+            {\inferrule*[right=\scriptsize $\wedge$-I]
+                {\inferrule*[right=\scriptsize weakening]
+                    {\inferrule*[right=\scriptsize axiom]
+                        {\psi \in \Gamma',\psi}
+                        {\Gamma',\psi \vdash \psi}}
+                    {\Gamma',\psi,\gamma \vdash \psi}
+                     \\
+                \inferrule*[right=\scriptsize axiom]
+                    {\gamma \in \Gamma',\psi,\gamma}
+                    {\Gamma',\psi,\gamma \vdash \gamma}}
+                {\Gamma',\psi,\gamma \vdash \psi \wedge \gamma}}
+            {\Gamma',\psi,\gamma \vdash \phi \vee (\psi \wedge \gamma)}
+    \end{mathpar}
+    Thus we have also shown that $\Gamma, (\phi \vee \psi) \wedge (\phi \vee \gamma) \vdash \phi \vee (\psi \wedge \gamma)$. So the equivalence $\phi \vee (\psi \wedge \gamma) \sim (\phi \vee \psi) \wedge (\phi \vee \gamma)$ holds.
 \end{proof}
 
 
+\begin{proof}[Agda proof]
+    $\:$
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disj-dist1}
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{disj-dist2}
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{dist-eq-disj}
+\end{proof}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -565,13 +917,17 @@ Thus, we have shown that the two statements are equivalent in \Agda:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Lindenbaum-Tarski algebra in Cubical Agda}
+\subsection{Definition}
 
 \begin{definition}[Lindenbaum-Tarski algebra]
     The Lindenbaum-Tarski algebra is the quotient algebra obtained by factoring the algebra of formulas by the equivalence relation $\sim$.
 \end{definition}
-We use the definiton of a set quotient from the \agdaCubical library to define the Lindenbaum-Tarski algebra:
+We use the definiton of a set quotient already existing in the \agdaCubical library to define the Lindenbaum-Tarski algebra.
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-def}
+\begin{agdadef}[Lindenbaum-Tarski algebra]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT}
+\end{agdadef}
+
 
 
 \subsection{Binary operations and propositional constants}
@@ -609,13 +965,20 @@ To define operations on the Lindenbaum-Tarski algebra, we utilize the already ex
             {\Gamma, a \wedge b \vdash a' \\ \Gamma, a \wedge b \vdash b'}
             {\Gamma, a \wedge b \vdash a' \wedge b'}
     \end{mathpar}
-    Proving $\Gamma, a' \wedge b' \vdash a \wedge b$ is identical to the first proof, so we omit it here. The full proof in \Agda:
+    Proving $\Gamma, a' \wedge b' \vdash a \wedge b$ is identical to the first proof, so we omit it here.
+\end{proof}
 
+\begin{proof}[Agda proof]
+    $\:$
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{eq-respects-conj}
 \end{proof}
 
-Now we can define conjunction on Lindenbaum-Tarski algebra in \Agda as follows:
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-conj}
+Now we are ready to define conjunction on Lindenbaum-Tarski algebra in \CubicalAgda.
+
+\begin{agdadef}[Conjunction on Lindenbaum-Tarski algebra]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-conj}
+\end{agdadef}
+
 
 The \texttt{setQuotBinOp} function takes four arguments: two proofs of reflexivity, the logical conjunction operator $\wedge/$, and a proof that the operator respects the equivalence relation. In this case, the reflexivity proofs are identical since A and B are of the same type. The resulting function takes two elements A and B in the Lindenbaum-Tarski algebra and returns their conjunction.
 
@@ -658,7 +1021,7 @@ When defining disjunction we need to prove a similar lemma as for the conjunctio
                 {\Gamma, b, a\vee b \vdash a' \vee b'}}
             {\Gamma,a\vee b, b \vdash a' \vee b'}
     \end{mathpar}
-    Then by using conjunction elimination we get the desired result:
+    Then by using disjunction elimination we get the desired result,
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\vee$-E]
             {\Gamma, a \vee b \vdash a \vee b \\
@@ -666,15 +1029,19 @@ When defining disjunction we need to prove a similar lemma as for the conjunctio
             \Gamma,a\vee b, b \vdash a' \vee b'}
             {\Gamma, a \vee b \vdash a' \vee b'}
     \end{mathpar}
-    Proving $\Gamma, a' \vee b' \vdash a \vee b$ is identical to the first proof, so we omit it here. In \Agda the full proof is written as follows:
+    Proving $\Gamma, a' \vee b' \vdash a \vee b$ is identical to the first proof, so we omit it here.    
+\end{proof}
+
+\begin{proof}[Agda proof]
+    $\:$
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{eq-respects-disj}
 \end{proof}
 
-Using \texttt{setQuotBinOp} we can now, with this lemma, define disjunction on Lindenbaum-Tarski algebra in \Agda:
+Using \texttt{setQuotBinOp} we can now, with this lemma, define disjunction on Lindenbaum-Tarski algebra in \CubicalAgda.
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-disj}
-
-Here, setQuotBinOp takes four arguments: two proofs of reflexivity ($\sim$-refl) for the equivalence relation, the logical disjunction operator ($\vee/$), and a proof that the operator respects the equivalence relation ($\sim$-respects-$\vee$). The function expects two reflexivity proofs, one for each of the two elements we are combining with the operator. In this case, both elements are of the same type, hence the reflexivity proofs are the same. The resulting function $\vee/$ takes two elements A and B in the Lindenbaum-Tarski algebra and returns their disjunction.
+\begin{agdadef}[Disjunction on Lindenbaum-Tarski algebra]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-disj}
+\end{agdadef}
 
 Next, in order to define negation on the Lindenbaum-Tarski algebra, we need to show that the underlying operation of negation in the propositional calculus respects the equivalence relation $\sim$. This can be achieved by proving another lemma. 
 
@@ -683,7 +1050,7 @@ Next, in order to define negation on the Lindenbaum-Tarski algebra, we need to s
 \end{lemma}
 
 \begin{proof}
-    From the definition of $\sim$ we are given $\Gamma, a \vdash a'$ and $\Gamma, a' \vdash a$. We aim to show that $\Gamma, \neg a \vdash \neg a'$ and $\Gamma, \neg a' \vdash \neg a$. The two proofs are identical so we will only prove $\Gamma, \neg a \vdash \neg a'$. This is done through natural deduction:
+    From the definition of $\sim$ we are given $\Gamma, a \vdash a'$ and $\Gamma, a' \vdash a$. We aim to show that $\Gamma, \neg a \vdash \neg a'$ and $\Gamma, \neg a' \vdash \neg a$. The two proofs are identical so we will only prove $\Gamma, \neg a \vdash \neg a'$ here. This is done through natural deduction,
 
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\neg$-I]
@@ -701,25 +1068,65 @@ Next, in order to define negation on the Lindenbaum-Tarski algebra, we need to s
                 {\Gamma, \neg a, a' \vdash \bot}}
             {\Gamma,\neg a \vdash \neg a'}
     \end{mathpar}
-    In \Agda, we define the full proof as follows:
+\end{proof}
+
+\begin{proof}[Agda proof]
+    $\:$
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{eq-respects-neg}
 \end{proof}
 
-This lemma shows that the negation operation on the propositional calculus respects the equivalence relation $\sim$, and allows us to define negation on the Lindenbaum-Tarski algebra in \Agda:
+This lemma shows that the negation operation on the propositional calculus respects the equivalence relation $\sim$, and allows us to define negation on the Lindenbaum-Tarski algebra in \CubicalAgda.
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-neg}
+\begin{agdadef}[Negation on Lindenbaum-Tarski algebra]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-neg}
+\end{agdadef}
+
 
 The \texttt{setQuotUnaryOp} function takes two arguments: a unary operator ($\neg/$) and a proof that the operator respects the equivalence relation ($\sim$-respects-$\neg$). The resulting function takes one element A in the Lindenbaum-Tarski algebra and returns its negation.
 
-To construct the equivalence classes for propositional constants, we can use the constructor from the definition of a set quotient in the already existing definition of set quotient in \CubicalAgda:
+To construct the equivalence classes for propositional constants, we can use the constructor from the definition of a set quotient in the already existing definition of set quotients in \CubicalAgda.
 
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-top}
-\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-bot}
+\begin{agdadef}[Logical constants in Lindenbaum-Tarski algebra]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-top}
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-bot}
+\end{agdadef}
 
 
 \subsection{Proof that the Lindenbaum Tarski algebra is Boolean}
 
-\begin{definition}[Lattice]
+To prove that the Lindenbaum-Tarski algebra is boolean we can show that it is a complemented distributive lattice. To do this there first needs to be a partial order defined on the set of equivalence classes.
+\begin{definition}\label{order-relation}
+    Let $\mathcal{L}$ be the propositional language described previously and let $S$ be the set of all sentences of $\mathcal{L}$. For each $x\in S$, let $[x]$ denote the equivalence class of $x$ under the equivalence relation $\sim$, and let $LT$ be the set of all such equivalence classes. Define the relation $\leq$ on $LT$ by
+    \begin{align*}
+        [x] \leq [y] \quad \text{iff} \quad \Gamma, x \vdash y
+    \end{align*}
+    and define join, meet and complementation as follows:
+    \begin{align*}
+        [x] \vee [y] \equiv [x\vee y], \quad [x] \wedge [y] \equiv [x \wedge y], \quad \neg[x] \equiv [\neg x].
+    \end{align*}
+\end{definition}
+Note that the operators on the left hand side are operating on the equivalence classes, and the operators on the right hand side are operating on formulas in the underlying propositional calculus.
+
+\begin{proposition}
+    The relation $\leq$ is a partial order on $LT$.
+\end{proposition}
+
+\begin{proof}
+    First, we must show that the relation is well defined on $LT$. If $x_2 \in [x_1]$ and $y_2\in [y_1]$, then 
+    \begin{align*}
+        [x_1] \leq [y_1] \quad \text{implies} \quad [x_2] \leq [y_2],
+    \end{align*}
+    or equivalently, using the definition above,
+    \begin{align*}
+        \Gamma, x_1 \vdash y_1 \quad \text{implies} \quad \Gamma, x_2 \vdash y_2
+    \end{align*}
+    where $\Gamma$ a context. Given $x_2 \in [x_1]$, we have that $x_1 \sim x_2$ which means that $\Gamma, x_1 \vdash x_2$ and $\Gamma, x_2 \vdash x_1$. Similarly, since $y_1 \sim y_2$, we have that $\Gamma, y_1 \vdash y_2$ and $\Gamma, y_2 \vdash y_1$. By applying Lemma \ref{trans-lemma} to $\Gamma, x_2 \vdash x_1$ and the assumption $\Gamma, x_1 \vdash y_1$, we get $\Gamma, x_2 \vdash y_1$. Applying the lemma again to the previous result together with $\Gamma, y_1 \vdash y_2$ yields $\Gamma, x_2 \vdash y_2$, showing that the relation is well defined. The operations join, meet and complementation have been shown to be well defined in the previous section when we defined the operations on the Lindenbaum-Tarski algebra.
+
+    Now, we need to show that $\leq$ is an order relation. Reflexivity follows immediately from the axiom rule. For antisymmetry, suppose $x \leq y$ and $y \leq x$, then we have that $\Gamma, x \vdash y$ and $\Gamma, y \vdash x$, so by definition of the equivalence relation we have $x \sim y$. This means that $[x] \equiv [y]$, hence $\leq$ is antisymmetric. Finally for transitivity assume that $x \leq y$ and $y \leq z$, then we have $\Gamma, x \vdash y$ and $\Gamma, y \vdash z$. Here we can apply Lemma \ref{trans-lemma} and get $\Gamma, x \vdash z$, that is $x \leq z$. Hence we can conclude that $\langle LT, \leq \rangle$ is a partially ordered set.
+\end{proof}
+
+
+\begin{definition}[Lattice]\label{lattice}
     A lattice is a non-empty partially ordered set $\langle L, \leq \rangle$ where every $x,y \in L$ has a supremum $x\vee y$, also called join, and an infimum $x \wedge y$, also called meet. It follows from this definition that
     $$x \leq y \quad \text{iff} \quad x \vee y = y \quad \text{iff} \quad x \wedge y = x.$$
 \end{definition}
@@ -746,14 +1153,107 @@ To construct the equivalence classes for propositional constants, we can use the
 \end{theorem}
 
 \begin{proof}
+    First we must show that the $\langle LT, \leq \rangle$ is a lattice. To do whis we must show that any two elements $[x],[y]\in LT$ has both a supremum and infimum, $[x] \vee [y]$ and $[x] \wedge[y]$ respectively. 
     
+    To show that $[x] \vee [y]$ is an upper bound for $\{[x],[y]\}$ we need to show both that $[x] \leq [x \vee y]$ and that $[y] \leq [x \vee y]$. From reflexivity we have $[x] \leq [x]$, or $\Gamma, x \vdash x$. Using disjunction introduction we get $\Gamma, x \vdash x \vee y$, hence $[x] \leq [x \vee y]$ which is equivalent to $[x] \leq [x] \vee [y]$. With an identical argument we also get that $[y] \leq [x]\vee [y]$. To show that this is the least upper bound, assume that $[z]$ is any other upper bound for $\{[x],[y]\}$, then $[x] \leq [z]$ and $[y] \leq [z]$. This means that we have $\Gamma, x \vdash z$ and $\Gamma, y \vdash z$. From the axiom rule and disjunction elimination rule we can deduce
+    \begin{mathpar}
+        \inferrule*[right = \scriptsize exchange, lab=$\mathcal{D}_1$]
+                {\inferrule*[right= \scriptsize weakening]
+                    {\Gamma, x \vdash z}
+                    {\Gamma, x, x \vee y \vdash z}}
+                {\Gamma, x \vee y, x \vdash z}
+        \quad
+        \inferrule*[right = \scriptsize exchange, lab=$\mathcal{D}_2$]
+        {\inferrule*[right= \scriptsize weakening]
+            {\Gamma, y \vdash z}
+            {\Gamma, y, x \vee y \vdash z}}
+        {\Gamma, x \vee y, y \vdash z}
+    \end{mathpar}
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\vee$-E]
+            {\inferrule*[right=axiom]
+                { }
+                {\Gamma, x \vee y \vdash x \vee y} \\
+            \mathcal{D}_1 \\
+            \mathcal{D}_2}
+            {\Gamma, x \vee y \vdash z}
+    \end{mathpar}
+    
+    Then $[x\vee y] \equiv [x] \vee [y] \leq [z]$. Hence $[x] \vee [y]$ is the least upper bound, i.e. the supremum.
+    
+    Showing that $[x] \wedge [y]$ is the infimum is similar. It should be clear that from conjunction elimination we have both $\Gamma, x \wedge y \vdash x$ and $\Gamma, x \wedge y \vdash y$, so $[x \wedge y] \equiv [x] \wedge [y] \leq x$ and $[x \wedge y] \equiv [x] \wedge [y] \leq y$. Now assume that $[z]$ is any other lower bound for $\{[x],[y]\}$, then $[z] \leq [x]$ and $[z] \leq [y]$. This means that $\Gamma, z \vdash x$ and $\Gamma, z \vdash y$, and we can conclude that $\Gamma, z \vdash x\wedge y$, hence $[z] \leq [x\wedge y] \equiv [x] \wedge [y]$. 
+
+    We have now shown that $\langle LT, \leq \rangle$ is a lattice. Distributivity follows from the distributive properties of propositional calculus, shown in Section \ref{dist-section}. Having shown that $\langle LT, \leq \rangle$ is a distributive lattice, all that is left is to show that it is also complemented. In Definition \ref{order-relation} we defined complementation of an element $[x]$ to be $\neg [x] = [\neg x]$. This complement is unique\cite{Tay:2012}, therefore we need to show that 
+    \begin{align*}
+        [x]\vee \neg [x] \equiv [\top] \quad \text{and} \quad [x] \wedge \neg [x] \equiv [\bot].
+    \end{align*}
+    Since we have that
+    $$[x]\vee \neg [x] \equiv [x]\vee [\neg x] \equiv [x\vee \neg x]$$
+    it suffices to show that $\Gamma, x\vee \neg x \vdash \top$ and $\Gamma, \top \vdash x\vee \neg x$. This is simply done with $\top$-I and LEM respectively. To show $[x] \wedge \neg [x] \equiv [\bot]$ we first we need to show $\Gamma, x \wedge \neg x \vdash \bot$, this is done by conjunction elimination and negation elimination,
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\neg$-E]
+            {\inferrule*[right= \scriptsize $\wedge$-E$_1$]
+                {\inferrule*[right=\scriptsize axiom]
+                    { }
+                    {\Gamma,x \wedge \neg x \vdash x \wedge \neg x}}
+                {\Gamma,x \wedge \neg x \vdash x} \\
+            \inferrule*[right= \scriptsize $\wedge$-E$_2$]
+                {\inferrule*[right=\scriptsize axiom]
+                { }
+                {\Gamma,x \wedge \neg x \vdash x \wedge \neg x}}
+                {\Gamma,x \wedge \neg x \vdash \neg x}}
+            {\Gamma,x \wedge \neg x \vdash \bot}
+    \end{mathpar}
+    The other direction, i.e $\Gamma, \bot \vdash x \wedge \neg x$, is just applying $\bot$-E. This shows that $\langle LT, \leq \rangle$ is a complemented distributive lattice, and thus a boolean algebra.
 \end{proof}
 
+\begin{proof}[Agda proof]
+    We make use of the fact that there is already a function for constructing a distributive lattice in the \agdaCubical library. We need only provide all the proofs needed for the arguments.
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-DistLattice}
+    Lastly we also need to provide the proof that the lattice is complemented.
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT-complemented}
+\end{proof}
+
+
 \subsection{Soundness}
+Soundness is a fundamental property of logical systems that ensures that the conclusions drawn from the system are reliable and trustworthy. In particular, soundness guarantees that if a proposition can be derived using the inference rules of the logical system from a set of true premises, then that proposition is true.
+
+\begin{theorem}
+    The Lindenbaum-Tarski algebra is sound.
+\end{theorem}
+
+\begin{proof}
+    To prove that the Lindenbaum-Tarski algebra is sound, we need to show that any formula that is provable also belongs to the same equivalence class as $\top$. In other words, we need to show that if $\Gamma \vdash \phi$ then $[\phi] \equiv [\top]$. By definiton of the Lindenbaum-Tarski algebra this is equivalent to showing $\Gamma, \phi \vdash \top$ and $\Gamma, \top \vdash \phi$. This can be done using $\top$-I and weakening respectively.
+    \begin{mathpar}
+        \inferrule*[right=\scriptsize $\top$-I]
+            { }
+            {\Gamma, \phi \vdash \top}
+        \qquad
+        \inferrule*[right= \scriptsize weakening]
+            {\Gamma \vdash \phi}
+            {\Gamma, \top \vdash \phi}
+    \end{mathpar}
+\end{proof}
+
+\begin{proof}[Agda proof]
+    $\:$
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{sound}
+\end{proof}
 
 
 
+\section{Conclusions}
+We successfully formalized the Lindenbaum-Tarski algebra in \CubicalAgda
 
+\subsection{Possible improvements}
+
+We defined the notion of a context as a set of formulas and implemented it as a list in \Agda. To improve the implementation of the structural rule exchange, it is worth exploring the possibility of exchanging any two elements in the context, rather than just the last two.
+
+Additionally, we could consider modifying the deduction rules for the propositional calculus, such as adding implication, to see if this reduces the dependency on the structural rules.
+
+
+\subsection{Future work}
+We have formalized the Lindenbaum-Tarski algebra over a propositional language, the next step would be to define it over a first order language. The equivalence relation $\sim$ and the binary relations together with negation is defined as previously, but we would need to account for the quantifiers.
 
 
 
@@ -773,305 +1273,8 @@ To construct the equivalence classes for propositional constants, we can use the
 % Appendices
 \newpage
 \begin{appendices}
-
-    \section{Derivations}
-    
-    \begin{landscape}
-
-        \subsection{Derivation of $\Gamma, \phi \wedge (\psi \wedge \gamma)\vdash (\phi \wedge \psi) \wedge \gamma$}\label{A1}
-        
-        \begin{mathpar}
-            \inferrule*[right=\scriptsize $\wedge$-I]
-                {\mathcal{D}_1 \\ \mathcal{D}_2}
-                {\Gamma, \phi \wedge (\psi \wedge \gamma)\vdash (\phi \wedge \psi) \wedge \gamma}
-        \end{mathpar}
-
-        \begin{mathpar}
-            \inferrule*[right=\scriptsize $\wedge$-I, lab=\large$\mathcal{D}_1$]
-                {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
-                    {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-                       {\inferrule*[right=\scriptsize axiom]
-                            {\phi \wedge (\psi \wedge \gamma) \in \Gamma,\phi \wedge (\psi \wedge \gamma)}
-                            {\Gamma,\phi \wedge (\psi \wedge \gamma) \vdash \phi \wedge (\psi \wedge \gamma)}}
-                        {\Gamma,\phi \wedge (\psi \wedge \gamma) \vdash \psi \wedge \gamma}}
-                    {\Gamma,\phi \wedge (\psi \wedge \gamma) \vdash \psi} \\
-                 \inferrule*[right=\scriptsize $\wedge$-E$_1$]
-                    {\inferrule*[right=\scriptsize axiom]
-                        {\phi \wedge (\psi \wedge \gamma) \in \Gamma'}
-                        {\Gamma,\phi \wedge (\psi \wedge \gamma) \vdash \phi \wedge (\psi \wedge \gamma)}}
-                    {\Gamma,\phi \wedge (\psi \wedge \gamma) \vdash \phi}}
-                {\Gamma ,\phi \wedge (\psi \wedge \gamma)\vdash \phi \wedge \psi}
-        \end{mathpar}
-
-        \begin{mathpar}
-            \inferrule*[right=\scriptsize $\wedge$-E$_2$, lab= \large $\mathcal{D}_2$]
-                    {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-                        {\inferrule*[right=\scriptsize axiom]
-                            {\phi \wedge (\psi \wedge \gamma) \in \Gamma'}
-                            {\Gamma,\phi \wedge (\psi \wedge \gamma) \vdash \phi \wedge (\psi \wedge \gamma)}}
-                        {\Gamma,\phi \wedge (\psi \wedge \gamma) \vdash \psi \wedge \gamma}}
-                    {\Gamma,\phi \wedge (\psi \wedge \gamma) \vdash \gamma}
-        \end{mathpar}
-
-    \newpage
-    \subsection{Derivation of $\Gamma,\phi \vee (\psi \vee \gamma) \vdash (\phi \vee \psi) \vee \gamma$}\label{A2}
-
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize $\vee$-E]
-            {\inferrule*[right=\scriptsize axiom]
-                {\phi \vee (\psi \vee \gamma) \in \Gamma,\phi \vee (\psi \vee \gamma)}
-                {\Gamma,\phi \vee (\psi \vee \gamma) \vdash \phi \vee (\psi \vee \gamma)} \\
-            \inferrule*[right=\scriptsize$\vee$-I$_2$]
-                {\inferrule*[right=\scriptsize$\vee$-I$_2$]
-                    {\inferrule*[right=\scriptsize axiom]
-                        {\phi \in \Gamma,\phi \vee (\psi \vee \gamma),\phi}
-                        {\Gamma,\phi \vee (\psi \vee \gamma), \phi \vdash \phi}}
-                    {\Gamma,\phi \vee (\psi \vee \gamma), \phi \vdash \phi \vee \psi}}
-                {\Gamma,\phi \vee (\psi \vee \gamma), \phi \vdash (\phi \vee \psi) \vee \gamma} \\
-             \inferrule*[]
-                {}
-                {\mathcal{D} \\\\ \Gamma,\phi \vee (\psi \vee \gamma), (\psi \vee \gamma) \vdash \psi \vee \gamma}}
-            {\Gamma,\phi \vee (\psi \vee \gamma) \vdash (\phi \vee \psi) \vee \gamma}
-    \end{mathpar}
-
-    \begin{mathpar}
-        \mprset{sep=1em}
-        \inferrule*[right=\scriptsize$\vee$-E, lab=\large $\mathcal{D}$]
-            {\inferrule*[right=\scriptsize axiom]
-                {\psi \vee \gamma \in \Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma}
-                {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma\vdash \psi \vee \gamma} \\
-                \inferrule*[]{}{\mathcal{D}' \\\\ \Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\psi \vdash (\phi \vee \psi) \vee \gamma} \\
-             \inferrule*[right=\scriptsize$\vee$-I$_1$]
-                {\inferrule*[right=\scriptsize axiom]
-                    {\gamma \in \Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\gamma}
-                    {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\gamma \vdash \gamma}}
-                {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\gamma \vdash (\phi \vee \psi) \vee \gamma}}
-            {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma\vdash (\phi \vee \psi) \vee \gamma}
-    \end{mathpar}
-
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize$\vee$-I$_2$, lab=\large $\mathcal{D}'$]
-                {\inferrule*[right=\scriptsize$\vee$-I$_1$]
-                    {\inferrule*[right=\scriptsize axiom]
-                        {\psi \in \Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma, \psi}
-                        {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\psi \vdash \psi}}
-                    {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\psi \vdash \phi \vee \psi}}
-                {\Gamma,\phi \vee (\psi \vee \gamma), \psi \vee \gamma,\psi \vdash (\phi \vee \psi) \vee \gamma} 
-    \end{mathpar}
-
-
-    \subsection{Derivation of $\Gamma,\phi \wedge (\psi \vee \gamma) \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)$}\label{A3}
-    \begin{mathpar}
-        \mprset{sep=1em}
-        \inferrule*[right=\scriptsize $\vee$-E]
-            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-                {\inferrule*[right=\scriptsize axiom]
-                    {\phi \wedge (\psi \vee \gamma) \in \Gamma,\phi \wedge (\psi \vee \gamma)}
-                    {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \phi \wedge (\psi \vee \gamma)}}
-                {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \psi \vee \gamma} \\ 
-             \inferrule*[]
-                {}
-                {\mathcal{D}_1 \\\\ \Gamma,\phi \wedge (\psi \vee \gamma),\psi \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}\\ 
-                \inferrule*[]
-                {}
-                {\mathcal{D}_2 \\\\ \Gamma,\phi \wedge (\psi \vee \gamma),\gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}}
-            {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
-    \end{mathpar}
-    
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize $\vee$-I$_1$, lab=\large $\mathcal{D}_1$]
-            {\inferrule*[right=\scriptsize $\wedge$-I]
-                {\inferrule*[right=\scriptsize weakening]
-                    {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
-                        {\inferrule*[right=\scriptsize axiom]
-                            {\phi \wedge (\psi \vee \gamma) \in \Gamma,\phi \wedge (\psi \vee \gamma)}
-                            {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \phi \wedge (\psi \vee \gamma)}}
-                        {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \phi}}
-                    {\Gamma,\phi \wedge (\psi \vee \gamma),\psi \vdash \phi} \\
-                 \inferrule*[right=\scriptsize axiom]
-                    {\psi \in \Gamma,\phi \wedge (\psi \vee \gamma),\psi}
-                    {\Gamma,\phi \wedge (\psi \vee \gamma),\psi \vdash \psi}}
-                {\Gamma,\phi \wedge (\psi \vee \gamma),\psi \vdash \phi \wedge \psi}}
-            {\Gamma,\phi \wedge (\psi \vee \gamma),\psi \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
-    \end{mathpar}
-    
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize $\vee$-I$_1$, lab=\large $\mathcal{D}_2$]
-                {\inferrule*[right=\scriptsize $\wedge$-I]
-                    {\inferrule*[right=\scriptsize weakening]
-                        {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
-                            {\inferrule*[right=\scriptsize axiom]
-                                {\phi \wedge (\psi \vee \gamma)\in\Gamma'}
-                                {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \phi \wedge (\psi \vee \gamma)}}
-                            {\Gamma,\phi \wedge (\psi \vee \gamma) \vdash \phi}}
-                        {\Gamma,\phi \wedge (\psi \vee \gamma),\gamma \vdash \phi} \\
-                     \inferrule*[right=\scriptsize axiom]
-                        {\gamma \in \Gamma,\phi \wedge (\psi \vee \gamma),\gamma}
-                        {\Gamma,\phi \wedge (\psi \vee \gamma),\gamma \vdash \gamma}}
-                    {\Gamma,\phi \wedge (\psi \vee \gamma),\gamma \vdash \phi \wedge \gamma}}
-                {\Gamma,\phi \wedge (\psi \vee \gamma),\gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
-    \end{mathpar}
-
-
-    \subsection{Derivation of $\Gamma,(\phi \wedge \psi) \vee (\phi \wedge \gamma) \vdash \phi \wedge (\psi \vee \gamma)$}\label{A4}
-    Denote $\Gamma' = \Gamma \cup \{(\phi \wedge \psi) \vee (\phi \wedge \gamma)\}$
-
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize $\wedge$-I]
-            {\inferrule*[]{}{\mathcal{D}_1 \\\\ \Gamma' \vdash \phi} \\
-             \inferrule*[]{}{\mathcal{D}_2 \\\\ \Gamma' \vdash \psi \vee \gamma}}
-            {\Gamma' \vdash \phi \wedge (\psi \vee \gamma)}
-    \end{mathpar}
-    
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize $\vee$-E,lab=\large $\mathcal{D}_1$]
-            {\inferrule*[right=\scriptsize axiom]
-                {(\phi \wedge \psi) \vee (\phi \wedge \gamma)\in \Gamma'}
-                {\Gamma' \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)} \\
-             \inferrule*[right=\scriptsize $\wedge$-E$_1$]
-                {\inferrule*[right=\scriptsize axiom]
-                    {\phi \wedge \psi \in \Gamma', \phi \wedge \psi}
-                    {\Gamma', \phi \wedge \psi \vdash \phi \wedge \psi}}
-                {\Gamma',\phi \wedge \psi \vdash \phi} \\
-            \inferrule*[right=\scriptsize $\wedge$-E$_1$]
-                {\inferrule*[right=\scriptsize axiom]
-                    {\phi \wedge \gamma \in \Gamma', \phi \wedge \gamma}
-                    {\Gamma', \phi \wedge \gamma \vdash \phi \wedge \gamma}}
-                {\Gamma',\phi \wedge \gamma \vdash \phi}}
-            {\Gamma' \vdash \phi}
-    \end{mathpar}
-    
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize $\vee$-E, lab=\large $\mathcal{D}_2$]
-            {\inferrule*[right=\scriptsize axiom]
-                {(\phi \wedge \psi) \vee (\phi \wedge \gamma)\in \Gamma'}
-                {\Gamma' \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)} \\
-             \inferrule*[right=\scriptsize $\vee$-I$_2$]
-                {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-                    {\inferrule*[right=\scriptsize axiom]
-                        {\phi \wedge \psi \in \Gamma', \phi \wedge \psi}
-                        {\Gamma', \phi \wedge \psi \vdash \phi \wedge \psi}}
-                    {\Gamma',\phi \wedge \psi \vdash \psi}}
-                {\Gamma',\phi \wedge \psi \vdash \psi \vee \gamma}
-             \inferrule*[right=\scriptsize $\vee$-I$_1$]
-                {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-                    {\inferrule*[right=\scriptsize axiom]
-                        {\phi \wedge \gamma \in \Gamma', \phi \wedge \gamma}
-                        {\Gamma', \phi \wedge \gamma \vdash \phi \wedge \gamma}}
-                    {\Gamma',\phi \wedge \gamma \vdash \gamma}}
-                {\Gamma',\phi \wedge \gamma \vdash \psi \vee \gamma}}
-            {\Gamma' \vdash \psi \vee \gamma}
-    \end{mathpar}
-
-
-    \subsection{Derivation of $\Gamma,\phi \vee (\psi \wedge \gamma) \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)$}\label{A5}
-
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize$\vee$-E]
-            {\inferrule*[right=\scriptsize axiom]
-                {\phi \vee (\psi \wedge \gamma) \in \Gamma,\phi \vee (\psi \wedge \gamma)}
-                {\Gamma,\phi \vee (\psi \wedge \gamma) \vdash \phi \vee (\psi \wedge \gamma)} \\
-             \inferrule*[] {} {\mathcal{D}_1 \\\\ \Gamma,\phi \vee (\psi \wedge \gamma) \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma) }\\
-             \inferrule*[]{}{\mathcal{D}_2 \\\\ \Gamma,\phi \vee (\psi \wedge \gamma) \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
-            {\Gamma,\phi \vee (\psi \wedge \gamma) \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
-    \end{mathpar}
-    
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize$\wedge$-I, lab=\large $\mathcal{D}_1$]
-            {\inferrule*[right=\scriptsize $\vee$-I$_2$]
-                {\inferrule*[right=\scriptsize axiom]
-                    {\phi \in \Gamma,\phi \vee (\psi \wedge \gamma),\phi}
-                    {\Gamma,\phi \vee (\psi \wedge \gamma),\phi \vdash \phi}}
-                {\Gamma,\phi \vee (\psi \wedge \gamma),\phi \vdash \phi \vee \psi} \\
-             \inferrule*[right=\scriptsize $\vee$-I$_2$]
-                {\inferrule*[right=\scriptsize axiom]
-                    {\phi \in \Gamma,\phi \vee (\psi \wedge \gamma),\phi}
-                    {\Gamma,\phi \vee (\psi \wedge \gamma), \phi \vdash \phi}}
-                {\Gamma,\phi \vee (\psi \wedge \gamma),\phi \vdash (\phi \vee \gamma)}}
-            {\Gamma,\phi \vee (\psi \wedge \gamma),\phi \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
-    \end{mathpar}
-    
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize $\wedge$-I, lab=\large $\mathcal{D}_2$]
-            {\inferrule*[right=\scriptsize $\vee$-I$_1$]
-                {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
-                    {\inferrule*[right=\scriptsize axiom]
-                        {\psi \wedge \gamma \in \Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma}
-                        {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash \psi \wedge \gamma}}
-                    {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash \psi}}
-                {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash (\phi \vee \psi)} \\
-             \inferrule*[right=\scriptsize $\vee$-I$_1$]
-                {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-                    {\inferrule*[right=\scriptsize axiom]
-                        {\psi \wedge \gamma \in \Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma}
-                        {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash \psi \wedge \gamma}}
-                    {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash \gamma}}
-                {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash (\phi \vee \gamma)}}
-            {\Gamma,\phi \vee (\psi \wedge \gamma),\psi \wedge \gamma \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}
-    \end{mathpar}
-    
-    \newpage
-    \subsection{Derivation of $\Gamma,(\phi \vee \psi) \wedge (\phi \vee \gamma) \vdash \phi \vee (\psi \wedge \gamma)$}\label{A6}
-
-    Denote $\Gamma' = \Gamma \cup \{(\phi \vee \psi) \wedge (\phi \vee \gamma)\}$
-
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize $\vee$-E]
-            {\inferrule*[right=\scriptsize $\wedge$-E$_1$]
-                {\inferrule*[right=\scriptsize axiom]
-                    {(\phi \vee \psi) \wedge (\phi \vee \gamma) \in \Gamma' }
-                    {\Gamma' \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
-                {\Gamma' \vdash \phi \vee \psi} \\
-             \inferrule*[right=\scriptsize $\vee$-I$_2$]
-                {\inferrule*[right=\scriptsize axiom]
-                    {\phi \in \Gamma',\phi}
-                    {\Gamma',\phi \vdash \phi}}
-                {\Gamma',\phi \vdash \phi \vee (\psi \wedge \gamma)} \\
-             \inferrule*[]{}{\mathcal{D} \\\\ \Gamma',\psi \vdash \phi \vee (\psi \wedge \gamma)}}
-            {\Gamma',\phi \vdash \phi \vee (\psi \wedge \gamma)}
-    \end{mathpar}
-    
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize $\vee$-E, lab=\large $\mathcal{D}$]
-            {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
-                {\inferrule*[right=\scriptsize weakening]
-                    {\inferrule*[right=\scriptsize axiom]
-                        {(\phi \vee \psi) \wedge (\phi \vee \gamma)\in \Gamma'}
-                        {\Gamma' \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
-                    {\Gamma',\psi \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
-                {\Gamma',\psi \vdash \phi \vee \gamma} \\
-             \inferrule*[right=\scriptsize $\vee$-I$_2$]
-                {\inferrule*[right=\scriptsize axiom]
-                    {\phi \in \Gamma',\psi,\phi}    
-                    {\Gamma',\psi,\phi \vdash \phi}}
-                {\Gamma',\psi,\phi\vdash \phi \vee (\psi \wedge \gamma)} \\
-             \inferrule*[]{}{\mathcal{D}'}}
-            {\Gamma',\psi,\phi \vdash \phi \vee (\psi \wedge \gamma)}
-    \end{mathpar}
-    
-    \begin{mathpar}
-        \inferrule*[right=\scriptsize $\vee$-I$_1$, lab=\large $\mathcal{D}'$]
-            {\inferrule*[right=\scriptsize $\wedge$-I]
-                {\inferrule*[right=\scriptsize weakening]
-                    {\inferrule*[right=\scriptsize axiom]
-                        {\psi \in \Gamma',\psi}
-                        {\Gamma',\psi \vdash \psi}}
-                    {\Gamma',\psi,\gamma \vdash \psi}
-                     \\
-                \inferrule*[right=\scriptsize axiom]
-                    {\gamma \in \Gamma',\psi,\gamma}
-                    {\Gamma',\psi,\gamma \vdash \gamma}}
-                {\Gamma',\psi,\gamma \vdash \psi \wedge \gamma}}
-            {\Gamma',\psi,\gamma \vdash \phi \vee (\psi \wedge \gamma)}
-    \end{mathpar}
-
-
-
-
-    \end{landscape}
-
     \section{LindenbaumTarski.agda}\label{code}
-    %\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{all}
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{src}
 \end{appendices}
 
 \end{document}

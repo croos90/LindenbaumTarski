@@ -112,7 +112,6 @@ module _ {Γ : ctxt} where
 
   infixl 25 ¬/_
 
-
   ------------------------------------------------------
   -- Defining relation where two formulas are related
   -- if they are provably equivalent. Then proving that
@@ -352,7 +351,7 @@ module _ {Γ : ctxt} where
     where
         ∨/-comp : ∀ (A : LindenbaumTarski) → A ∨/ ¬/ A ≡ ⊤/
         ∨/-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (⊤-I , LEM)
-      
+
 
   LindenbaumTarski-DistLattice-infimum : (x : fst LindenbaumTarski-DistLattice) → x ∧l ¬/ x ≡ 0l
   LindenbaumTarski-DistLattice-infimum x = ∧/-comp x
