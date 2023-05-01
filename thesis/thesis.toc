@@ -1,0 +1,27 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {section}{\numberline {2}Agda proof assistant}{1}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Propositions as types}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Simply typed functions and datatypes}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Dependent types}{3}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Cubical Agda}{4}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Propositional calculus in Agda}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Formulas}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Context}{6}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Inference rules}{6}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Law of excluded middle}{7}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Logical connectives}{7}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.3}Structural rules}{9}{subsubsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.4}Properties of a propositional calculus}{10}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Equivalence relation}{10}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}Commutativity}{12}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.3}Associativity}{13}{subsubsection.3.4.3}%
+\contentsline {subsubsection}{\numberline {3.4.4}Distributivity}{15}{subsubsection.3.4.4}%
+\contentsline {section}{\numberline {4}Lindenbaum-Tarski algebra in Cubical Agda}{19}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Definition}{19}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Binary operations and propositional constants}{19}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Proof that the Lindenbaum-Tarski algebra is Boolean}{23}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Soundness}{27}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Conclusions}{28}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Possible improvements}{28}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Future work}{28}{subsection.5.2}%
+\contentsline {section}{Appendix \numberline {A}LindenbaumTarski.agda}{30}{appendix.1.A}%

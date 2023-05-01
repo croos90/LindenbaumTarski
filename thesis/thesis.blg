@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d (TeX Live 2019/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: thesis.aux
+The style file: plainurl.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: refs.bib
+Warning--to sort, need author or key in AgdaDoc
+Warning--empty publisher in carlstrom
+You've used 6 entries,
+            2882 wiz_defined-function locations,
+            654 strings with 5589 characters,
+and the built_in function-call counts, 1946 in all, are:
+= -- 184
+> -- 48
+< -- 0
++ -- 18
+- -- 12
+* -- 64
+:= -- 274
+add.period$ -- 17
+call.type$ -- 6
+change.case$ -- 23
+chr.to.int$ -- 0
+cite$ -- 8
+duplicate$ -- 58
+empty$ -- 234
+format.name$ -- 12
+if$ -- 542
+int.to.chr$ -- 0
+int.to.str$ -- 6
+missing$ -- 4
+newline$ -- 32
+num.names$ -- 10
+pop$ -- 85
+preamble$ -- 1
+purify$ -- 18
+quote$ -- 0
+skip$ -- 156
+stack$ -- 0
+substring$ -- 30
+swap$ -- 6
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 20
+warning$ -- 2
+while$ -- 10
+width$ -- 7
+write$ -- 59
+(There were 2 warnings)
