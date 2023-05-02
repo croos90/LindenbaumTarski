@@ -20,7 +20,7 @@
 \contentsline {subsection}{\numberline {4.1}Definition}{19}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Binary operations and propositional constants}{19}{subsection.4.2}%
 \contentsline {subsection}{\numberline {4.3}Proof that the Lindenbaum-Tarski algebra is Boolean}{23}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Soundness}{27}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.4}Soundness}{28}{subsection.4.4}%
 \contentsline {section}{\numberline {5}Conclusions}{28}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Possible improvements}{28}{subsection.5.1}%
 \contentsline {subsection}{\numberline {5.2}Future work}{28}{subsection.5.2}%
