@@ -39,7 +39,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{abstract}
-    This thesis focuses on formalizing the Lindenbaum-Tarski algebra in Cubical Agda, an area of mathematical logic that involves the quotient of the algebra of formulas by an equivalence relation defined in terms of provability. To achieve this goal, we first formalize classical propositional logic and its properties in Agda, and define the equivalence relation on formulas. We then proceed to define the Lindenbaum-Tarski algebra in Cubical Agda and prove its soundness and properties. In particular, we show that the algebra is a complemented distributive lattice, which implies that it is Boolean.
+    This thesis focuses on formalizing the Lindenbaum-Tarski algebra in Cubical Agda, an area of mathematical logic that involves the quotienting of the algebra of formulas by an equivalence relation defined in terms of provability. To achieve this goal, we first formalize classical propositional logic and its properties in Agda, and define the equivalence relation on formulas. We then proceed to define the Lindenbaum-Tarski algebra in Cubical Agda and prove its soundness and properties. In particular, we show that the algebra is a complemented distributive lattice, which implies that it is boolean.
 \end{abstract}
 
 \tableofcontents
@@ -60,9 +60,9 @@ The Lindenbaum-Tarski algebra is an area of mathematical logic that involves fac
 
 The first step towards our goal is to formalize classical propositional logic and its properties in \Agda, defining the equivalence relation on formulas such that two formulas are equivalent if and only if they are provably equivalent in the context. This will be the focus of Section 3.
 
-In Section 4, we will move on to define the Lindenbaum-Tarski algebra in Cubical Agda, proving soundness and some properties of the algebra. Our primary goal will be to formalize that the algebra is a Boolean algebra. We will use the fact that a Boolean algebra can be viewed as a complemented distributive lattice to formalize that the Lindenbaum-Tarski algebra is Boolean.
+In Section 4, we will move on to define the Lindenbaum-Tarski algebra in Cubical Agda, proving soundness and some properties of the algebra. Our primary goal will be to formalize that the algebra is a boolean algebra. We will use the fact that a boolean algebra can be viewed as a complemented distributive lattice to formalize that the Lindenbaum-Tarski algebra is boolean.
 
-This formalization will provide the \agdaCubical library with a formalization of Lindenbaum-Tarski algebra, that is currently missing, and allow for the verification of mathematical proofs related to Lindenbaum-Tarski algebra in the future.
+This formalization will provide the \agdaCubical library with a formalisation of Lindenbaum-Tarski algebra, that is currently missing, and allow for the verification of mathematical proofs related to Lindenbaum-Tarski algebra in the future.
 
 
 
@@ -74,7 +74,7 @@ This formalization will provide the \agdaCubical library with a formalization of
 
 Agda is a powerful dependently typed programming language that is based on Martin Löf's type theory. It allows us to encode mathematical propositions as types and their proofs as programs, ensuring the correctness and consistency of our reasoning. The language's strong type system also provides powerful tools for automatically verifying the correctness of proofs.\cite{BoveDybjer2008}
 
-Furthermore, Agda is a total language, which means that any program e of type T will always terminate with a value in T. This guarantees the absence of runtime errors and prevents the creation of non-terminating programs, unless explicitly requested by the programmer.\cite{AgdaDoc}
+Furthermore, Agda is a total language, which means that any program e of type T will always terminate with a value in T. This guarantees the absence of runtime errors and prevents the creation of nonterminating programs, unless explicitly requested by the programmer.\cite{AgdaDoc}
 
 
 \subsection{Propositions as types}
@@ -104,9 +104,9 @@ This is similar to the concept of product types in programming languages, where 
 This allows us to reason about logical propositions in terms of programming language types, and to use the tools and techniques of programming languages like \Agda to reason about logical proofs.
 
 
-\subsection{Simply typed functions and data types}
+\subsection{Simply typed functions and datatypes}
 
-A data declaration introduces a new datatype with its name, type, and constructors, along with their types. For instance, the Boolean type can be defined as follows:
+A data declaration introduces a new datatype with its name, type, and constructors, along with their types. For instance, the boolean type can be defined as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{bool}
 Here, \texttt{Bool} is the name of the datatype, and \texttt{true} and \texttt{false} are its constructors. Functions over the datatype \texttt{Bool} can be defined using pattern matching, similar to \Haskell. For example, the \texttt{not} function can be defined as follows:
@@ -125,7 +125,7 @@ If a name contains underscores ('\_') in the definition, they represent where th
 
 \ExecuteMetaData[agda/latex/examples.tex]{infix}
 
-Data types can also be parameterized by other types. For instance, the type of lists with elements of an arbitrary type is defined as follows:
+Datatypes can also be parameterized by other types. For instance, the type of lists with elements of an arbitrary type is defined as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{list}
 This declares the datatype \texttt{List} as a function of a type $A$ that maps to the type \texttt{List} $A$. It has two constructors, '[ ]' for an empty list and '::' for a list that has an element of type $A$ followed by a list of type \texttt{List} $A$. The underscore before '::' is a placeholder for the first argument of the constructor (an element of type $A$), and the underscore after '::' is a placeholder for the second argument of the constructor (a list of type \texttt{List} $A$).
@@ -175,11 +175,11 @@ In order to represent propositional calculus in \Agda we first need to define th
         \item auxiliary symbols: (, ).
     \end{itemize}
 \end{definition}
-Note that we have omitted the common logical connectives $\rightarrow$ and $\leftrightarrow$. This is because we can define them using other connectives, 
+Note that we have omitted the common logical connectives $\rightarrow$ and $\leftrightarrow$. This is becuase we can define them using other connectives, 
 \begin{align*}
     \phi \rightarrow \psi &\myeq \neg \phi \vee \psi, \\
     \phi \leftrightarrow \psi &\myeq (\neg \phi \vee \psi) \wedge (\neg \psi \vee \phi),
-\end{align*}making them redundant. It is possible to choose an even smaller set of connectives \cite{vanDalen}, but we choose this set as it is convenient.
+\end{align*}making them reduntant. It is possible to choose an even smaller set of connectives \cite{vanDalen}, but we choose this set as it is convenient.
 
 \begin{definition}[Well formed formula]\label{wellformed}
     The set of well formed formulas is inductively defined as follows:
@@ -313,7 +313,7 @@ For disjunction, we have two introduction rules. If we can derive a formula $\ph
 
 
 
-The elimination rule for disjunction is a bit more involved. If $\phi \vee \psi$ can be deduced from $\Gamma$, then we can conclude $\Gamma \vdash \gamma$ if the extended contexts $\Gamma, \phi$ and $\Gamma, \psi$ both conclude in $\gamma$.
+The eliminination rule for disjunction is a bit more involved. If $\phi \vee \psi$ can be deduced from $\Gamma$, then we can conclude $\Gamma \vdash \gamma$ if the extended contexts $\Gamma, \phi$ and $\Gamma, \psi$ both conclude in $\gamma$.
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\vee$-E]
         {\Gamma \vdash \phi \vee \psi \\ 
@@ -414,7 +414,7 @@ In this section we aim to prove some properties of propositional calculus as the
     Let $S$ be the set of all the sentences of $\mathcal{L}$. Define the relation $\sim$ such that for $\phi,\psi \in S$,
     $$\phi \sim \psi \qquad \text{iff} \qquad \Gamma, \phi \vdash \psi \text{ and } \Gamma , \psi \vdash \phi$$
 \end{definition}
-Because the definition of the relation is a pair it is natural to define it in \Agda as a product type.
+Because the definition of the relation is a pair it is natural to defin it in \Agda as a product type.
 
 \begin{agdadef}[Equivalence relation]$ $
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{eq}
@@ -681,7 +681,7 @@ Thus we have shown that $\Gamma, \phi \wedge (\psi \wedge \gamma) \vdash (\phi \
             \mathcal{D}_2}
             {\Gamma_1 \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)}
     \end{mathpar}
-    where $\mathcal{D}_1$ is a derivation concluding in $\Gamma_1,\psi \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)$ and $\mathcal{D}_2$ a derivation concluding in $\Gamma_1,\gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)$. We start by performing the derivation $\mathcal{D}_1$:
+    where $\mathcal{D}_1$ is a derivation concluding in $\Gamma_1,\psi \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)$ and $\mathcal{D}_2$ a derivaton concluding in $\Gamma_1,\gamma \vdash (\phi \wedge \psi) \vee (\phi \wedge \gamma)$. We start by performing the derivation $\mathcal{D}_1$:
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\vee$-I$_2$]
             {\inferrule*[right=\scriptsize $\wedge$-I]
@@ -862,7 +862,7 @@ This concludes the proof that $\phi \wedge (\psi \vee \gamma) \sim (\phi \wedge 
                 {\Gamma_2, \phi \vdash \phi}}
             {\Gamma_2, \phi \vdash \phi\vee (\psi \wedge \gamma)}
     \end{mathpar}
-    To derive $\mathcal{D}_2'$, concluding in $\Gamma_2,\psi \vdash \phi \vee (\psi \wedge \gamma)$, we need to use disjunction elimination again. In order to do that we need to find derivations $\mathcal{D}_2''$, concluding in $\Gamma_2,\psi,\phi \vdash \phi \vee (\psi \wedge \gamma)$, and $\mathcal{D}_2'''$, concluding in $\Gamma_2,\psi,\gamma \vdash \phi \vee (\psi \wedge \gamma)$, such that this derivation $\mathcal{D}_2'$ holds.
+    To derive $\mathcal{D}_2'$, concluding in $\Gamma_2,\psi \vdash \phi \vee (\psi \wedge \gamma)$, we need to use disjunction eliminaiton again. In order to do that we need to find derivations $\mathcal{D}_2''$, concluding in $\Gamma_2,\psi,\phi \vdash \phi \vee (\psi \wedge \gamma)$, and $\mathcal{D}_2'''$, concluding in $\Gamma_2,\psi,\gamma \vdash \phi \vee (\psi \wedge \gamma)$, such that this derivation $\mathcal{D}_2'$ holds.
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\vee$-E]
             {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
@@ -922,7 +922,7 @@ This concludes the proof that $\phi \wedge (\psi \vee \gamma) \sim (\phi \wedge 
 \begin{definition}[Lindenbaum-Tarski algebra]
     The Lindenbaum-Tarski algebra is the quotient algebra obtained by factoring the algebra of formulas by the equivalence relation $\sim$.
 \end{definition}
-We use the definition of a set quotient already existing in the \agdaCubical library to define the Lindenbaum-Tarski algebra.
+We use the definiton of a set quotient already existing in the \agdaCubical library to define the Lindenbaum-Tarski algebra.
 
 \begin{agdadef}[Lindenbaum-Tarski algebra]$ $
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LT}
@@ -988,7 +988,7 @@ When defining disjunction we need to prove a similar lemma as for the conjunctio
     For all formulas $a,a',b,b'$, if $a\sim a'$ and $b \sim b'$, then $a \vee b \sim a' \vee b'$.
 \end{lemma}
 
-\begin{proof} By definition of the relation $\sim$, we have:
+\begin{proof} By defintion of the relation $\sim$, we have:
     \begin{enumerate}[label=(\roman*)]
         \item $\Gamma, a \vdash a'$
         \item $\Gamma, a' \vdash a$
@@ -1094,7 +1094,7 @@ To construct the equivalence classes for propositional constants, we can use the
 
 \subsection{Proof that the Lindenbaum-Tarski algebra is Boolean}
 
-To prove that the Lindenbaum-Tarski algebra is Boolean we can show that it is a complemented distributive lattice. To do this there first needs to be a partial order defined on the set of equivalence classes.
+To prove that the Lindenbaum-Tarski algebra is boolean we can show that it is a complemented distributive lattice. To do this there first needs to be a partial order defined on the set of equivalence classes.
 \begin{definition}\label{order-relation}
     Let $\mathcal{L}$ be the propositional language described previously and let $S$ be the set of all sentences of $\mathcal{L}$. For each $x\in S$, let $[x]$ denote the equivalence class of $x$ under the equivalence relation $\sim$, and let $LT$ be the set of all such equivalence classes. Define the relation $\leq$ on $LT$ by
     \begin{align*}
@@ -1122,7 +1122,7 @@ Note that the operators on the left hand side are operating on the equivalence c
     \end{align*}
     where $\Gamma$ a context. Given $x_2 \in [x_1]$, we have that $x_1 \sim x_2$ which means that $\Gamma, x_1 \vdash x_2$ and $\Gamma, x_2 \vdash x_1$. Similarly, since $y_1 \sim y_2$, we have that $\Gamma, y_1 \vdash y_2$ and $\Gamma, y_2 \vdash y_1$. By applying Lemma \ref{trans-lemma} to $\Gamma, x_2 \vdash x_1$ and the assumption $\Gamma, x_1 \vdash y_1$, we get $\Gamma, x_2 \vdash y_1$. Applying the lemma again to the previous result together with $\Gamma, y_1 \vdash y_2$ yields $\Gamma, x_2 \vdash y_2$, showing that the relation is well defined. The operations join, meet and complementation have been shown to be well defined in the previous section when we defined the operations on the Lindenbaum-Tarski algebra.
 
-    Now, we need to show that $\leq$ is an order relation. Reflexivity follows immediately from the axiom rule. For anti-symmetry, suppose $x \leq y$ and $y \leq x$, then we have that $\Gamma, x \vdash y$ and $\Gamma, y \vdash x$, so by definition of the equivalence relation we have $x \sim y$. This means that $[x] \equiv [y]$, hence $\leq$ is anti-symmetric. Finally for transitivity assume that $x \leq y$ and $y \leq z$, then we have $\Gamma, x \vdash y$ and $\Gamma, y \vdash z$. Here we can apply Lemma \ref{trans-lemma} and get $\Gamma, x \vdash z$, that is $x \leq z$. Hence we can conclude that $\langle LT, \leq \rangle$ is a partially ordered set.
+    Now, we need to show that $\leq$ is an order relation. Reflexivity follows immediately from the axiom rule. For antisymmetry, suppose $x \leq y$ and $y \leq x$, then we have that $\Gamma, x \vdash y$ and $\Gamma, y \vdash x$, so by definition of the equivalence relation we have $x \sim y$. This means that $[x] \equiv [y]$, hence $\leq$ is antisymmetric. Finally for transitivity assume that $x \leq y$ and $y \leq z$, then we have $\Gamma, x \vdash y$ and $\Gamma, y \vdash z$. Here we can apply Lemma \ref{trans-lemma} and get $\Gamma, x \vdash z$, that is $x \leq z$. Hence we can conclude that $\langle LT, \leq \rangle$ is a partially ordered set.
 \end{proof}
 
 
@@ -1145,15 +1145,15 @@ Note that the operators on the left hand side are operating on the equivalence c
 \end{definition}
 
 \begin{definition}
-    A Boolean algebra is a complemented distributive lattice.
+    A boolean algebra is a complemented distributive lattice.
 \end{definition}
 
 \begin{theorem}
-    The Lindenbaum-Tarski algebra is a Boolean algebra.
+    The Lindenbaum-Tarski algebra is a boolean algebra.
 \end{theorem}
 
 \begin{proof}
-    First we must show that the $\langle LT, \leq \rangle$ is a lattice. To do this we must show that any two elements $[x],[y]\in LT$ has both a supremum and infimum, $[x] \vee [y]$ and $[x] \wedge[y]$ respectively. 
+    First we must show that the $\langle LT, \leq \rangle$ is a lattice. To do whis we must show that any two elements $[x],[y]\in LT$ has both a supremum and infimum, $[x] \vee [y]$ and $[x] \wedge[y]$ respectively. 
     
     To show that $[x] \vee [y]$ is an upper bound for $\{[x],[y]\}$ we need to show both that $[x] \leq [x \vee y]$ and that $[y] \leq [x \vee y]$. From reflexivity we have $[x] \leq [x]$, or $\Gamma, x \vdash x$. Using disjunction introduction we get $\Gamma, x \vdash x \vee y$, hence $[x] \leq [x \vee y]$ which is equivalent to $[x] \leq [x] \vee [y]$. With an identical argument we also get that $[y] \leq [x]\vee [y]$. To show that this is the least upper bound, assume that $[z]$ is any other upper bound for $\{[x],[y]\}$, then $[x] \leq [z]$ and $[y] \leq [z]$. This means that we have $\Gamma, x \vdash z$ and $\Gamma, y \vdash z$. From the axiom rule and disjunction elimination rule we can deduce
     \begin{mathpar}
@@ -1204,7 +1204,7 @@ Note that the operators on the left hand side are operating on the equivalence c
                 {\Gamma,x \wedge \neg x \vdash \neg x}}
             {\Gamma,x \wedge \neg x \vdash \bot}
     \end{mathpar}
-    The other direction, i.e $\Gamma, \bot \vdash x \wedge \neg x$, is just applying $\bot$-E. This shows that $\langle LT, \leq \rangle$ is a complemented distributive lattice, and thus a Boolean algebra.
+    The other direction, i.e $\Gamma, \bot \vdash x \wedge \neg x$, is just applying $\bot$-E. This shows that $\langle LT, \leq \rangle$ is a complemented distributive lattice, and thus a boolean algebra.
 \end{proof}
 
 \begin{proof}[Agda proof]
@@ -1223,7 +1223,7 @@ Soundness is a fundamental property of logical systems that ensures that the con
 \end{theorem}
 
 \begin{proof}
-    To prove that the Lindenbaum-Tarski algebra is sound, we need to show that any formula that is provable also belongs to the same equivalence class as $\top$. In other words, we need to show that if $\Gamma \vdash \phi$ then $[\phi] \equiv [\top]$. By definition of the Lindenbaum-Tarski algebra this is equivalent to showing $\Gamma, \phi \vdash \top$ and $\Gamma, \top \vdash \phi$. This can be done using $\top$-I and weakening respectively.
+    To prove that the Lindenbaum-Tarski algebra is sound, we need to show that any formula that is provable also belongs to the same equivalence class as $\top$. In other words, we need to show that if $\Gamma \vdash \phi$ then $[\phi] \equiv [\top]$. By definiton of the Lindenbaum-Tarski algebra this is equivalent to showing $\Gamma, \phi \vdash \top$ and $\Gamma, \top \vdash \phi$. This can be done using $\top$-I and weakening respectively.
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\top$-I]
             { }
