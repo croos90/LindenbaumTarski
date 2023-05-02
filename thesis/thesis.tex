@@ -74,7 +74,7 @@ This formalization will provide the \agdaCubical library with a formalization of
 
 Agda is a powerful dependently typed programming language that is based on Martin Löf's type theory. It allows us to encode mathematical propositions as types and their proofs as programs, ensuring the correctness and consistency of our reasoning. The language's strong type system also provides powerful tools for automatically verifying the correctness of proofs.\cite{BoveDybjer2008}
 
-Furthermore, Agda is a total language, which means that any program e of type T will always terminate with a value in T. This guarantees the absence of runtime errors and prevents the creation of non-terminating programs, unless explicitly requested by the programmer.\cite{AgdaDoc}
+Furthermore, Agda is a total language, which means that any program $e$ of type $T$ will always terminate with a value in $T$. This guarantees the absence of runtime errors and prevents the creation of non-terminating programs, unless explicitly requested by the programmer.\cite{AgdaDoc}
 
 
 \subsection{Propositions as types}
@@ -133,10 +133,10 @@ This declares the datatype \texttt{List} as a function of a type $A$ that maps t
 
 \subsection{Dependent types}
 
-A dependent type is a type that depends on elements of another type. An example of a dependent type is a dependent function, where the result type depends on the value of the argument.  In Agda, this is denoted by (x : A) $\to$ B, representing functions that take an argument x of type A and produce a result of type B. A special case is when x itself is a type. For instance, we can define the identity function
+A dependent type is a type that depends on elements of another type. An example of a dependent type is a dependent function, where the result type depends on the value of the argument.  In Agda, this is denoted by $(x : A) \to B$, representing functions that take an argument $x$ of type $A$ and produce a result of type $B$. A special case is when $x$ itself is a type. For instance, we can define the identity function
 
 \ExecuteMetaData[agda/latex/examples.tex]{id1}
-This function takes a type argument A and an element x of type A, and returns x. In \Agda it is possible to use implicit arguments. To declare an argument as implicit we use curly braces instead of parenthesis when declaring the type argument. In particular, \{A : Set\} $\to$ B means the same thing as (A : Set) $\to$ B, but we don't need to provide the type explicitly, the type checker will try to infer it for us. We can now redefine the identity function above as follows:
+This function takes a type argument $A$ and an element $x$ of type $A$, and returns $x$. In \Agda it is possible to use implicit arguments. To declare an argument as implicit we use curly braces instead of parenthesis when declaring the type argument. In particular, $\{A : Set\} \to B$ means the same thing as $(A : Set) \to B$, but we don't need to provide the type explicitly, the type checker will try to infer it for us. We can now redefine the identity function above as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{id2}
 Note that we no longer need to supply the type when the function is applied.
@@ -144,7 +144,7 @@ Note that we no longer need to supply the type when the function is applied.
 
 \subsection{Cubical Agda}
 
-In this project, we will be working with quotient types, which requires us to use Cubical Agda. Cubical Agda is an extension of Agda that incorporates features from Cubical Type Theory, which is necessary for dealing with set quotients.\cite{AgdaDoc} However, it is important to note that we will only be using a small portion of the \agdaCubical library, and any cubical theory is beyond the scope of this thesis.
+In this project, we will be working with quotient types, which requires us to use \CubicalAgda. \CubicalAgda is an extension of \Agda that incorporates features from Cubical Type Theory, which is necessary for dealing with set quotients.\cite{AgdaDoc} However, it is important to note that we will only be using a small portion of the \agdaCubical library, and any cubical theory is beyond the scope of this thesis.
 
 
 
@@ -165,7 +165,7 @@ The reader is expected to be somewhat familiar with propositional calculus and n
 
 \subsection{Formulas}
 
-In order to represent propositional calculus in \Agda we first need to define the type for well-formed formulas and the language in which we express them.
+In order to represent propositional calculus in \Agda we first need to define the type for formulas and the language in which we express them.
 
 \begin{definition}[Language]\label{language}
     The language $\mathcal{L}$ of propositional calculus consists of
@@ -194,7 +194,7 @@ Note that we have omitted the common logical connectives $\rightarrow$ and $\lef
     The formula $\top$ should be thought of as the proposition that is always true, and the formula $\bot$ interpreted as the proposition that is always false.
 \end{definition}
 
-Now we are ready to define the type for well-formed formulas in \Agda using the definition above.
+Now we are ready to define the type for formulas in \Agda using the definition above.
 \begin{agdadef}[Formula]$ $
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{form}
 \end{agdadef}
@@ -212,7 +212,7 @@ Now we are ready to define the type for well-formed formulas in \Agda using the 
         \item if $\Gamma$ is a context, then $\Gamma \cup \{\phi\}$ is also a context, where $\phi$ a formula.
     \end{itemize}
 \end{definition}
-We will sometimes write $\Gamma, \phi$ instead of $\Gamma \cup \{\phi\}$, but they should both be thought of as the latter. In \Agda we will interpret $\Gamma \cup \{\phi\}$ as $\Gamma : \phi$. Lets define the data type for context in \Agda.
+We will sometimes write $\Gamma, \phi$ instead of $\Gamma \cup \{\phi\}$, but they should both be thought of as the latter. In \Agda we can represent context as a list type.
 
 \begin{agdadef}[Context]$ $
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{ctxt}
@@ -264,7 +264,7 @@ By using the LEM inference rule in our system, we can derive new propositions an
 
 \subsubsection{Logical connectives}
 
-Rules for the logical connectives come in pairs of introduction and elimination rules, apart from $\top$, which has only an introduction rule, and $\bot$, which has only an elimination rule. These rules are based on \cite{vanDalen}.
+Rules for the logical connectives come in pairs of introduction and elimination rules, apart from $\top$, which has only an introduction rule, and $\bot$, which has only an elimination rule.
 
 The introduction rule for conjunction states that if there is a derivation of $\phi$ from $\Gamma$, and a derivation of $\psi$ from $\Gamma$, then we can conclude that there is a derivation of $\phi \wedge \psi$ from $\Gamma$.
 \begin{mathpar}
@@ -353,7 +353,7 @@ The definition of inconsistency and the law of excluded middle together motivate
 
 In Definition \ref{wellformed} we mentioned that $\top$ should be thought of as the proposition that is always true. In particular, it is a tautology and as such trivially true in all contexts, and should be introduced with no premise.
 \begin{mathpar}
-    \inferrule*[right=\scriptsize $\top$ I]
+    \inferrule*[right=\scriptsize $\top$-I]
         { }{\Gamma \vdash \top}
 \end{mathpar}
 
@@ -464,14 +464,14 @@ Before we prove that this is an equivalence relation we will prove a useful lemm
 
     It should be clear that $\Gamma, \phi \vdash \psi \text{ and } \Gamma , \psi \vdash \phi$ is just a pair of proofs, hence it does not matter in which order we give them. This means that the relation is also symmetric.
 
-    In order to prove transitivity we need to show that, given $\phi \sim \gamma$ and $\gamma \sim \psi$, it holds that $\phi \sim \psi$. By definition \ref{eq-def} we have the following:
+    In order to prove transitivity we need to show that, given $\phi \sim \gamma$ and $\gamma \sim \psi$, it holds that $\phi \sim \psi$. By Definition \ref{eq-def} we have the following:
     \begin{enumerate}[label=(\roman*)]
         \item $\Gamma, \phi \vdash \gamma$,
         \item $\Gamma, \gamma \vdash \phi$,
         \item $\Gamma, \gamma \vdash \psi$,
         \item $\Gamma, \psi \vdash \gamma$.
     \end{enumerate}
-    Now we can apply Lemma \ref{trans-lemma} on (i) and (iii) to conclude $\Gamma, \phi \vdash \psi$, and again to (iv) and (ii) to conclude $\Gamma, \psi \vdash \phi$. Thus we have shown that $\varphi \sim \psi$.
+    Now we can apply Lemma \ref{trans-lemma} on (i) and (iii) to conclude $\Gamma, \phi \vdash \psi$, and again to (iv) and (ii) to conclude $\Gamma, \psi \vdash \phi$. Thus we have shown that $\phi \sim \psi$.
     
 \end{proof}
 
@@ -489,7 +489,7 @@ Before we prove that this is an equivalence relation we will prove a useful lemm
     Conjunction is commutative, that is $\phi \wedge \psi \sim \psi \wedge \phi$.
 \end{proposition}
 
-\begin{proof} We need to show $\Gamma, \phi \wedge \psi \vdash \psi \wedge \phi$ and $\Gamma, \psi \wedge \phi \vdash \phi \wedge \psi$. To show $\Gamma, \phi \wedge \psi \vdash \psi \wedge \phi$, we have:
+\begin{proof} We need to show $\Gamma, \phi \wedge \psi \vdash \psi \wedge \phi$ and $\Gamma, \psi \wedge \phi \vdash \phi \wedge \psi$. To show $\Gamma, \phi \wedge \psi \vdash \psi \wedge \phi$, we use natural deduction:
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\wedge$-I]
         {\inferrule*[right=\scriptsize $\wedge$-E$_2$]
@@ -505,7 +505,7 @@ Before we prove that this is an equivalence relation we will prove a useful lemm
         {\Gamma \vdash \psi \wedge \phi}
 \end{mathpar}
 
-The proof of the second part is identical up to renaming of the formulas, so we omit it. Together they prove the equivalence $\phi \wedge \psi \sim \psi \wedge \phi$. 
+The proof of the second part is identical up to renaming of the formulas. Together they prove the equivalence $\phi \wedge \psi \sim \psi \wedge \phi$. 
 \end{proof}
 
 \begin{proof}[Agda proof]
@@ -519,7 +519,7 @@ The proof of the second part is identical up to renaming of the formulas, so we 
 \end{proposition}
 
 \begin{proof}
-    We need to show $\Gamma, \phi \vee \psi \vdash \psi \vee \phi$ and $\Gamma, \psi \vee \phi \vdash \phi \vee \psi$. Up to renaming of the formulas, the proofs are identical, so it suffices to show $\Gamma, \phi \vee \psi \vdash \psi \vee \phi$. Let $\Gamma' = \Gamma \cup \{\phi \vee \psi\}$, then by natural deduction we can show $\Gamma' \vdash \psi \vee \phi$.
+    We need to show $\Gamma, \phi \vee \psi \vdash \psi \vee \phi$ and $\Gamma, \psi \vee \phi \vdash \phi \vee \psi$. Up to renaming of the formulas, the proofs are identical, so it suffices to show $\Gamma, \phi \vee \psi \vdash \psi \vee \phi$. Let $\Gamma' = \Gamma \cup \{\phi \vee \psi\}$, then by natural deduction we have:
     \begin{mathpar}
         \mprset{sep=0.5em}
         \inferrule*[right=\scriptsize $\vee$-E]
@@ -551,11 +551,11 @@ The proof of the second part is identical up to renaming of the formulas, so we 
 \subsubsection{Associativity}
 
 \begin{proposition}
-    Conjunction is associative, $\phi \wedge (\psi \wedge \gamma) \sim (\phi \wedge \psi) \wedge \gamma$.
+    Conjunction is associative, that is $\phi \wedge (\psi \wedge \gamma) \sim (\phi \wedge \psi) \wedge \gamma$.
 \end{proposition}
 
 \begin{proof}
-    We need to show $\Gamma, \phi \wedge (\psi \wedge \gamma) \vdash (\phi \wedge \psi) \wedge \gamma$ and $\Gamma, (\phi \wedge \psi) \wedge \gamma \vdash \phi \wedge (\psi \wedge \gamma)$. Using natural deduction, we can prove both statements. Since the two proofs are very similar, we will only present the first one. 
+    We need to show $\Gamma, \phi \wedge (\psi \wedge \gamma) \vdash (\phi \wedge \psi) \wedge \gamma$ and $\Gamma, (\phi \wedge \psi) \wedge \gamma \vdash \phi \wedge (\psi \wedge \gamma)$. Using natural deduction, we can prove both statements. Since the two proofs become identical when using the commutativity property and relabeling the formulas, it suffices to show the first one.
 
     Let $\Gamma' = \Gamma \cup \{\phi \wedge (\psi \wedge \gamma)\}$. Then we can make a deduction $\mathcal{D}_1$ concluding in $\Gamma' \vdash \varphi \wedge \psi$,
 
@@ -602,12 +602,11 @@ Thus we have shown that $\Gamma, \phi \wedge (\psi \wedge \gamma) \vdash (\phi \
 \end{proof}
 
 \begin{proposition}
-    Disjunction is associative, $\phi \vee (\psi \vee \gamma) \sim (\phi \vee \psi) \vee \gamma$.
+    Disjunction is associative, that is $\phi \vee (\psi \vee \gamma) \sim (\phi \vee \psi) \vee \gamma$.
 \end{proposition}
 
 \begin{proof}
-    We need to show $\Gamma, \phi \vee (\psi \vee \gamma) \vdash (\phi \vee \psi) \vee \gamma$ and $\Gamma, (\phi \vee \psi) \vee \gamma \vdash \phi \vee (\psi \vee \gamma)$. Proof is done through natural deduction. Let $\Gamma' = \Gamma \cup \{\phi \vee (\psi \vee \gamma)\}$,
-    
+    We need to show $\Gamma, \phi \vee (\psi \vee \gamma) \vdash (\phi \vee \psi) \vee \gamma$ and $\Gamma, (\phi \vee \psi) \vee \gamma \vdash \phi \vee (\psi \vee \gamma)$. Proof is done through natural deduction. Let $\Gamma' = \Gamma \cup \{\phi \vee (\psi \vee \gamma)\}$, then
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\vee$-E]
             {\inferrule*[right=\scriptsize axiom]
@@ -980,7 +979,7 @@ Now we are ready to define conjunction on Lindenbaum-Tarski algebra in \CubicalA
 \end{agdadef}
 
 
-The \texttt{setQuotBinOp} function takes four arguments: two proofs of reflexivity, the logical conjunction operator $\wedge/$, and a proof that the operator respects the equivalence relation. In this case, the reflexivity proofs are identical since A and B are of the same type. The resulting function takes two elements A and B in the Lindenbaum-Tarski algebra and returns their conjunction.
+The \texttt{setQuotBinOp} function takes four arguments: two proofs of reflexivity, the logical conjunction operator $\wedge/$, and a proof that the operator respects the equivalence relation. In this case, the reflexivity proofs are identical since $A$ and $B$ are of the same type. The resulting function takes two elements $A$ and $B$ in the Lindenbaum-Tarski algebra and returns their conjunction.
 
 When defining disjunction we need to prove a similar lemma as for the conjunction. We must provide proof that the disjunction operator respects the equivalence relation $\sim$.
 
@@ -1082,7 +1081,7 @@ This lemma shows that the negation operation on the propositional calculus respe
 \end{agdadef}
 
 
-The \texttt{setQuotUnaryOp} function takes two arguments: a unary operator ($\neg/$) and a proof that the operator respects the equivalence relation ($\sim$-respects-$\neg$). The resulting function takes one element A in the Lindenbaum-Tarski algebra and returns its negation.
+The \texttt{setQuotUnaryOp} function takes two arguments: a unary operator ($\neg/$) and a proof that the operator respects the equivalence relation ($\sim$-respects-$\neg$). The resulting function takes one element $A$ in the Lindenbaum-Tarski algebra and returns its negation.
 
 To construct the equivalence classes for propositional constants, we can use the constructor from the definition of a set quotient in the already existing definition of set quotients in \CubicalAgda.
 
@@ -1105,7 +1104,7 @@ To prove that the Lindenbaum-Tarski algebra is Boolean we can show that it is a 
         [x] \vee [y] \equiv [x\vee y], \quad [x] \wedge [y] \equiv [x \wedge y], \quad \neg[x] \equiv [\neg x].
     \end{align*}
 \end{definition}
-Note that the operators on the left hand side are operating on the equivalence classes, and the operators on the right hand side are operating on formulas in the underlying propositional calculus.
+Note that the operators on the left hand side are operating on the equivalence classes, i.e. the elements of the Lindenbaum-Tarski algebra, and the operators on the right hand side are operating on formulas in the underlying propositional calculus.
 
 \begin{proposition}
     The relation $\leq$ is a partial order on $LT$.
@@ -1247,7 +1246,7 @@ We successfully formalized the Lindenbaum-Tarski algebra in \CubicalAgda
 
 \subsection{Possible improvements}
 
-We defined the notion of a context as a set of formulas and implemented it as a list in \Agda. To improve the implementation of the structural rule exchange, it is worth exploring the possibility of exchanging any two elements in the context, rather than just the last two.
+We defined the notion of a context as a set of formulas and implemented it as a list in \Agda. To improve the implementation of the structural rule exchange, it is worth exploring the possibility of exchanging any two elements in the context, rather than just the last two. To do this one might need to choose another way to represent the context, perhaps as a vector.
 
 Additionally, we could consider modifying the deduction rules for the propositional calculus, such as adding implication, to see if this reduces the dependency on the structural rules.
 
