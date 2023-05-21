@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2023.3.17)  2 MAY 2023 10:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2023.3.17)  21 MAY 2023 14:47
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -118,6 +118,8 @@ Package: amsthm 2017/10/31 v2.20.4
 \thm@postskip=\skip55
 \thm@headsep=\skip56
 \dth@everypar=\toks24
+) (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
 ) (/usr/share/texlive/texmf-dist/tex/latex/mathtools/mathtools.sty
 Package: mathtools 2020/01/17 v1.23 mathematical typesetting tools
  (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
@@ -529,6 +531,20 @@ Package: appendix 2020/02/08 v1.2c extra appendix facilities
 \c@@pps=\count296
 \c@@ppsavesec=\count297
 \c@@ppsaveapp=\count298
+) (/usr/share/texlive/texmf-dist/tex/latex/colortbl/colortbl.sty
+Package: colortbl 2020/01/04 v1.0e Color table columns (DPC)
+ (/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
+Package: array 2019/08/31 v2.4l Tabular extension package (FMi)
+\col@sep=\dimen276
+\ar@mcellbox=\box67
+\extrarowheight=\dimen277
+\NC@list=\toks44
+\extratabsurround=\skip65
+\backup@length=\skip66
+\ar@cellbox=\box68
+)
+\everycr=\toks45
+\minrowclearance=\skip67
 )
 \c@theorem=\count299
 \c@definition=\count300
@@ -553,20 +569,11 @@ Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 Package: ifmtarg 2018/04/16 v1.2b check for an empty argument
 )) (/usr/share/texlive/texmf-dist/tex/latex/polytable/polytable.sty
 Package: polytable 2013/07/18 v0.8.5 `polytable' package (Andres Loeh)
- (/usr/share/texlive/texmf-dist/tex/latex/lazylist/lazylist.sty) (/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
-Package: array 2019/08/31 v2.4l Tabular extension package (FMi)
-\col@sep=\dimen276
-\ar@mcellbox=\box67
-\extrarowheight=\dimen277
-\NC@list=\toks44
-\extratabsurround=\skip65
-\backup@length=\skip66
-\ar@cellbox=\box68
-)
+ (/usr/share/texlive/texmf-dist/tex/latex/lazylist/lazylist.sty)
 \PT@colwidth=\dimen278
 \PT@cols=\count304
 \PT@table=\count305
-\PT@toks=\toks45
+\PT@toks=\toks46
 \PT@in=\read3
 \PT@out=\write4
 ) (/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty
@@ -591,8 +598,8 @@ Package: xparse 2020-02-14 L3 Experimental document command parser
 ) (/usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty
 Package: xkeyval 2014/12/03 v2.7a package option processing (HA)
  (/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkvutils.tex
-\XKV@toks=\toks46
-\XKV@tempa@toks=\toks47
+\XKV@toks=\toks47
+\XKV@tempa@toks=\toks48
 )
 \XKV@depth=\count312
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
@@ -602,8 +609,8 @@ File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
 \c@Agda@Previous=\count314
 \c@Agda@AlignStart=\count315
 \c@Agda@SuppressStart=\count316
-\AgdaEmptySkip=\skip67
-\AgdaEmptyExtraSkip=\skip68
+\AgdaEmptySkip=\skip68
+\AgdaEmptyExtraSkip=\skip69
 \c@AgdaCodeNumber=\count317
 ) (/usr/share/texlive/texmf-dist/tex/latex/catchfilebetweentags/catchfilebetweentags.sty
 Package: catchfilebetweentags 2011/02/19 v1.1 - Catch file between tags (FC)
@@ -620,7 +627,7 @@ Package etex Warning: Extended allocation already in use.
 ) (/usr/share/texlive/texmf-dist/tex/generic/catchfile/catchfile.sty
 Package: catchfile 2019/12/09 v1.8 Catch the contents of a file (HO)
 )
-\CatchFBT@tok=\toks48
+\CatchFBT@tok=\toks49
 ) (/usr/share/texlive/texmf-dist/tex/latex/newunicodechar/newunicodechar.sty
 Package: newunicodechar 2018/04/08 v1.2 Defining Unicode characters
 )
@@ -648,22 +655,22 @@ Package newunicodechar Warning: Redefining Unicode character on input line 106.
 ) (/home/croos/Desktop/exjobb/thesis/thesis.aux)
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
  ABD: EveryShipout initializing macros (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count318
@@ -671,26 +678,26 @@ LaTeX Font Info:    ... okay on input line 35.
 \scratchbox=\box70
 \nofMPsegments=\count319
 \nofMParguments=\count320
-\everyMPshowfont=\toks49
+\everyMPshowfont=\toks50
 \MPscratchCnt=\count321
 \MPscratchDim=\dimen281
 \MPnumerator=\count322
 \makeMPintoPDFobject=\count323
-\everyMPtoPDFconversion=\toks50
+\everyMPtoPDFconversion=\toks51
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
  (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-LaTeX Info: Redefining \microtypecontext on input line 35.
+LaTeX Info: Redefining \microtypecontext on input line 36.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `basictext'.
-LaTeX Info: Redefining \showhyphens on input line 35.
+LaTeX Info: Redefining \showhyphens on input line 36.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -698,7 +705,7 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
 )
 \AtBeginShipoutBox=\box71
-Package hyperref Info: Link coloring OFF on input line 35.
+Package hyperref Info: Link coloring OFF on input line 36.
  (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
  (/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
@@ -708,9 +715,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count324
 )
-LaTeX Info: Redefining \ref on input line 35.
-LaTeX Info: Redefining \pageref on input line 35.
-LaTeX Info: Redefining \nameref on input line 35.
+LaTeX Info: Redefining \ref on input line 36.
+LaTeX Info: Redefining \pageref on input line 36.
+LaTeX Info: Redefining \nameref on input line 36.
  (/home/croos/Desktop/exjobb/thesis/thesis.out) (/home/croos/Desktop/exjobb/thesis/thesis.out)
 \@outlinefile=\write5
 \openout5 = `thesis.out'.
@@ -736,7 +743,7 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.47 \newpage
+l.48 \newpage
               [1]
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: OT1).
@@ -745,7 +752,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.83 
+l.85 
       [1] (/home/croos/Desktop/exjobb/thesis/agda/latex/examples.tex)
 \openout4 = `thesis.ptb'.
 
@@ -759,7 +766,7 @@ Package microtype Info: Loading generic protrusion settings for font family
  [2] (/home/croos/Desktop/exjobb/thesis/agda/latex/examples.tex)
 \openout4 = `thesis.ptb'.
 
-LaTeX Font Info:    Trying to load font information for U+bbold on input line 119.
+LaTeX Font Info:    Trying to load font information for U+bbold on input line 121.
  (/usr/share/texlive/texmf-dist/tex/latex/bbold/Ubbold.fd) (/home/croos/Desktop/exjobb/thesis/agda/latex/examples.tex)
 \openout4 = `thesis.ptb'.
 
@@ -775,19 +782,19 @@ LaTeX Font Info:    Trying to load font information for U+bbold on input line 11
  [3] (/home/croos/Desktop/exjobb/thesis/agda/latex/examples.tex)
 \openout4 = `thesis.ptb'.
 
-LaTeX Font Info:    Trying to load font information for OMS+cmss on input line 141.
-LaTeX Font Info:    No file OMScmss.fd. on input line 141.
+LaTeX Font Info:    Trying to load font information for OMS+cmss on input line 143.
+LaTeX Font Info:    No file OMScmss.fd. on input line 143.
 
 
 LaTeX Font Warning: Font shape `OMS/cmss/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbraceleft' on input line 141.
+(Font)              for symbol `textbraceleft' on input line 143.
 
 [4] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
 LaTeX Font Info:    Font shape `OT1/cmss/m/it' in size <10> not available
-(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 199.
+(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 200.
  [5] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
@@ -798,12 +805,20 @@ LaTeX Font Info:    Font shape `OT1/cmss/m/it' in size <10> not available
 
 LaTeX Font Warning: Font shape `OMS/cmss/m/it' undefined
 (Font)              using `OMS/cmss/m/n' instead
-(Font)              for symbol `textbraceleft' on input line 230.
+(Font)              for symbol `textbraceleft' on input line 231.
+
+
+Overfull \hbox (0.48656pt too wide) detected at line 231
+||  
+ []
 
 (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
- (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex) [6]
+ [6] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
+
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
  (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
@@ -824,9 +839,6 @@ LaTeX Font Warning: Font shape `OMS/cmss/m/it' undefined
  (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
- (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
-\openout4 = `thesis.ptb'.
-
  [8] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
@@ -836,7 +848,12 @@ LaTeX Font Warning: Font shape `OMS/cmss/m/it' undefined
  (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
- (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+
+Overfull \hbox (2.23044pt too wide) detected at line 385
+||  
+ []
+
+(/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
  [9] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
@@ -846,12 +863,6 @@ LaTeX Font Warning: Font shape `OMS/cmss/m/it' undefined
 \openout4 = `thesis.ptb'.
 
  [10] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
-\openout4 = `thesis.ptb'.
-
- (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
-\openout4 = `thesis.ptb'.
-
- (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
  (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
@@ -881,13 +892,19 @@ LaTeX Font Warning: Font shape `OMS/cmss/m/it' undefined
  (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
+
  [14] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
  (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
- [15] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex) [16]
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
+
+ [15] [16] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
  (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
@@ -896,10 +913,7 @@ LaTeX Font Warning: Font shape `OMS/cmss/m/it' undefined
  (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
- [17] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
-\openout4 = `thesis.ptb'.
-
- [18] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+ [17] [18] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
  (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
@@ -923,12 +937,15 @@ LaTeX Font Warning: Font shape `OMS/cmss/m/it' undefined
  (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
+ [22] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (2.22223pt too wide) detected at line 1074
- |  
+
+Overfull \hbox (2.22221pt too wide) detected at line 1092
+||  
  []
 
-[22] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+(/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
  (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
@@ -940,494 +957,127 @@ Overfull \hbox (2.22223pt too wide) detected at line 1074
  [23] [24] [25] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
+ (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+ [26] [27] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+\openout4 = `thesis.ptb'.
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
+ [][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][][][] 
  []
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1237--1237
  [][][][][][] 
  []
 
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1211--1211
- [][][][] 
- []
-
-[26] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+[28] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1213--1213
- [][][][][][] 
- []
-
-[27] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
-\openout4 = `thesis.ptb'.
-
- [28] (/home/croos/Desktop/exjobb/thesis/thesis.bbl) [29] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
+ [29] [30] (/home/croos/Desktop/exjobb/thesis/thesis.bbl) [31] (/home/croos/Desktop/exjobb/thesis/agda/latex/LindenbaumTarski.tex)
 \openout4 = `thesis.ptb'.
 
 \openout4 = `thesis.ptb'.
 
 \openout4 = `thesis.ptb'.
 
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
- [30]
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
- [31]
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-LaTeX Font Info:    Trying to load font information for OMS+cmtt on input line 1276.
- (/usr/share/texmf/tex/latex/R/tex/latex/omscmtt.fd
-File: omscmtt.fd 
-)
-LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 1276.
 \openout4 = `thesis.ptb'.
 
 \openout4 = `thesis.ptb'.
@@ -1463,17 +1113,26 @@ LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10> not available
 
 \openout4 = `thesis.ptb'.
 
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
-\openout4 = `thesis.ptb'.
-
  [33]
 \openout4 = `thesis.ptb'.
 
+
+Overfull \hbox (0.98604pt too wide) detected at line 1329
+||  
+ []
+
 \openout4 = `thesis.ptb'.
 
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+LaTeX Font Info:    Trying to load font information for OMS+cmtt on input line 1329.
+(/usr/share/texmf/tex/latex/R/tex/latex/omscmtt.fd
+File: omscmtt.fd 
+)
+LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 1329.
 \openout4 = `thesis.ptb'.
 
 \openout4 = `thesis.ptb'.
@@ -1499,30 +1158,39 @@ LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10> not available
 
 \openout4 = `thesis.ptb'.
 
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
  [35]
 \openout4 = `thesis.ptb'.
 
-
-Overfull \hbox (2.22223pt too wide) detected at line 1276
- |  
- []
+\openout4 = `thesis.ptb'.
 
 \openout4 = `thesis.ptb'.
 
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (35.0803pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
+\openout4 = `thesis.ptb'.
 
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (35.0803pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
+\openout4 = `thesis.ptb'.
 
+\openout4 = `thesis.ptb'.
 
-Overfull \hbox (35.0803pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
+ [36]
+\openout4 = `thesis.ptb'.
 
 \openout4 = `thesis.ptb'.
 
@@ -1540,489 +1208,211 @@ Overfull \hbox (35.0803pt too wide) in paragraph at lines 1276--1276
 
 \openout4 = `thesis.ptb'.
 
-
-Overfull \hbox (3.58058pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (3.58058pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (3.58058pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (3.58058pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (3.58058pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-[36]
+ [37]
 \openout4 = `thesis.ptb'.
 
 
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
+Overfull \hbox (2.22221pt too wide) detected at line 1329
+||  
  []
 
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (4.58368pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-[37]
 \openout4 = `thesis.ptb'.
 
 
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
+Overfull \hbox (35.08029pt too wide) in paragraph at lines 1329--1329
  [][] 
  []
 
 
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
- [][][][] 
- []
-
-
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
+Overfull \hbox (35.08029pt too wide) in paragraph at lines 1329--1329
  [][] 
  []
 
 
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
+Overfull \hbox (35.08029pt too wide) in paragraph at lines 1329--1329
+ [][] 
+ []
+
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+
+Overfull \hbox (3.58057pt too wide) in paragraph at lines 1329--1329
+ [][] 
+ []
+
+
+Overfull \hbox (3.58057pt too wide) in paragraph at lines 1329--1329
+ [][] 
+ []
+
+
+Overfull \hbox (3.58057pt too wide) in paragraph at lines 1329--1329
+ [][] 
+ []
+
+
+Overfull \hbox (3.58057pt too wide) in paragraph at lines 1329--1329
+ [][] 
+ []
+
+
+Overfull \hbox (3.58057pt too wide) in paragraph at lines 1329--1329
+ [][] 
+ []
+
+[38]
+\openout4 = `thesis.ptb'.
+
+ [39]
+\openout4 = `thesis.ptb'.
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
  [][][][] 
  []
 
 
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
- [][][][][][] 
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][] 
  []
 
 
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
  [][][][] 
  []
 
 
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
  [][][][][][] 
  []
 
 
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
  [][][][][][] 
  []
 
 
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
  [][][][][][] 
  []
 
 
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
  [][][][][][] 
  []
 
 
-Overfull \hbox (3.04677pt too wide) in paragraph at lines 1276--1276
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
  [][][][][][] 
  []
 
-[38] [39]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1279.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1279.
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][][][][][] 
+ []
+
+
+Overfull \hbox (28.46155pt too wide) in paragraph at lines 1329--1329
+ [][][][][][] 
+ []
+
+[40]
+\openout4 = `thesis.ptb'.
+
+\openout4 = `thesis.ptb'.
+
+ [41]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1332.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1332.
  (/home/croos/Desktop/exjobb/thesis/thesis.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1279.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1279.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1332.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1332.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: EFE58A531449326CAB377E0074A3D234;1891.
+(rerunfilecheck)             Checksum: 2EB1250730D0A75146DA89E5052214BE;1762.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1279.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1332.
  ) 
 Here is how much of TeX's memory you used:
- 23425 strings out of 481239
- 451655 string characters out of 5920377
- 977339 words of memory out of 5000000
- 37773 multiletter control sequences out of 15000+600000
- 547654 words of font info for 128 fonts, out of 8000000 for 9000
+ 23938 strings out of 481239
+ 457382 string characters out of 5920377
+ 989745 words of memory out of 5000000
+ 38260 multiletter control sequences out of 15000+600000
+ 548597 words of font info for 133 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 65i,48n,213p,975b,930s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 75i,48n,253p,975b,930s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/bbold-type1/bbold10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on /home/croos/Desktop/exjobb/thesis/thesis.pdf (41 pages, 323369 bytes).
+Output written on /home/croos/Desktop/exjobb/thesis/thesis.pdf (43 pages, 336008 bytes).
 PDF statistics:
- 523 PDF objects out of 1000 (max. 8388607)
- 455 compressed objects within 5 object streams
- 136 named destinations out of 1000 (max. 500000)
- 23269 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 553 PDF objects out of 1000 (max. 8388607)
+ 483 compressed objects within 5 object streams
+ 145 named destinations out of 1000 (max. 500000)
+ 24277 words of extra memory for PDF output out of 24883 (max. 10000000)
 

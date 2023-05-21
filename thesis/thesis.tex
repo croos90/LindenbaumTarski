@@ -6,7 +6,7 @@
 \usepackage{multirow}
 \usepackage{hhline}
 \usepackage{pifont}
-\usepackage{amsmath, amsfonts , amsthm , mathtools , bbold , float}
+\usepackage{amsmath, amsfonts , amsthm , amssymb , mathtools , bbold , float}
 \usepackage{tikz}
 \usetikzlibrary{arrows,matrix,decorations.pathmorphing,
   decorations.markings, calc, backgrounds}
@@ -18,6 +18,7 @@
 \DisableLigatures[-]{family=tt*}
 \usepackage{enumitem}
 \usepackage[titletoc]{appendix}
+\usepackage{xcolor, colortbl}
 
 \newcommand\myeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily def}}}{=}}}
 
@@ -39,7 +40,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{abstract}
-    This thesis focuses on formalizing the Lindenbaum-Tarski algebra in Cubical Agda, an area of mathematical logic that involves the quotient of the algebra of formulas by an equivalence relation defined in terms of provability. To achieve this goal, we first formalize classical propositional logic and its properties in Agda, and define the equivalence relation on formulas. We then proceed to define the Lindenbaum-Tarski algebra in Cubical Agda and prove its soundness and properties. In particular, we show that the algebra is a complemented distributive lattice, which implies that it is Boolean.
+    This thesis focuses on formalizing the Lindenbaum-Tarski algebra for propositional logic in Cubical Agda, an area of mathematical logic that involves the quotient of the algebra of formulas by an equivalence relation defined in terms of provability. To achieve this goal, we first formalize classical propositional logic and its properties in Agda, and define the equivalence relation on formulas. We then proceed to define the Lindenbaum-Tarski algebra in Cubical Agda and prove its soundness and properties. In particular, we show that the algebra is a complemented distributive lattice, which implies that it is Boolean.
 \end{abstract}
 
 \tableofcontents
@@ -54,9 +55,10 @@
 
 \section{Introduction}
 
-\Agda is a powerful dependently typed programming language that is based on Martin Löf's type theory. Its strong typing and dependent types make it an ideal proof assistant for formalizing mathematical proofs.\cite{AgdaDoc} Formalizing mathematics in Agda provides several benefits, such as creating machine-checkable proofs that ensure the correctness of a proof and detecting errors or gaps in reasoning that may not be apparent through traditional mathematical proofs. This deepens our understanding and verification of mathematical concepts and proofs. In Section 2, we will provide a brief introduction to \Agda and types.
+\Agda is a powerful dependently typed programming language that is based on Martin Löf's type theory\cite{Martin-Lof1984-MARITT-18}. Its strong typing and dependent types make it an ideal proof assistant for formalizing mathematical proofs\cite{AgdaDoc}. Formalizing mathematics in \Agda provides several benefits, such as creating machine-checkable proofs that ensure the correctness of a proof and detecting errors or gaps in reasoning that may not be apparent through traditional mathematical proofs. This deepens our understanding and verification of mathematical concepts and proofs. In Section 2, we will provide a brief introduction to \Agda and type theory.
 
-The Lindenbaum-Tarski algebra is an area of mathematical logic that involves factoring the algebra of formulas by an equivalence relation defined in terms of provability.\cite{wikipedia} The Lindenbaum-Tarski algebra of a context $\Gamma$ consists of the equivalence classes of formulas in $\Gamma$. In this thesis, we aim to formalize the Lindenbaum-Tarski algebra in \CubicalAgda, which is a variant of \Agda that is extended with cubical type theory.
+In algebraic logic different logics are examined by connecting them to classes of algebras, logical matrices, and other algebraic structures. We can then investigate how the properties of these logics are related to the properties of the associated algebras or algebraic structures. The goal is to enhance our understanding of the logic by studying its associated algebras\cite{sep-logic-algebraic-propositional}.
+The Lindenbaum-Tarski algebra is a concept of algebraic logic that involves quotienting the algebra of formulas by an equivalence relation defined in terms of provability\cite{wikipedia}. That is, the Lindenbaum-Tarski algebra of a logical theory $T$ consists of the equivalence classes of formulas in $T$. In this thesis, we aim to formalize the Lindenbaum-Tarski algebra in \CubicalAgda, which is a variant of \Agda that is extended with cubical type theory and has native support for quotient types.
 
 The first step towards our goal is to formalize classical propositional logic and its properties in \Agda, defining the equivalence relation on formulas such that two formulas are equivalent if and only if they are provably equivalent in the context. This will be the focus of Section 3.
 
@@ -72,20 +74,20 @@ This formalization will provide the \agdaCubical library with a formalization of
 
 \section{Agda proof assistant}
 
-Agda is a powerful dependently typed programming language that is based on Martin Löf's type theory. It allows us to encode mathematical propositions as types and their proofs as programs, ensuring the correctness and consistency of our reasoning. The language's strong type system also provides powerful tools for automatically verifying the correctness of proofs.\cite{BoveDybjer2008}
+Tha \Agda programming language allows us to encode mathematical propositions as types and their proofs as programs, ensuring the correctness and consistency of our reasoning. The language's strong type system also provides powerful tools for automatically verifying the correctness of proofs.\cite{BoveDybjer2008}
 
-Furthermore, Agda is a total language, which means that any program $e$ of type $T$ will always terminate with a value in $T$. This guarantees the absence of runtime errors and prevents the creation of non-terminating programs, unless explicitly requested by the programmer.\cite{AgdaDoc}
+Furthermore, Agda is a total language, which means that any program $e$ of type $T$ will always terminate with a value in $T$. This guarantees the absence of runtime errors and prevents the creation of non-terminating programs, unless explicitly requested by the programmer\cite{AgdaDoc}.
 
 
 \subsection{Propositions as types}
 
 Propositions as types is a concept that links logical propositions with types in a programming language. It is based on the idea that a proof of a proposition is analogous to a program that satisfies the type associated with the proposition.
 
-In this context, the introduction and elimination rules for logical connectives can be viewed as operations that construct and deconstruct values of the corresponding types. For instance, the introduction rule for conjunction states that given proofs of two propositions, we can construct a proof of their conjunction by pairing the two proofs together. This can be seen as a function that takes two values of the corresponding types and returns a pair value.
+In this context, the introduction and elimination rules for logical connectives can be viewed as operations that construct and destruct values of the corresponding types. For instance, the introduction rule for conjunction states that given proofs of two propositions, we can construct a proof of their conjunction by pairing the two proofs together. This can be seen as a function that takes two values of the corresponding types and returns a pair.
 
-Conversely, the elimination rule for conjunction says that given a proof of a conjunction, we can extract proofs of its two conjuncts by projecting the pair onto each component. This can be viewed as a function that takes a pair value and returns two values of the corresponding types.
+Conversely, the elimination rule for conjunction says that given a proof of a conjunction, we can extract proofs of its two conjuncts by projecting the pair onto each component. This can be viewed as functions that takes a pair and returns the values of the corresponding types.
 
-This is similar to the concept of product types in programming languages, where a product type represents a pair of values. The introduction form of a product type is a pair, and the elimination forms are projection functions that extract the individual components of the tuple. Table 1 summarizes the correspondence between propositions and types and between proofs and programs.
+This is similar to the concept of product types in programming languages, where a product type represents a pair of values. The introduction form of a product type is a tuple, and the elimination forms are projection functions that extract the individual components of the tuple. Table 1 summarizes the correspondence between propositions and types and between proofs and programs.
 
 \begin{table}[h!]
     \centering
@@ -106,7 +108,7 @@ This allows us to reason about logical propositions in terms of programming lang
 
 \subsection{Simply typed functions and data types}
 
-A data declaration introduces a new datatype with its name, type, and constructors, along with their types. For instance, the Boolean type can be defined as follows:
+A data declaration introduces a new datatype with its name, type, and constructors, along with their types. For instance, the Boolean type can be defined in \Agda as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{bool}
 Here, \texttt{Bool} is the name of the datatype, and \texttt{true} and \texttt{false} are its constructors. Functions over the datatype \texttt{Bool} can be defined using pattern matching, similar to \Haskell. For example, the \texttt{not} function can be defined as follows:
@@ -133,18 +135,18 @@ This declares the datatype \texttt{List} as a function of a type $A$ that maps t
 
 \subsection{Dependent types}
 
-A dependent type is a type that depends on elements of another type. An example of a dependent type is a dependent function, where the result type depends on the value of the argument.  In Agda, this is denoted by $(x : A) \to B$, representing functions that take an argument $x$ of type $A$ and produce a result of type $B$. A special case is when $x$ itself is a type. For instance, we can define the identity function
+A dependent type is a type that depends on elements of another type. An example of a dependent type is a dependent function, where the result type depends on the value of the argument.  In Agda, this is denoted by $(x : A) \to B$, representing functions that take an argument $x$ of type $A$ and produce a result of type $B$. A special case is when $x$ itself is a type. For instance, we can define the polymorphic identity function
 
 \ExecuteMetaData[agda/latex/examples.tex]{id1}
-This function takes a type argument $A$ and an element $x$ of type $A$, and returns $x$. In \Agda it is possible to use implicit arguments. To declare an argument as implicit we use curly braces instead of parenthesis when declaring the type argument. In particular, $\{A : Set\} \to B$ means the same thing as $(A : Set) \to B$, but we don't need to provide the type explicitly, the type checker will try to infer it for us. We can now redefine the identity function above as follows:
+This function takes a type argument $A$ and an element $x$ of type $A$, and returns $x$. In \Agda it is possible to use implicit arguments. To declare an argument as implicit we use curly braces instead of parenthesis when declaring the type argument. In particular, $\{A : Type\} \to B$ means the same thing as $(A : Type) \to B$, but we don't need to provide the type $A$ explicitly, the type checker will try to infer it for us. We can now redefine the identity function above as follows:
 
 \ExecuteMetaData[agda/latex/examples.tex]{id2}
-Note that we no longer need to supply the type when the function is applied.
+Note that we no longer need to supply the type $A$.
 
 
 \subsection{Cubical Agda}
 
-In this project, we will be working with quotient types, which requires us to use \CubicalAgda. \CubicalAgda is an extension of \Agda that incorporates features from Cubical Type Theory, which is necessary for dealing with set quotients.\cite{AgdaDoc} However, it is important to note that we will only be using a small portion of the \agdaCubical library, and any cubical theory is beyond the scope of this thesis.
+In this project, we will be working with quotient types, which motivates the use of \CubicalAgda\cite{VMA_2021}. \CubicalAgda is an extension of \Agda that incorporates features from Cubical Type Theory, that natively supports set quotients\cite{AgdaDoc}. We will use the \agdaCubical library, which is the standard library for \CubicalAgda. However, it is important to note that we will only be using a small portion of the \agdaCubical library, and any cubical theory is beyond the scope of this thesis.
 
 
 
@@ -153,8 +155,6 @@ In this project, we will be working with quotient types, which requires us to us
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Propositional calculus in Agda}
-
-
 
 Propositional calculus is a formal system that consists of a set of propositional constants, symbols, inference rules, and axioms. The symbols in propositional calculus represent logical connectives and parentheses, and are used to construct well-formed formulas that follow the syntax of the system. The inference rules specify how these symbols can be used to derive additional statements from the initial assumptions, which are given by the axioms of the system. 
 
@@ -172,14 +172,15 @@ In order to represent propositional calculus in \Agda we first need to define th
     \begin{itemize}
         \item proposition symbols: $p_0,p_1,\hdots,p_n$,
         \item logical connectives: $\wedge,\vee,\neg,\top,\bot$,
-        \item auxiliary symbols: (, ).
+        \item auxiliary symbols: ( and ).
     \end{itemize}
 \end{definition}
 Note that we have omitted the common logical connectives $\rightarrow$ and $\leftrightarrow$. This is because we can define them using other connectives, 
 \begin{align*}
     \phi \rightarrow \psi &\myeq \neg \phi \vee \psi, \\
-    \phi \leftrightarrow \psi &\myeq (\neg \phi \vee \psi) \wedge (\neg \psi \vee \phi),
-\end{align*}making them redundant. It is possible to choose an even smaller set of connectives \cite{vanDalen}, but we choose this set as it is convenient.
+    \phi \leftrightarrow \psi &\myeq (\phi \rightarrow \psi) \wedge (\psi \rightarrow \phi),
+\end{align*}
+making them redundant. It is possible to choose an even smaller set of connectives \cite{vanDalen}, but we choose this set as it is convenient.
 
 \begin{definition}[Well formed formula]\label{wellformed}
     The set of well formed formulas is inductively defined as follows:
@@ -194,8 +195,8 @@ Note that we have omitted the common logical connectives $\rightarrow$ and $\lef
     The formula $\top$ should be thought of as the proposition that is always true, and the formula $\bot$ interpreted as the proposition that is always false.
 \end{definition}
 
-Now we are ready to define the type for formulas in \Agda using the definition above.
-\begin{agdadef}[Formula]$ $
+Now we are ready to define the type for well formed formulas in \Agda using the definition above. The propositional constants $p_0, p_1, \hdots$ will be represented using natural numbers. The symbols of the language are already present in \Agda.
+\begin{agdadef}[Well formed formula]$ $
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{form}
 \end{agdadef}
 
@@ -226,7 +227,7 @@ We also need a way to determine if a given formula is in a given context.
     \end{itemize}
 \end{definition}
 
-\begin{agdadef}[Lookup]$ $
+\begin{agdadef}[Lookup]\label{agdaLookup}$ $
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{lookup}
 \end{agdadef}
 
@@ -235,31 +236,22 @@ We also need a way to determine if a given formula is in a given context.
 
 \subsection{Inference rules}
 
-Inference rules are used to derive new propositions from existing ones. In order to formalize the process of proving propositions in our system, we introduce a new data type for provability. This data type has as its inhabitants all of the possible inference rules that can be used to prove a given proposition.
+Inference rules are used to derive new propositions from existing ones. In order to formalize the process of proving propositions in our system, we introduce a new data type for provability. 
 
 \begin{agdadef} $ $
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{provability}
     \hspace{40mm}$\vdots$
 \end{agdadef}
+This data type has as its inhabitants all of the possible inference rules that can be used to prove a given proposition. These inference rules are defined in the coming sections and are on the form:
 
-
-
-\subsubsection{Law of excluded middle}
-
-\begin{definition}
-    The law of excluded middle states that for every proposition, either the proposition or its negation is true.
-\end{definition}
-This principle is equivalent to the statement that $\phi \vee \neg \phi$ is a tautology, where $\phi$ is any proposition. Given the above definition, we can introduce an inference rule for LEM. This rule requires no premise, as LEM is a tautology.
-\begin{mathpar}
-    \inferrule*[right=\scriptsize LEM]
-        { }{\Gamma \vdash \phi \vee \neg \phi}
-\end{mathpar}
-
-\begin{agdadef}[Law of excluded middle]$ $
-    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LEM}
-\end{agdadef}
-
-By using the LEM inference rule in our system, we can derive new propositions and prove theorems based on the principle of excluded middle.
+\begin{verbatim}
+    rulename : {... : ctxt} {... : Formula}
+        -> premise 1
+        -> premise 2
+               :
+        -> premise n 
+        -> conclusion
+\end{verbatim}
 
 
 \subsubsection{Logical connectives}
@@ -329,9 +321,14 @@ The elimination rule for disjunction is a bit more involved. If $\phi \vee \psi$
 
 
 \begin{definition}
-    A context $\Gamma$ is inconsistent if $\Gamma \vdash \phi$ and $\Gamma \vdash \neg \phi$, or equivalently $\Gamma \vdash \bot$. A context that is not inconsistent, is called consistent.
+    A context $\Gamma$ is inconsistent if $\Gamma \vdash \bot$. A context that is not inconsistent, is called consistent.
 \end{definition}
-The definition of inconsistency and the law of excluded middle together motivates the introduction and elimination rules for negation.
+
+\begin{definition}[Law of non-contradiction]
+    The law of non-contradiction states that a proposition and its negation can not both be true at the same time.
+\end{definition}
+
+The definition of inconsistency and the law of non-contradiction together motivates the introduction and elimination rules for negation.
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\neg$-I]
         {\Gamma, \phi \vdash \bot}
@@ -351,10 +348,10 @@ The definition of inconsistency and the law of excluded middle together motivate
 \end{agdadef}
 
 
-In Definition \ref{wellformed} we mentioned that $\top$ should be thought of as the proposition that is always true. In particular, it is a tautology and as such trivially true in all contexts, and should be introduced with no premise.
+In Definition \ref{wellformed} we mentioned that $\top$ should be thought of as the proposition that is always true. In particular, it needs no premise when introduced and we write $\vdash \top$ because no context is necessary to deduce $\top$.
 \begin{mathpar}
     \inferrule*[right=\scriptsize $\top$-I]
-        { }{\Gamma \vdash \top}
+        { }{\vdash \top}
 \end{mathpar}
 
 \begin{agdadef}[$\top$ introduction]$ $
@@ -373,10 +370,27 @@ If a context is inconsistent one can derive anything from it, which leads to the
 \end{agdadef}
 
 
+\subsubsection{Law of excluded middle}
+
+\begin{definition}
+    The law of excluded middle states that for every proposition, either the proposition or its negation is true.
+\end{definition}
+This principle is equivalent to the statement that $\phi \vee \neg \phi$ is a tautology, where $\phi$ is any proposition. Given the above definition, we can introduce an inference rule for LEM. Similar to $\top$ introduction this rule requires no premise.
+\begin{mathpar}
+    \inferrule*[right=\scriptsize LEM]
+        { }{\vdash \phi \vee \neg \phi}
+\end{mathpar}
+
+\begin{agdadef}[Law of excluded middle]$ $
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{LEM}
+\end{agdadef}
+
+By using the LEM inference rule in our system, we can derive new propositions and prove theorems based on the principle of excluded middle. This, together with the law non-contradiction which we used to define the negation rules, is what makes our logic classical.
+
 
 \subsubsection{Structural rules}
 
-Weakening is a structural rule that states that we can extend the hypothesis with additional members.
+Weakening is a structural rule that states that we can extend the hypothesis with additional assumptions.
 \begin{mathpar}
     \inferrule*[right=\scriptsize weakening]
         {\Gamma \vdash \phi}
@@ -400,7 +414,7 @@ The structural rule of exchange allows us to permute the formulas in the context
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{exchange}
 \end{agdadef}
 
-
+The third common structural rule, contraction, has been omitted here. By omitting this rule we get achieve an affine logic\cite{nlab:affine_logic}.
 
 %% Properties of propositional calc %%
 
@@ -408,7 +422,7 @@ The structural rule of exchange allows us to permute the formulas in the context
 
 In this section we aim to prove some properties of propositional calculus as they will be important later.
 
-\subsubsection{Equivalence relation}
+\subsubsection{Biprovability relation}
 
 \begin{definition}\label{eq-def}
     Let $S$ be the set of all the sentences of $\mathcal{L}$. Define the relation $\sim$ such that for $\phi,\psi \in S$,
@@ -416,13 +430,13 @@ In this section we aim to prove some properties of propositional calculus as the
 \end{definition}
 Because the definition of the relation is a pair it is natural to define it in \Agda as a product type.
 
-\begin{agdadef}[Equivalence relation]$ $
+\begin{agdadef}[Biprovability relation]$ $
     \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{eq}
 \end{agdadef}
 
 
 Before we prove that this is an equivalence relation we will prove a useful lemma.
-\begin{lemma}\label{trans-lemma}
+\begin{lemma}[Cut]\label{trans-lemma}
     Given $\Gamma, \phi \vdash \psi$ and $\Gamma, \psi \vdash \gamma$, it follows that $\Gamma, \phi \vdash \gamma$
 \end{lemma}
 \begin{proof}
@@ -446,7 +460,8 @@ Before we prove that this is an equivalence relation we will prove a useful lemm
 
 \begin{proof}[Agda proof]
     $\:$
-    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{trans-lemma}
+    \ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{cut}
+    Remember from \Agda definition \ref{agdaLookup} that \texttt{Z} stands for $\phi \in \Gamma, \phi$, hence \texttt{axiom Z} is a proof of $\Gamma, \phi \vdash \phi$.
 \end{proof}
 
 \begin{theorem}\label{eq}
@@ -460,7 +475,7 @@ Before we prove that this is an equivalence relation we will prove a useful lemm
             {\phi \in \Gamma, \phi}
             {\Gamma ,\phi \vdash \phi}
     \end{mathpar}
-    that $\varphi \sim \varphi$, so the relation is reflexive.
+    that $\phi \sim \phi$, so the relation is reflexive.
 
     It should be clear that $\Gamma, \phi \vdash \psi \text{ and } \Gamma , \psi \vdash \phi$ is just a pair of proofs, hence it does not matter in which order we give them. This means that the relation is also symmetric.
 
@@ -871,7 +886,7 @@ This concludes the proof that $\phi \wedge (\psi \vee \gamma) \sim (\phi \wedge 
                         {\Gamma_2 \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
                     {\Gamma_2,\psi \vdash (\phi \vee \psi) \wedge (\phi \vee \gamma)}}
                 {\Gamma_2,\psi \vdash \phi \vee \gamma} \\
-             \mathcal{D}_2'' \\
+             \mathcal{D}_2'' \\ 
              \mathcal{D}_2'''}
             {\Gamma_2,\psi \vdash \phi \vee (\psi \wedge \gamma)}
     \end{mathpar}
@@ -916,7 +931,10 @@ This concludes the proof that $\phi \wedge (\psi \vee \gamma) \sim (\phi \wedge 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Lindenbaum-Tarski algebra in Cubical Agda}
-\subsection{Definition}
+
+The Lindenbaum-Tarski algebra is an algebraic structure that consists of equivalence classes of logical formulas, where two formulas are considered equivalent if they have the same logical consequences within the given logical system. 
+
+The algebraic operations in the Lindenbaum-Tarski algebra are derived from the logical connectives present in the underlying logical system. These operations allow for the manipulation of formulas within the algebraic structure. In particular, the Lindenbaum-Tarski algebra for propositional logic is the algebra we get when quotienting the algebra of formulas with the equivalence relation $\sim$ defined previously. We define the algebraic operations on the equivalence classes to be conjunction, disjunction, and negation.
 
 \begin{definition}[Lindenbaum-Tarski algebra]
     The Lindenbaum-Tarski algebra is the quotient algebra obtained by factoring the algebra of formulas by the equivalence relation $\sim$.
@@ -934,37 +952,37 @@ We use the definition of a set quotient already existing in the \agdaCubical lib
 To define operations on the Lindenbaum-Tarski algebra, we utilize the already existing functions \texttt{setQuotBinOp} and \texttt{setQuotUnaryOp} from the \agdaCubical library, which operate on set quotients. Our first step is to define conjunction in the Lindenbaum-Tarski algebra, using \texttt{setQuotBinOp} to create a binary operation. In order to do this, we must provide proof that the underlying operation - conjunction on formulas in the propositional calculus - respects the equivalence relation $\sim$. We will establish this as a lemma.
 
 \begin{lemma}
-    For all formulas $a,a',b,b'$, if $a\sim a'$ and $b \sim b'$, then $a\wedge b \sim a' \wedge b'$.
+    For all formulas $\phi,\phi',\psi,\psi'$, if $\phi \sim \phi'$ and $\psi \sim \psi'$, then $\phi \wedge \psi \sim \phi' \wedge \psi'$.
 \end{lemma}
 
 \begin{proof} By definition of the relation $\sim$ we have:
     \begin{enumerate}[label=(\roman*)]
-        \item $\Gamma, a \vdash a'$
-        \item $\Gamma, a' \vdash a$
-        \item $\Gamma, b \vdash b'$
-        \item $\Gamma, b' \vdash b$
+        \item $\Gamma, \phi \vdash \phi'$
+        \item $\Gamma, \phi' \vdash \phi$
+        \item $\Gamma, \psi \vdash \psi'$
+        \item $\Gamma, \psi' \vdash \psi$
     \end{enumerate}
-    We want to show that then $\Gamma, a \wedge b \vdash a' \wedge b'$ and $\Gamma, a' \wedge b' \vdash a \wedge b$. First, we show that $\Gamma, a \wedge b \vdash a' \wedge b'$. By the axiom rule and conjunction elimination, we have:
+    We want to show that then $\Gamma, \phi \wedge \psi \vdash \phi' \wedge \psi'$ and $\Gamma, \phi' \wedge \psi' \vdash \phi \wedge \psi$. First, we show that $\Gamma, \phi \wedge \psi \vdash \phi' \wedge \psi'$. By the axiom rule and conjunction elimination, we have:
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\wedge$-E$_1$]
             {\inferrule*[right=\scriptsize axiom]
-                {a \wedge b \in \Gamma, a \wedge b }
-                {\Gamma, a \wedge b \vdash a \wedge b}}
-            {\Gamma, a \wedge b \vdash a}
+                {\phi \wedge \psi \in \Gamma, \phi \wedge \psi }
+                {\Gamma, \phi \wedge \psi \vdash \phi \wedge \psi}}
+            {\Gamma, \phi \wedge \psi \vdash \phi}
         \qquad
         \inferrule*[right=\scriptsize $\wedge$-E$_2$]
             {\inferrule*[right=\scriptsize axiom]
-                    {a \wedge b \in \Gamma, a \wedge b }
-                    {\Gamma, a \wedge b \vdash a \wedge b}}
-            {\Gamma, a \wedge b \vdash b}
+                    {\phi \wedge \psi \in \Gamma, \phi \wedge \psi }
+                    {\Gamma, \phi \wedge \psi \vdash \phi \wedge \psi}}
+            {\Gamma, \phi \wedge \psi \vdash \psi}
     \end{mathpar}
-    Now we can use Lemma \ref{trans-lemma} on $\Gamma, a\wedge b \vdash a$ and (i) to get $\Gamma, a \wedge b \vdash a'$, and similarly on $\Gamma, a \wedge b \vdash b$ and (iii) to get $\Gamma, a\wedge b \vdash b'$. Then, by conjunction introduction we get the desired result:
+    Now we can use Lemma \ref{trans-lemma} on $\Gamma, \phi \wedge \psi \vdash \phi$ and (i) to get $\Gamma, \phi \wedge \psi \vdash \phi'$, and similarly on $\Gamma, \phi \wedge \psi \vdash \psi$ and (iii) to get $\Gamma, \phi \wedge \psi \vdash \psi'$. Then, by conjunction introduction we get the desired result:
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\wedge$-I]
-            {\Gamma, a \wedge b \vdash a' \\ \Gamma, a \wedge b \vdash b'}
-            {\Gamma, a \wedge b \vdash a' \wedge b'}
+            {\Gamma, \phi \wedge \psi \vdash \phi' \\ \Gamma, \phi \wedge \psi \vdash \psi'}
+            {\Gamma, \phi \wedge \psi \vdash \phi' \wedge \psi'}
     \end{mathpar}
-    Proving $\Gamma, a' \wedge b' \vdash a \wedge b$ is identical to the first proof, so we omit it here.
+    Proving $\Gamma, \phi' \wedge \psi' \vdash \phi \wedge \psi$ is identical to the first proof, so we omit it here.
 \end{proof}
 
 \begin{proof}[Agda proof]
@@ -984,51 +1002,51 @@ The \texttt{setQuotBinOp} function takes four arguments: two proofs of reflexivi
 When defining disjunction we need to prove a similar lemma as for the conjunction. We must provide proof that the disjunction operator respects the equivalence relation $\sim$.
 
 \begin{lemma}
-    For all formulas $a,a',b,b'$, if $a\sim a'$ and $b \sim b'$, then $a \vee b \sim a' \vee b'$.
+    For all formulas $\phi,\phi',\psi,\psi'$, if $\phi \sim \phi'$ and $\psi \sim \psi'$, then $\phi \vee \psi \sim \phi' \vee \psi'$.
 \end{lemma}
 
 \begin{proof} By definition of the relation $\sim$, we have:
     \begin{enumerate}[label=(\roman*)]
-        \item $\Gamma, a \vdash a'$
-        \item $\Gamma, a' \vdash a$
-        \item $\Gamma, b \vdash b'$
-        \item $\Gamma, b' \vdash b$
+        \item $\Gamma, \phi \vdash \phi'$
+        \item $\Gamma, \phi' \vdash \phi$
+        \item $\Gamma, \psi \vdash \psi'$
+        \item $\Gamma, \psi' \vdash \psi$
     \end{enumerate}
-    We want to show that then $\Gamma, a \vee b \vdash a' \vee b'$ and $\Gamma, a' \vee b' \vdash a \vee b$. By the axiom rule and disjunction introduction, we have:
+    We want to show that then $\Gamma, \phi \vee \psi \vdash \phi' \vee \psi'$ and $\Gamma, \phi' \vee \psi' \vdash \phi \vee \psi$. By the axiom rule and disjunction introduction, we have:
     \begin{mathpar}
         \inferrule*[right=\scriptsize axiom]
-            {a \vee b \in \Gamma, a \vee b}
-            {\Gamma, a \vee b \vdash a \vee b}
+            {\phi \vee \psi \in \Gamma, \phi \vee \psi}
+            {\Gamma, \phi \vee \psi \vdash \phi \vee \psi}
     \end{mathpar}
     Using (i) we can deduce:
     \begin{mathpar}
         \inferrule*[right=\scriptsize exchange]
             {\inferrule*[right=\scriptsize weakening]
                 {\inferrule*[right=\scriptsize $\vee$-I$_2$]
-                    {\Gamma, a \vdash a'}
-                    {\Gamma, a \vdash a' \vee b'}}
-                {\Gamma, a, a\vee b \vdash a' \vee b'}}
-            {\Gamma,a\vee b, a \vdash a' \vee b'}
+                    {\Gamma, \phi \vdash \phi'}
+                    {\Gamma, \phi \vdash \phi' \vee \psi'}}
+                {\Gamma, \phi, \phi \vee \psi \vdash \phi' \vee \psi'}}
+            {\Gamma,\phi \vee \psi, \phi \vdash \phi' \vee \psi'}
     \end{mathpar}
     Similarly, using (iii) we can deduce:
     \begin{mathpar}
         \inferrule*[right=\scriptsize exchange]
             {\inferrule*[right=\scriptsize weakening]
                 {\inferrule*[right=\scriptsize $\vee$-I$_2$]
-                    {\Gamma, b \vdash b'}
-                    {\Gamma, b \vdash a' \vee b'}}
-                {\Gamma, b, a\vee b \vdash a' \vee b'}}
-            {\Gamma,a\vee b, b \vdash a' \vee b'}
+                    {\Gamma, \psi \vdash \psi'}
+                    {\Gamma, \psi \vdash \phi' \vee \psi'}}
+                {\Gamma, \psi, \phi \vee \psi \vdash \phi' \vee \psi'}}
+            {\Gamma,\phi \vee \psi, \psi \vdash \phi' \vee \psi'}
     \end{mathpar}
     Then by using disjunction elimination we get the desired result,
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\vee$-E]
-            {\Gamma, a \vee b \vdash a \vee b \\
-            \Gamma,a\vee b, a \vdash a' \vee b' \\
-            \Gamma,a\vee b, b \vdash a' \vee b'}
-            {\Gamma, a \vee b \vdash a' \vee b'}
+            {\Gamma, \phi \vee \psi \vdash \phi \vee \psi \\
+            \Gamma,\phi \vee \psi, \phi \vdash \phi' \vee \psi' \\
+            \Gamma,\phi \vee \psi, \psi \vdash \phi' \vee \psi'}
+            {\Gamma, \phi \vee \psi \vdash \phi' \vee \psi'}
     \end{mathpar}
-    Proving $\Gamma, a' \vee b' \vdash a \vee b$ is identical to the first proof, so we omit it here.    
+    Proving $\Gamma, \phi' \vee \psi' \vdash \phi \vee \psi$ is identical to the first proof, so we omit it here.    
 \end{proof}
 
 \begin{proof}[Agda proof]
@@ -1045,27 +1063,27 @@ Using \texttt{setQuotBinOp} we can now, with this lemma, define disjunction on L
 Next, in order to define negation on the Lindenbaum-Tarski algebra, we need to show that the underlying operation of negation in the propositional calculus respects the equivalence relation $\sim$. This can be achieved by proving another lemma. 
 
 \begin{lemma}
-    For all formulas $a,a'$, if $a\sim a'$, then $ \neg a \sim \neg a'$.
+    For all formulas $\phi,\phi'$, if $\phi\sim \phi'$, then $ \neg \phi \sim \neg \phi'$.
 \end{lemma}
 
 \begin{proof}
-    From the definition of $\sim$ we are given $\Gamma, a \vdash a'$ and $\Gamma, a' \vdash a$. We aim to show that $\Gamma, \neg a \vdash \neg a'$ and $\Gamma, \neg a' \vdash \neg a$. The two proofs are identical so we will only prove $\Gamma, \neg a \vdash \neg a'$ here. This is done through natural deduction,
+    From the definition of $\sim$ we are given $\Gamma, \phi \vdash \phi'$ and $\Gamma, \phi' \vdash \phi$. We aim to show that $\Gamma, \neg \phi \vdash \neg \phi'$ and $\Gamma, \neg \phi' \vdash \neg \phi$. The two proofs are identical so we will only prove $\Gamma, \neg \phi \vdash \neg \phi'$ here. This is done through natural deduction,
 
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\neg$-I]
             {\inferrule*[right=\scriptsize $\neg$-E]
                 {\inferrule*[right=\scriptsize exchange]
                     {\inferrule*[right= \scriptsize weakening]
-                        {\Gamma, a' \vdash a}
-                        {\Gamma, a', \neg a\vdash a}}
-                    {\Gamma, \neg a, a' \vdash a} \\
+                        {\Gamma, \phi' \vdash \phi}
+                        {\Gamma, \phi', \neg \phi \vdash \phi}}
+                    {\Gamma, \neg \phi, \phi' \vdash \phi} \\
                 \inferrule*[right=\scriptsize weakening]
                     {\inferrule*[right=\scriptsize axiom]
-                        {\neg a \in \Gamma, \neg a}
-                        {\Gamma, \neg a \vdash \neg a}}
-                    {\Gamma,\neg a , a' \vdash \neg a}}
-                {\Gamma, \neg a, a' \vdash \bot}}
-            {\Gamma,\neg a \vdash \neg a'}
+                        {\neg \phi \in \Gamma, \neg \phi}
+                        {\Gamma, \neg \phi \vdash \neg \phi}}
+                    {\Gamma,\neg \phi , \phi' \vdash \neg \phi}}
+                {\Gamma, \neg \phi, \phi' \vdash \bot}}
+            {\Gamma,\neg \phi \vdash \neg \phi'}
     \end{mathpar}
 \end{proof}
 
@@ -1093,15 +1111,15 @@ To construct the equivalence classes for propositional constants, we can use the
 
 \subsection{Proof that the Lindenbaum-Tarski algebra is Boolean}
 
-To prove that the Lindenbaum-Tarski algebra is Boolean we can show that it is a complemented distributive lattice. To do this there first needs to be a partial order defined on the set of equivalence classes.
+To prove that the Lindenbaum-Tarski algebra is a Boolean algebra we can show that it is a complemented distributive lattice. To do this there first needs to be a partial order defined on the set of equivalence classes.
 \begin{definition}\label{order-relation}
-    Let $\mathcal{L}$ be the propositional language described previously and let $S$ be the set of all sentences of $\mathcal{L}$. For each $x\in S$, let $[x]$ denote the equivalence class of $x$ under the equivalence relation $\sim$, and let $LT$ be the set of all such equivalence classes. Define the relation $\leq$ on $LT$ by
+    Let $\mathcal{L}$ be the propositional language described previously and let $S$ be the set of all sentences of $\mathcal{L}$. For each $\phi \in S$, let $[\phi]$ denote the equivalence class of $\phi$ under the equivalence relation $\sim$, and let $LT$ be the set of all such equivalence classes. Define the relation $\leq$ on $LT$ by
     \begin{align*}
-        [x] \leq [y] \quad \text{iff} \quad \Gamma, x \vdash y
+        [\phi] \leq [\psi] \quad \text{iff} \quad \Gamma, \phi \vdash \psi
     \end{align*}
     and define join, meet and complementation as follows:
     \begin{align*}
-        [x] \vee [y] \equiv [x\vee y], \quad [x] \wedge [y] \equiv [x \wedge y], \quad \neg[x] \equiv [\neg x].
+        [\phi] \vee [\psi] \equiv [\phi \vee \psi], \quad [\phi] \wedge [\psi] \equiv [\phi \wedge \psi], \quad \neg[\phi] \equiv [\neg \phi].
     \end{align*}
 \end{definition}
 Note that the operators on the left hand side are operating on the equivalence classes, i.e. the elements of the Lindenbaum-Tarski algebra, and the operators on the right hand side are operating on formulas in the underlying propositional calculus.
@@ -1111,17 +1129,17 @@ Note that the operators on the left hand side are operating on the equivalence c
 \end{proposition}
 
 \begin{proof}
-    First, we must show that the relation is well defined on $LT$. If $x_2 \in [x_1]$ and $y_2\in [y_1]$, then 
+    First, we must show that the relation is well defined on $LT$. If $\phi_2 \in [\phi_1]$ and $\psi_2 \in [\psi_1]$, then 
     \begin{align*}
-        [x_1] \leq [y_1] \quad \text{implies} \quad [x_2] \leq [y_2],
+        [\phi_1] \leq [\psi_1] \quad \text{implies} \quad [\phi_2] \leq [\psi_2],
     \end{align*}
     or equivalently, using the definition above,
     \begin{align*}
-        \Gamma, x_1 \vdash y_1 \quad \text{implies} \quad \Gamma, x_2 \vdash y_2
+        \Gamma, \phi_1 \vdash \psi_1 \quad \text{implies} \quad \Gamma, \phi_2 \vdash \psi_2
     \end{align*}
-    where $\Gamma$ a context. Given $x_2 \in [x_1]$, we have that $x_1 \sim x_2$ which means that $\Gamma, x_1 \vdash x_2$ and $\Gamma, x_2 \vdash x_1$. Similarly, since $y_1 \sim y_2$, we have that $\Gamma, y_1 \vdash y_2$ and $\Gamma, y_2 \vdash y_1$. By applying Lemma \ref{trans-lemma} to $\Gamma, x_2 \vdash x_1$ and the assumption $\Gamma, x_1 \vdash y_1$, we get $\Gamma, x_2 \vdash y_1$. Applying the lemma again to the previous result together with $\Gamma, y_1 \vdash y_2$ yields $\Gamma, x_2 \vdash y_2$, showing that the relation is well defined. The operations join, meet and complementation have been shown to be well defined in the previous section when we defined the operations on the Lindenbaum-Tarski algebra.
+    where $\Gamma$ a context. Given $\phi_2 \in [\phi_1]$, we have that $\phi_1 \sim \phi_2$ which means that $\Gamma, \phi_1 \vdash \phi_2$ and $\Gamma, \phi_2 \vdash \phi_1$. Similarly, since $\psi_1 \sim \psi_2$, we have that $\Gamma, \psi_1 \vdash \psi_2$ and $\Gamma, \psi_2 \vdash \psi_1$. By applying Lemma \ref{trans-lemma} to $\Gamma, \phi_2 \vdash \phi_1$ and the assumption $\Gamma, \phi_1 \vdash \psi_1$, we get $\Gamma, \phi_2 \vdash \psi_1$. Applying the lemma again to the previous result together with $\Gamma, \psi_1 \vdash \psi_2$ yields $\Gamma, \phi_2 \vdash \psi_2$, showing that the relation is well defined. The operations join, meet and complementation have been shown to be well defined in the previous section when we defined the operations on the Lindenbaum-Tarski algebra.
 
-    Now, we need to show that $\leq$ is an order relation. Reflexivity follows immediately from the axiom rule. For anti-symmetry, suppose $x \leq y$ and $y \leq x$, then we have that $\Gamma, x \vdash y$ and $\Gamma, y \vdash x$, so by definition of the equivalence relation we have $x \sim y$. This means that $[x] \equiv [y]$, hence $\leq$ is anti-symmetric. Finally for transitivity assume that $x \leq y$ and $y \leq z$, then we have $\Gamma, x \vdash y$ and $\Gamma, y \vdash z$. Here we can apply Lemma \ref{trans-lemma} and get $\Gamma, x \vdash z$, that is $x \leq z$. Hence we can conclude that $\langle LT, \leq \rangle$ is a partially ordered set.
+    Now, we need to show that $\leq$ is an order relation. Reflexivity follows immediately from the axiom rule. For anti-symmetry, suppose $[\phi] \leq [\psi]$ and $[\psi] \leq [\phi]$, then we have that $\Gamma, \phi \vdash \psi$ and $\Gamma, \psi \vdash \phi$, so by definition of the equivalence relation we have $\phi \sim \psi$. This means that $[\phi] \equiv [\psi]$, hence $\leq$ is anti-symmetric. Finally for transitivity assume that $[\phi] \leq [\psi]$ and $[\psi] \leq [\gamma]$, then we have $\Gamma, \phi \vdash \psi$ and $\Gamma, \psi \vdash \gamma$. Here we can apply Lemma \ref{trans-lemma} and get $\Gamma, \phi \vdash \gamma$, that is $[\phi] \leq [\gamma]$. Hence we can conclude that $\langle LT, \leq \rangle$ is a partially ordered set.
 \end{proof}
 
 
@@ -1147,64 +1165,70 @@ Note that the operators on the left hand side are operating on the equivalence c
     A Boolean algebra is a complemented distributive lattice.
 \end{definition}
 
-\begin{theorem}
+\begin{theorem}\label{LT-bool}
     The Lindenbaum-Tarski algebra is a Boolean algebra.
 \end{theorem}
 
 \begin{proof}
-    First we must show that the $\langle LT, \leq \rangle$ is a lattice. To do this we must show that any two elements $[x],[y]\in LT$ has both a supremum and infimum, $[x] \vee [y]$ and $[x] \wedge[y]$ respectively. 
+    First we must show that the $\langle LT, \leq \rangle$ is a lattice. To do this we must show that any two elements $[\phi],[\psi]\in LT$ has both a supremum and infimum, $[\phi] \vee [\psi]$ and $[\phi] \wedge[\psi]$ respectively. 
     
-    To show that $[x] \vee [y]$ is an upper bound for $\{[x],[y]\}$ we need to show both that $[x] \leq [x \vee y]$ and that $[y] \leq [x \vee y]$. From reflexivity we have $[x] \leq [x]$, or $\Gamma, x \vdash x$. Using disjunction introduction we get $\Gamma, x \vdash x \vee y$, hence $[x] \leq [x \vee y]$ which is equivalent to $[x] \leq [x] \vee [y]$. With an identical argument we also get that $[y] \leq [x]\vee [y]$. To show that this is the least upper bound, assume that $[z]$ is any other upper bound for $\{[x],[y]\}$, then $[x] \leq [z]$ and $[y] \leq [z]$. This means that we have $\Gamma, x \vdash z$ and $\Gamma, y \vdash z$. From the axiom rule and disjunction elimination rule we can deduce
+    To show that $[\phi] \vee [\psi]$ is an upper bound for $\{[\phi],[\psi]\}$ we need to show both that $[\phi] \leq [\phi \vee \psi]$ and that $[\psi] \leq [\phi \vee \psi]$. From reflexivity we have $[\phi] \leq [\phi]$, or $\Gamma, \phi \vdash \phi$. Using disjunction introduction we get $\Gamma, \phi \vdash \phi \vee \psi$, hence $[\phi] \leq [\phi \vee \psi]$ which is equivalent to $[\phi] \leq [\phi] \vee [\psi]$. With an identical argument we also get that $[\psi] \leq [\phi]\vee [\psi]$. To show that this is the least upper bound, assume that $[\gamma]$ is any other upper bound for $\{[\phi],[\psi]\}$, then $[\phi] \leq [\gamma]$ and $[\psi] \leq [\gamma]$. This means that we have $\Gamma, \phi \vdash \gamma$ and $\Gamma, \psi \vdash \gamma$. From the axiom rule and disjunction elimination rule we can deduce
     \begin{mathpar}
         \inferrule*[right = \scriptsize exchange, lab=$\mathcal{D}_1$]
                 {\inferrule*[right= \scriptsize weakening]
-                    {\Gamma, x \vdash z}
-                    {\Gamma, x, x \vee y \vdash z}}
-                {\Gamma, x \vee y, x \vdash z}
+                    {\Gamma, \phi \vdash \gamma}
+                    {\Gamma, \phi, \phi \vee \psi \vdash \gamma}}
+                {\Gamma, \phi \vee \psi, \phi \vdash \gamma}
         \quad
         \inferrule*[right = \scriptsize exchange, lab=$\mathcal{D}_2$]
         {\inferrule*[right= \scriptsize weakening]
-            {\Gamma, y \vdash z}
-            {\Gamma, y, x \vee y \vdash z}}
-        {\Gamma, x \vee y, y \vdash z}
+            {\Gamma, \psi \vdash \gamma}
+            {\Gamma, \psi, \phi \vee \psi \vdash \gamma}}
+        {\Gamma, \phi \vee \psi, \psi \vdash \gamma}
     \end{mathpar}
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\vee$-E]
             {\inferrule*[right=axiom]
-                { }
-                {\Gamma, x \vee y \vdash x \vee y} \\
+                {\phi \vee \psi \in \Gamma,\phi \vee \psi}
+                {\Gamma, \phi \vee \psi \vdash \phi \vee \psi} \\
             \mathcal{D}_1 \\
             \mathcal{D}_2}
-            {\Gamma, x \vee y \vdash z}
+            {\Gamma, \phi \vee \psi \vdash \gamma}
     \end{mathpar}
     
-    Then $[x\vee y] \equiv [x] \vee [y] \leq [z]$. Hence $[x] \vee [y]$ is the least upper bound, i.e. the supremum.
+    Then $[\phi \vee \psi] \equiv [\phi] \vee [\psi] \leq [\gamma]$. Hence $[\phi] \vee [\psi]$ is the least upper bound, i.e. the supremum.
     
-    Showing that $[x] \wedge [y]$ is the infimum is similar. It should be clear that from conjunction elimination we have both $\Gamma, x \wedge y \vdash x$ and $\Gamma, x \wedge y \vdash y$, so $[x \wedge y] \equiv [x] \wedge [y] \leq x$ and $[x \wedge y] \equiv [x] \wedge [y] \leq y$. Now assume that $[z]$ is any other lower bound for $\{[x],[y]\}$, then $[z] \leq [x]$ and $[z] \leq [y]$. This means that $\Gamma, z \vdash x$ and $\Gamma, z \vdash y$, and we can conclude that $\Gamma, z \vdash x\wedge y$, hence $[z] \leq [x\wedge y] \equiv [x] \wedge [y]$. 
+    Showing that $[\phi] \wedge [\psi]$ is the infimum is similar. It should be clear that from conjunction elimination we have both $\Gamma, \phi \wedge \psi \vdash \phi$ and $\Gamma, \phi \wedge \psi \vdash \psi$, so $[\phi \wedge \psi] \equiv [\phi] \wedge [\psi] \leq \phi$ and $[\phi \wedge \psi] \equiv [\phi] \wedge [\psi] \leq \psi$. Now assume that $[\gamma]$ is any other lower bound for $\{[\phi],[\psi]\}$, then $[\gamma] \leq [\phi]$ and $[\gamma] \leq [\psi]$. This means that $\Gamma, \gamma \vdash \phi$ and $\Gamma, \gamma \vdash \psi$, and we can conclude that $\Gamma, \gamma \vdash \phi \wedge \psi$, hence $[\gamma] \leq [\phi \wedge \psi] \equiv [\phi] \wedge [\psi]$. 
 
-    We have now shown that $\langle LT, \leq \rangle$ is a lattice. Distributivity follows from the distributive properties of propositional calculus, shown in Section \ref{dist-section}. Having shown that $\langle LT, \leq \rangle$ is a distributive lattice, all that is left is to show that it is also complemented. In Definition \ref{order-relation} we defined complementation of an element $[x]$ to be $\neg [x] = [\neg x]$. This complement is unique\cite{Tay:2012}, therefore we need to show that 
+    We have now shown that $\langle LT, \leq \rangle$ is a lattice. Distributivity follows from the distributive properties of propositional calculus, shown in Section \ref{dist-section}. Having shown that $\langle LT, \leq \rangle$ is a distributive lattice, all that is left is to show that it is also complemented. In Definition \ref{order-relation} we defined complementation of an element $[\phi]$ to be $\neg [\phi] = [\neg \phi]$. This complement is unique\cite{Tay:2012}, therefore we need to show that 
     \begin{align*}
-        [x]\vee \neg [x] \equiv [\top] \quad \text{and} \quad [x] \wedge \neg [x] \equiv [\bot].
+        [\phi] \vee \neg [\phi] \equiv [\top] \quad \text{and} \quad [\phi] \wedge \neg [\phi] \equiv [\bot].
     \end{align*}
     Since we have that
-    $$[x]\vee \neg [x] \equiv [x]\vee [\neg x] \equiv [x\vee \neg x]$$
-    it suffices to show that $\Gamma, x\vee \neg x \vdash \top$ and $\Gamma, \top \vdash x\vee \neg x$. This is simply done with $\top$-I and LEM respectively. To show $[x] \wedge \neg [x] \equiv [\bot]$ we first we need to show $\Gamma, x \wedge \neg x \vdash \bot$, this is done by conjunction elimination and negation elimination,
+    $$[\phi]\vee \neg [\phi] \equiv [\phi]\vee [\neg \phi] \equiv [\phi \vee \neg \phi]$$
+    it suffices to show that $\Gamma, \phi \vee \neg \phi \vdash \top$ and $\Gamma, \top \vdash \phi \vee \neg \phi$. This is done with $\top$-I and LEM respectively, and then applying weakening repeatedly. To show $[\phi] \wedge \neg [\phi] \equiv [\bot]$ we first we need to show $\Gamma, \phi \wedge \neg \phi \vdash \bot$, this is done by conjunction elimination and negation elimination,
     \begin{mathpar}
         \inferrule*[right=\scriptsize $\neg$-E]
             {\inferrule*[right= \scriptsize $\wedge$-E$_1$]
                 {\inferrule*[right=\scriptsize axiom]
-                    { }
-                    {\Gamma,x \wedge \neg x \vdash x \wedge \neg x}}
-                {\Gamma,x \wedge \neg x \vdash x} \\
+                    {\phi \wedge \neg \phi \in \Gamma, \phi \wedge \neg \phi}
+                    {\Gamma,\phi \wedge \neg \phi \vdash \phi \wedge \neg \phi}}
+                {\Gamma,\phi \wedge \neg \phi \vdash \phi} \\
             \inferrule*[right= \scriptsize $\wedge$-E$_2$]
                 {\inferrule*[right=\scriptsize axiom]
-                { }
-                {\Gamma,x \wedge \neg x \vdash x \wedge \neg x}}
-                {\Gamma,x \wedge \neg x \vdash \neg x}}
-            {\Gamma,x \wedge \neg x \vdash \bot}
+                {\phi \wedge \neg \phi \in \Gamma, \phi \wedge \neg \phi}
+                {\Gamma,\phi \wedge \neg \phi \vdash \phi \wedge \neg \phi}}
+                {\Gamma,\phi \wedge \neg \phi \vdash \neg \phi}}
+            {\Gamma,\phi \wedge \neg \phi \vdash \bot}
     \end{mathpar}
-    The other direction, i.e $\Gamma, \bot \vdash x \wedge \neg x$, is just applying $\bot$-E. This shows that $\langle LT, \leq \rangle$ is a complemented distributive lattice, and thus a Boolean algebra.
+    The other direction, i.e $\Gamma, \bot \vdash \phi \wedge \neg \phi$, is just applying $\bot$-E. This shows that $\langle LT, \leq \rangle$ is a complemented distributive lattice, and thus a Boolean algebra.
 \end{proof}
+
+Before we formalize a proof in \Agda we need to be able to do repeated weakening from the empty context, as the way we have formalized the weakening rule does not quite allow us to do that. It should be obvious that this is something that we are allowed to do, but we need to explicitly formalize it in \Agda. In particluar, we want to show that if $\vdash \phi$ holds, then $\Gamma \vdash \phi$ holds. This is done by induction on $\Gamma$.
+
+\ExecuteMetaData[agda/latex/LindenbaumTarski.tex]{superweakening}
+
+We can now proceed with the \Agda proof of Theorem \ref{LT-bool}.
 
 \begin{proof}[Agda proof]
     We make use of the fact that there is already a function for constructing a distributive lattice in the \agdaCubical library. We need only provide all the proofs needed for the arguments.
@@ -1214,23 +1238,54 @@ Note that the operators on the left hand side are operating on the equivalence c
 \end{proof}
 
 
+
+%%%%%%%%%%%%%%%
+%% Soundness %%
+%%%%%%%%%%%%%%%
+
 \subsection{Soundness}
 Soundness is a fundamental property of logical systems that ensures that the conclusions drawn from the system are reliable and trustworthy. In particular, soundness guarantees that if a proposition can be derived using the inference rules of the logical system from a set of true premises, then that proposition is true.
 
-\begin{theorem}
-    The Lindenbaum-Tarski algebra is sound.
-\end{theorem}
+So far we have dealt with purely syntactictal definitions. To speak about thruth values we must define the semantics.
+
+\begin{definition}
+    A truth valuation for $\mathcal{L}$ is a mapping $v$ from the set of sentences of $\mathcal{L}$ to the set $\{0,1\}$. We define such a truth valuation inductively. First, let $v_0$ be any function from the propositional variables into the set $\{0,1\}$. Then we extend $v_0$ uniquely into a function $v$ with all sentences of $\mathcal{L}$ as its domain, such that for all sentences $\phi$ and $\psi$,
+    \[
+    \begin{array}{lcl}
+        v(\neg \phi) = 1 &\quad \text{if and only if}& \quad v(\phi) = 0 \\
+        v(\phi \vee \psi) = 1 &\quad \text{if and only if} & \quad v(\phi)=1 \text{ or } v(\psi)=1 \\
+        v(\phi \wedge \psi) = 1 &\quad \text{if and only if} & \quad  v(\phi) =1 \text{ and } v(\psi)=1 \\
+        v(\top) = 1 & &\\
+        v(\bot) = 0. & &
+    \end{array}
+    \]
+    If these conditions are met, then $v$ is a truth valuation.
+\end{definition}
+
+The following proposition is from \cite{Tay:2012}. We shall not prove it here and the interested reader may refer to \cite{Tay:2012} for a detailed proof. However, we will use the results to reason about soundness.
+
+\begin{proposition}
+    If $h: LT \to \mathbf{2}$, where $\mathbf{2}$ is the minimal algebra, then $h([\phi])=v(\phi)$ is a truth valuation. Furthermore, if $v$ is a truth valuation, then $h : LT \to \mathbf{2}$ defined by $h([\phi])= v(\phi)$ is a homomorphism.
+\end{proposition}
+
+It should be clear that $h$ maps $[\top]$ to $1$ and will consequently map every element $[\phi] \in LT$ where $[\phi]\equiv [\top]$ to $1$ as well. We can use this to reason about the soundness of propositional calculus. If for any formula $\phi$ it holds that $\vdash \phi$, it should be the case that $[\phi] \equiv [\top]$.
+
+\begin{proposition}
+    For any sentence $\phi \in \mathcal{L}$, if $\vdash \phi$ then $\phi \sim \top$, meaning $[\phi] \equiv [\top]$.
+\end{proposition}
 
 \begin{proof}
-    To prove that the Lindenbaum-Tarski algebra is sound, we need to show that any formula that is provable also belongs to the same equivalence class as $\top$. In other words, we need to show that if $\Gamma \vdash \phi$ then $[\phi] \equiv [\top]$. By definition of the Lindenbaum-Tarski algebra this is equivalent to showing $\Gamma, \phi \vdash \top$ and $\Gamma, \top \vdash \phi$. This can be done using $\top$-I and weakening respectively.
+    By definition of the Lindenbaum-Tarski algebra this is equivalent to showing that, given $\vdash \phi$, we can prove $\phi \vdash \top$ and $\top \vdash \phi$. This can be done using $\top$-I and (repeated*) weakening.
     \begin{mathpar}
-        \inferrule*[right=\scriptsize $\top$-I]
-            { }
-            {\Gamma, \phi \vdash \top}
+        \inferrule*[right=\scriptsize weakening*]
+            {\inferrule*[right=\scriptsize $\top$-I]
+                { }
+                {\vdash \top}}
+            {\phi \vdash \top}
         \qquad
-        \inferrule*[right= \scriptsize weakening]
-            {\Gamma \vdash \phi}
-            {\Gamma, \top \vdash \phi}
+        \inferrule*[right= \scriptsize weakening*]
+            {\vdash \phi}
+            {\top \vdash \phi}
     \end{mathpar}
 \end{proof}
 
@@ -1242,18 +1297,16 @@ Soundness is a fundamental property of logical systems that ensures that the con
 
 
 \section{Conclusions}
-We successfully formalized the Lindenbaum-Tarski algebra in \CubicalAgda
+We successfully formalized the Lindenbaum-Tarski algebra in \CubicalAgda. We ended up needing the structural rules weakening and exhcange, but contraction could be omitted. This resulted in our logic qualifying as an affine logic. It is worth noting that if we were to add implication to our set of logical connectives and redefine the biprovability relation as $$\phi \sim \psi \quad \text{if and only if} \quad \Gamma \vdash \phi \leftrightarrow \psi,$$ 
+then we no longer need the exchange rule. However, an extra connective would result in more clutter and possible extra cases to account for in proofs.
 
-\subsection{Possible improvements}
+By having formalized the Lindenbaum-Tarski algebra in \CubicalAgda we can now use it to prove properties about propositional calculus. We did use it to reason about soundness already, and this could be done more thoroughly by using Boolean ideals and filters not formalized here\cite{Tressl:2022}\cite{Tay:2012}.
 
-We defined the notion of a context as a set of formulas and implemented it as a list in \Agda. To improve the implementation of the structural rule exchange, it is worth exploring the possibility of exchanging any two elements in the context, rather than just the last two. To do this one might need to choose another way to represent the context, perhaps as a vector.
-
-Additionally, we could consider modifying the deduction rules for the propositional calculus, such as adding implication, to see if this reduces the dependency on the structural rules.
+The full formalization can be found in Appendix \ref{code} and on Github\cite{LTgit}.
 
 
 \subsection{Future work}
-We have formalized the Lindenbaum-Tarski algebra over a propositional language, the next step would be to define it over a first order language. The equivalence relation $\sim$ and the binary relations together with negation is defined as previously, but we would need to account for the quantifiers.
-
+We have formalized the Lindenbaum-Tarski algebra over a propositional language, the next natural step would be to define it over a first order language. The equivalence relation $\sim$ and the binary relations together with negation is defined as previously, but we would need to extend the language with quantifiers and variables, and implement the rules surrounding these.
 
 
 

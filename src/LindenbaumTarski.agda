@@ -12,15 +12,18 @@ open import Cubical.Relation.Binary.Base
 open import Cubical.Data.Nat.Base
 open import Cubical.Data.Prod.Base
 
+open import Cubical.Data.Bool.Base
+
 open import Cubical.Algebra.DistLattice.Base
+
 
 
 -- Definition: Formula
 data Formula : Type where
+  const : ℕ      → Formula
   _∧_   : Formula → Formula → Formula
   _∨_   : Formula → Formula → Formula
   ¬_    : Formula → Formula
-  const : ℕ      → Formula
   ⊥     : Formula
   ⊤     : Formula
 
@@ -29,19 +32,19 @@ infix  35  _∧_
 infix  30  _∨_
 infixl 36  ¬_
 infix  20  _⊢_
-infix  23  _∶_
+infix  23  _∷_
  
 
 -- Definition: Context
 data ctxt : Type where
   ∅    : ctxt
-  _∶_  : ctxt → Formula → ctxt
+  _∷_  : ctxt → Formula → ctxt
 
 
 -- Definition: Lookup
 data _∈_ : Formula → ctxt → Type where
-  Z  : ∀ {Γ ϕ}   → ϕ ∈ Γ ∶ ϕ
-  S  : ∀ {Γ ϕ ψ} → ϕ ∈ Γ → ϕ ∈ Γ ∶ ψ
+  Z  : ∀ {Γ ϕ}   → ϕ ∈ Γ ∷ ϕ   
+  S  : ∀ {Γ ϕ ψ} → ϕ ∈ Γ → ϕ ∈ Γ ∷ ψ
 
 
 -- Definition: Provability
@@ -69,12 +72,12 @@ data _⊢_ : ctxt → Formula → Type where
        
   ∨-E : {Γ : ctxt} {ϕ ψ γ : Formula}
       → Γ ⊢ ϕ ∨ ψ
-      → Γ ∶ ϕ ⊢ γ
-      → Γ ∶ ψ ⊢ γ
+      → Γ ∷ ϕ ⊢ γ
+      → Γ ∷ ψ ⊢ γ
       → Γ ⊢ γ
 
   ¬-I : {Γ : ctxt} {ϕ : Formula}
-      → Γ ∶ ϕ ⊢ ⊥
+      → Γ ∷ ϕ ⊢ ⊥
       → Γ ⊢ ¬ ϕ
       
   ¬-E : {Γ : ctxt} {ϕ : Formula}
@@ -86,31 +89,43 @@ data _⊢_ : ctxt → Formula → Type where
       → Γ ⊢ ⊥
       → Γ ⊢ ϕ  
   
-  ⊤-I : {Γ : ctxt} → Γ ⊢ ⊤
+  ⊤-I : ∅ ⊢ ⊤
   
   axiom : {Γ : ctxt} {ϕ : Formula}
         → ϕ ∈ Γ
         → Γ ⊢ ϕ
         
-  LEM : {Γ : ctxt} {ϕ : Formula}
-      → Γ ⊢ ϕ ∨ ¬ ϕ
+  LEM : {ϕ : Formula}
+      → ∅ ⊢ ϕ ∨ ¬ ϕ
   
   weakening : {Γ : ctxt} {ϕ ψ : Formula}
             → Γ ⊢ ψ
-            → Γ ∶ ϕ ⊢ ψ
+            → Γ ∷ ϕ ⊢ ψ
             
   exchange : {Γ : ctxt} {ϕ ψ γ : Formula}
-           → (Γ ∶ ϕ) ∶ ψ ⊢ γ
-           → (Γ ∶ ψ) ∶ ϕ ⊢ γ
+           → (Γ ∷ ϕ) ∷ ψ ⊢ γ
+           → (Γ ∷ ψ) ∷ ϕ ⊢ γ
            
 --  contraction : {Γ : ctxt} {ϕ ψ : Formula}
---              → ((Γ ∶ ϕ) ∶ ϕ) ⊢ ψ
---              → (Γ ∶ ϕ) ⊢ ψ
+--              → (Γ ∷ ϕ) ∷ ϕ ⊢ ψ
+--              → (Γ ∷ ϕ) ⊢ ψ
+
 
 
 module _ {Γ : ctxt} where
 
   infixl 25 ¬/_
+
+  ------------------
+  -- Usefull lemmas
+  ------------------
+  superweakening : ∀ {Γ : ctxt} {ϕ : Formula} → ∅ ⊢ ϕ → Γ ⊢ ϕ
+  superweakening {∅} x = x
+  superweakening {Δ ∷ ψ} x = weakening (superweakening x)
+
+  cut : ∀ {ϕ ψ γ : Formula} → Γ ∷ ϕ ⊢ γ → Γ ∷ γ ⊢ ψ → Γ ∷ ϕ ⊢ ψ
+  cut x y = ∨-E (∨-I₂ x) (exchange (weakening y)) (axiom Z)
+
 
   ------------------------------------------------------
   -- Defining relation where two formulas are related
@@ -120,81 +135,79 @@ module _ {Γ : ctxt} where
   ------------------------------------------------------
   
   _∼_ : Formula → Formula → Type
-  ϕ ∼ ψ = Γ ∶ ϕ ⊢ ψ × Γ ∶ ψ ⊢ ϕ
+  ϕ ∼ ψ = Γ ∷ ϕ ⊢ ψ × Γ ∷ ψ ⊢ ϕ
 
   ∼-refl : ∀ (ϕ : Formula) → ϕ ∼ ϕ
-  ∼-refl _ = axiom Z , (axiom Z)
-  
-  ∼-sym : ∀ {ϕ ψ : Formula} → ϕ ∼ ψ → ψ ∼ ϕ
-  ∼-sym (A , B) = B , A
+  ∼-refl _ = (axiom Z , axiom Z)
 
-  ⊢trans : ∀ {ϕ ψ γ : Formula} → Γ ∶ ϕ ⊢ γ → Γ ∶ γ ⊢ ψ → Γ ∶ ϕ ⊢ ψ
-  ⊢trans A B = ∨-E (∨-I₂ A) (exchange (weakening B)) (axiom Z)
+  ∼-sym : ∀ {ϕ ψ : Formula} → ϕ ∼ ψ → ψ ∼ ϕ
+  ∼-sym (A , B) = (B , A)
 
   ∼-trans : ∀ {ϕ ψ γ : Formula} → ϕ ∼ γ → γ ∼ ψ → ϕ ∼ ψ
-  ∼-trans x y = ⊢trans (proj₁ x) (proj₁ y) , ⊢trans (proj₂ y) (proj₂ x)
-
+  ∼-trans (x₁ , x₂) (y₁ , y₂) = (cut x₁ y₁ , cut y₂ x₂)
+                              
 
   ----------------------------------------
   -- Properties of propositional calculus
   ----------------------------------------
 
   -- Commutativity on ∧
-  ∧-comm : ∀ {ϕ ψ : Formula} → Γ ∶ ϕ ∧ ψ ⊢ ψ ∧ ϕ
+  ∧-comm : ∀ {ϕ ψ : Formula} → Γ ∷ ϕ ∧ ψ ⊢ ψ ∧ ϕ
   ∧-comm = ∧-I (∧-E₂ (axiom Z)) (∧-E₁ (axiom Z))
 
   ∼-comm-∧ : ∀ {ϕ ψ : Formula} → ϕ ∧ ψ ∼ ψ ∧ ϕ
-  ∼-comm-∧ = ∧-comm , ∧-comm
-  
+  ∼-comm-∧ = (∧-comm , ∧-comm)
+
 
   -- Commutativity on ∨
-  ∨-comm : {ϕ ψ : Formula} → Γ ∶ ϕ ∨ ψ ⊢ ψ ∨ ϕ
+  ∨-comm : {ϕ ψ : Formula} → Γ ∷ ϕ ∨ ψ ⊢ ψ ∨ ϕ
   ∨-comm = ∨-E (axiom Z) (∨-I₁ (axiom Z)) (∨-I₂ (axiom Z))
 
   ∼-comm-∨ : ∀ {ϕ ψ : Formula} → ϕ ∨ ψ ∼ ψ ∨ ϕ
-  ∼-comm-∨ = ∨-comm , ∨-comm
-  
+  ∼-comm-∨ = (∨-comm , ∨-comm)
+
 
   -- Associativity on ∧
-  ∧-ass1 : ∀ {ϕ ψ γ : Formula} → Γ ∶ ϕ ∧ (ψ ∧ γ) ⊢ (ϕ ∧ ψ) ∧ γ
+  ∧-ass1 : ∀ {ϕ ψ γ : Formula} → Γ ∷ ϕ ∧ (ψ ∧ γ) ⊢ (ϕ ∧ ψ) ∧ γ
   ∧-ass1 = ∧-I (∧-I (∧-E₁ (axiom Z)) (∧-E₁ (∧-E₂ (axiom Z))))
                (∧-E₂ (∧-E₂ (axiom Z)))
                        
-  ∧-ass2 : ∀ {ϕ ψ γ : Formula} → Γ ∶ (ϕ ∧ ψ) ∧ γ ⊢ ϕ ∧ (ψ ∧ γ)
+  ∧-ass2 : ∀ {ϕ ψ γ : Formula} → Γ ∷ (ϕ ∧ ψ) ∧ γ ⊢ ϕ ∧ (ψ ∧ γ)
   ∧-ass2 = ∧-I (∧-E₁ (∧-E₁ (axiom Z)))
                (∧-I (∧-E₂ (∧-E₁ (axiom Z)))
                     (∧-E₂ (axiom Z)))
 
   ∼-ass-∧ : ∀ {ϕ ψ γ : Formula} → ϕ ∧ (ψ ∧ γ) ∼ (ϕ ∧ ψ) ∧ γ
-  ∼-ass-∧ = ∧-ass1 , ∧-ass2
+  ∼-ass-∧ = (∧-ass1 , ∧-ass2)
 
 
   -- Associativity on ∨
-  ∨-ass1 : ∀ {ϕ ψ γ : Formula} → Γ ∶ ϕ ∨ (ψ ∨ γ) ⊢ (ϕ ∨ ψ) ∨ γ
+  ∨-ass1 : ∀ {ϕ ψ γ : Formula} → Γ ∷ ϕ ∨ (ψ ∨ γ) ⊢ (ϕ ∨ ψ) ∨ γ
   ∨-ass1 = ∨-E (axiom Z)
-                 (∨-I₂ (∨-I₂ (axiom Z)))
-                 (∨-E (axiom Z)
-                      (∨-I₂ (∨-I₁ (axiom Z)))
-                      (∨-I₁ (axiom Z)))
+               (∨-I₂ (∨-I₂ (axiom Z)))
+               (∨-E (axiom Z)
+                    (∨-I₂ (∨-I₁ (axiom Z)))
+                    (∨-I₁ (axiom Z)))
                                           
-  ∨-ass2 : ∀ {ϕ ψ γ : Formula} → Γ ∶ (ϕ ∨ ψ) ∨ γ ⊢ ϕ ∨ (ψ ∨ γ)
+  ∨-ass2 : ∀ {ϕ ψ γ : Formula} → Γ ∷ (ϕ ∨ ψ) ∨ γ ⊢ ϕ ∨ (ψ ∨ γ)
   ∨-ass2 = ∨-E (axiom Z)
-                 (∨-E (axiom Z)
-                      (∨-I₂ (axiom Z))
-                      (∨-I₁ (∨-I₂ (axiom Z))))
-                 (∨-I₁ (∨-I₁ (axiom Z)))
+               (∨-E (axiom Z)
+                    (∨-I₂ (axiom Z))
+                    (∨-I₁ (∨-I₂ (axiom Z))))
+               (∨-I₁ (∨-I₁ (axiom Z)))
 
   ∼-ass-∨ : ∀ {ϕ ψ γ : Formula} → ϕ ∨ (ψ ∨ γ) ∼ (ϕ ∨ ψ) ∨ γ
-  ∼-ass-∨ = ∨-ass1 , ∨-ass2
+  ∼-ass-∨ = (∨-ass1 , ∨-ass2)
 
 
   -- Distributivity over ∧
-  ∧-dist1 : ∀ {ϕ ψ γ : Formula} → Γ ∶ ϕ ∧ (ψ ∨ γ) ⊢ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)
+  ∧-dist1 : ∀ {ϕ ψ γ : Formula} → Γ ∷ ϕ ∧ (ψ ∨ γ) ⊢ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)
   ∧-dist1 = ∨-E (∧-E₂ (axiom Z))
-                (∨-I₂ (∧-I (weakening (∧-E₁ (axiom Z))) (axiom Z)))
-                (∨-I₁ (∧-I (weakening (∧-E₁ (axiom Z))) (axiom Z)))
+                (∨-I₂ (∧-I (∧-E₁ (axiom (S Z))) (axiom Z)))
+                (∨-I₁ (∧-I (∧-E₁ (axiom (S Z))) (axiom Z)))
 
-  ∧-dist2 : ∀ {ϕ ψ γ : Formula} → Γ ∶ (ϕ ∧ ψ) ∨ (ϕ ∧ γ) ⊢ ϕ ∧ (ψ ∨ γ)
+
+  ∧-dist2 : ∀ {ϕ ψ γ : Formula} → Γ ∷ (ϕ ∧ ψ) ∨ (ϕ ∧ γ) ⊢ ϕ ∧ (ψ ∨ γ)
   ∧-dist2 = ∧-I (∨-E (axiom Z)
                      (∧-E₁ (axiom Z))
                      (∧-E₁ (axiom Z)))
@@ -203,26 +216,26 @@ module _ {Γ : ctxt} where
                      (∨-I₁ (∧-E₂ (axiom Z))))
 
   ∼-dist-∧ : ∀ {ϕ ψ γ : Formula} → ϕ ∧ (ψ ∨ γ) ∼ (ϕ ∧ ψ) ∨ (ϕ ∧ γ)
-  ∼-dist-∧ = ∧-dist1 , ∧-dist2
+  ∼-dist-∧ = (∧-dist1 , ∧-dist2)
 
 
   -- Distributivity over ∨
-  ∨-dist1 : ∀ {ϕ ψ γ : Formula} → Γ ∶ ϕ ∨ (ψ ∧ γ) ⊢ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)
+  ∨-dist1 : ∀ {ϕ ψ γ : Formula} → Γ ∷ ϕ ∨ (ψ ∧ γ) ⊢ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)
   ∨-dist1 = ∨-E (axiom Z)
                 (∧-I (∨-I₂ (axiom Z))
                      (∨-I₂ (axiom Z)))
                 (∧-I (∨-I₁ (∧-E₁ (axiom Z)))
                      (∨-I₁ (∧-E₂ (axiom Z))))
   
-  ∨-dist2 : ∀ {ϕ ψ γ : Formula} → Γ ∶ (ϕ ∨ ψ) ∧ (ϕ ∨ γ) ⊢ ϕ ∨ (ψ ∧ γ)
+  ∨-dist2 : ∀ {ϕ ψ γ : Formula} → Γ ∷ (ϕ ∨ ψ) ∧ (ϕ ∨ γ) ⊢ ϕ ∨ (ψ ∧ γ)
   ∨-dist2 = ∨-E (∧-E₁ (axiom Z))
                 (∨-I₂ (axiom Z))
-                (∨-E (∧-E₂ (weakening (axiom Z)))
+                (∨-E (∧-E₂ (axiom (S Z)))
                      (∨-I₂ (axiom Z))
-                     (∨-I₁ (∧-I (weakening (axiom Z)) (axiom Z))))
+                     (∨-I₁ (∧-I (axiom (S Z)) (axiom Z))))
 
   ∼-dist-∨ : ∀ {ϕ ψ γ : Formula} → ϕ ∨ (ψ ∧ γ) ∼ (ϕ ∨ ψ) ∧ (ϕ ∨ γ)
-  ∼-dist-∨ = ∨-dist1 , ∨-dist2
+  ∼-dist-∨ = (∨-dist1 , ∨-dist2)
 
 
   ---------------------------------------------------------
@@ -239,23 +252,21 @@ module _ {Γ : ctxt} where
   -- The equivalence relation ∼ respects operations
   --------------------------------------------------
 
-  ∼-respects-∧ : ∀ (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∧ b) ∼ (a' ∧ b')
-  ∼-respects-∧ a a' b b' x y = ∧-I (⊢trans (∧-E₁ (axiom Z)) (proj₁ x))
-                                   (⊢trans (∧-E₂ (axiom Z)) (proj₁ y)) ,
-                               ∧-I (⊢trans (∧-E₁ (axiom Z)) (proj₂ x))
-                                   (⊢trans (∧-E₂ (axiom Z)) (proj₂ y))
+  ∼-respects-∧ : ∀ (ϕ ϕ' ψ ψ' : Formula) → ϕ ∼ ϕ' → ψ ∼ ψ' → (ϕ ∧ ψ) ∼ (ϕ' ∧ ψ')
+  ∼-respects-∧ ϕ ϕ' ψ ψ' (x₁ , x₂) (y₁ , y₂) = ∧-I (cut (∧-E₁ (axiom Z)) x₁) (cut (∧-E₂ (axiom Z)) y₁) ,
+                                               ∧-I (cut (∧-E₁ (axiom Z)) x₂) (cut (∧-E₂ (axiom Z)) y₂)
 
-  ∼-respects-∨ : ∀ (a a' b b' : Formula) → a ∼ a' → b ∼ b' → (a ∨ b) ∼ (a' ∨ b')
-  ∼-respects-∨ a a' b b' x y = ∨-E (axiom Z)
-                                   (exchange (weakening (∨-I₂ (proj₁ x))))
-                                   (exchange (weakening (∨-I₁ (proj₁ y)))) ,
-                               ∨-E (axiom Z)
-                                   (exchange (weakening (∨-I₂ (proj₂ x))))
-                                   (exchange (weakening (∨-I₁ (proj₂ y))))
+  ∼-respects-∨ : ∀ (ϕ ϕ' ψ ψ' : Formula) → ϕ ∼ ϕ' → ψ ∼ ψ' → (ϕ ∨ ψ) ∼ (ϕ' ∨ ψ')
+  ∼-respects-∨ ϕ ϕ' ψ ψ' (x₁ , x₂) (y₁ , y₂) = ∨-E (axiom Z)
+                                                   (∨-I₂ (exchange (weakening x₁)))
+                                                   (∨-I₁ (exchange (weakening y₁))) ,
+                                               ∨-E (axiom Z)
+                                                   (∨-I₂ (exchange (weakening x₂)))
+                                                   (∨-I₁ (exchange (weakening y₂)))
 
-  ∼-respects-¬ : ∀ (a a' : Formula) → a ∼ a' → (¬ a) ∼ (¬ a')
-  ∼-respects-¬ a a' x = ¬-I (¬-E (exchange (weakening (proj₂ x))) (weakening (axiom Z))) ,
-                        ¬-I (¬-E (exchange (weakening (proj₁ x))) (weakening (axiom Z)))
+  ∼-respects-¬ : ∀ (ϕ ϕ' : Formula) → ϕ ∼ ϕ' → (¬ ϕ) ∼ (¬ ϕ')
+  ∼-respects-¬ ϕ ϕ' (x₁ , x₂) = ¬-I (¬-E (exchange (weakening x₂)) (axiom (S Z))) ,
+                                ¬-I (¬-E (exchange (weakening x₁)) (axiom (S Z)))
 
 
   -------------------------------------------------------------------
@@ -265,7 +276,7 @@ module _ {Γ : ctxt} where
   _∧/_ : LindenbaumTarski → LindenbaumTarski → LindenbaumTarski
   A ∧/ B = setQuotBinOp ∼-refl ∼-refl _∧_ ∼-respects-∧ A B
 
-  _∨/_ : LindenbaumTarski  → LindenbaumTarski → LindenbaumTarski
+  _∨/_ : LindenbaumTarski → LindenbaumTarski → LindenbaumTarski
   A ∨/ B = setQuotBinOp ∼-refl ∼-refl _∨_ ∼-respects-∨ A B
 
   ¬/_ : LindenbaumTarski → LindenbaumTarski
@@ -278,19 +289,10 @@ module _ {Γ : ctxt} where
   ⊥/ = [ ⊥ ]
 
 
-  ------------------------------------------------------------
-  -- If ϕ is provable in Γ then [ϕ] should be the same as ⊤/.
-  -- We can view this as a form of soundness.
-  ------------------------------------------------------------
-  
-  sound : ∀ {ϕ : Formula} → Γ ⊢ ϕ → [ ϕ ] ≡ ⊤/
-  sound x = eq/ _ _ (⊤-I , weakening x)
-
-
   -------------------------------------------------------------
   -- By proving the Lindenbaum-Tarski algebra can be viewed as
   -- a complemented distributive lattice, we prove that it is
-  -- also boolean.
+  -- also a Boolean algebra.
   -------------------------------------------------------------
 
   LindenbaumTarski-DistLattice : DistLattice _
@@ -340,21 +342,30 @@ module _ {Γ : ctxt} where
         ∨/-id = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (∨-E (axiom Z) (axiom Z) (⊥-E (axiom Z)) , ∨-I₂ (axiom Z))
 
         ∧/-id : ∀ (A : LindenbaumTarski) → A ∧/ ⊤/ ≡ A
-        ∧/-id = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (∧-E₁ (axiom Z) , ∧-I (axiom Z) ⊤-I)
+        ∧/-id = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (∧-E₁ (axiom Z) , ∧-I (axiom Z) (superweakening ⊤-I))
 
 
-  
+
   open DistLatticeStr (snd LindenbaumTarski-DistLattice)
 
-  LindenbaumTarski-DistLattice-supremum : (x : fst LindenbaumTarski-DistLattice) → x ∨l ¬/ x ≡ 1l
-  LindenbaumTarski-DistLattice-supremum x = ∨/-comp x
+  LindenbaumTarski-DistLattice-supremum : (A : fst LindenbaumTarski-DistLattice) → A ∨l ¬/ A ≡ 1l
+  LindenbaumTarski-DistLattice-supremum A = ∨/-comp A
     where
         ∨/-comp : ∀ (A : LindenbaumTarski) → A ∨/ ¬/ A ≡ ⊤/
-        ∨/-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (⊤-I , LEM)
+        ∨/-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (superweakening ⊤-I , superweakening LEM)
 
 
-  LindenbaumTarski-DistLattice-infimum : (x : fst LindenbaumTarski-DistLattice) → x ∧l ¬/ x ≡ 0l
-  LindenbaumTarski-DistLattice-infimum x = ∧/-comp x
+  LindenbaumTarski-DistLattice-infimum : (A : fst LindenbaumTarski-DistLattice) → A ∧l ¬/ A ≡ 0l
+  LindenbaumTarski-DistLattice-infimum A = ∧/-comp A
     where
         ∧/-comp : ∀ (A : LindenbaumTarski) → A ∧/ ¬/ A ≡ ⊥/
         ∧/-comp = elimProp (λ _ → squash/ _ _) λ _ → eq/ _ _ (¬-E (∧-E₁ (axiom Z)) (∧-E₂ (axiom Z)) , ⊥-E (axiom Z))
+
+
+  -----------------------------------------------
+  -- If ⊢ ϕ then [ϕ] should be the same as ⊤/.
+  -- We can view this as a form of soundness.
+  -----------------------------------------------
+
+  sound : ∀ {ϕ : Formula} → ∅ ⊢ ϕ → [ ϕ ] ≡ ⊤/
+  sound x = eq/ _ _ (superweakening ⊤-I , superweakening x)
