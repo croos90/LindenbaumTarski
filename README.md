@@ -1,1 +1,1 @@
-# Lindenbaum-Tarski algebra in cubical agda
+# Lindenbaum-Tarski algebra in Cubical Agda
