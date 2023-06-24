@@ -25,6 +25,7 @@ open import Cubical.Relation.Binary.Base
 
 open import Cubical.Data.Nat.Base
 open import Cubical.Data.Prod.Base
+open import Cubical.Data.Bool.Base
 
 open import Cubical.Algebra.DistLattice.Base
 
@@ -362,62 +363,62 @@ module _ {Γ : ctxt} where
   LindenbaumTarski-DistLattice = makeDistLattice∧lOver∨l
                                  ⊥/ ⊤/ _∨/_ _∧/_
                                  isSet-LT
-                                 ∨/-ass ∨/-id ∨/-comm
-                                 ∧/-ass ∧/-id ∧/-comm ∧/-abs ∧/-dist
+                                 ∨/Assoc ∨/Id ∨/Comm
+                                 ∧/Assoc ∧/Id ∧/Comm ∧/Absorb ∧/Dist
     where
         isSet-LT : ∀ (A B : LindenbaumTarski)
                  → isProp(A ≡ B)
         isSet-LT A B = squash/ _ _
 
-        ∧/-comm : ∀ (A B : LindenbaumTarski)
-                → A ∧/ B ≡ B ∧/ A
-        ∧/-comm = elimProp2 (λ _ _ → squash/ _ _)
-                            (λ _ _ → eq/ _ _ ∧Comm)
+        ∧/Comm : ∀ (A B : LindenbaumTarski)
+               → A ∧/ B ≡ B ∧/ A
+        ∧/Comm = elimProp2 (λ _ _ → squash/ _ _)
+                           (λ _ _ → eq/ _ _ ∧Comm)
 
-        ∨/-comm : ∀ (A B : LindenbaumTarski)
-                → A ∨/ B ≡ B ∨/ A
-        ∨/-comm = elimProp2 (λ _ _ → squash/ _ _)
-                            (λ _ _ → eq/ _ _ ∨Comm)
+        ∨/Comm : ∀ (A B : LindenbaumTarski)
+               → A ∨/ B ≡ B ∨/ A
+        ∨/Comm = elimProp2 (λ _ _ → squash/ _ _)
+                           (λ _ _ → eq/ _ _ ∨Comm)
 
-        ∧/-ass : ∀ (A B C : LindenbaumTarski)
-               → A ∧/ (B ∧/ C) ≡ (A ∧/ B) ∧/ C
-        ∧/-ass = elimProp3 (λ _ _ _ → squash/ _ _)
-                           (λ _ _ _ → eq/ _ _ ∧Assoc)
+        ∧/Assoc : ∀ (A B C : LindenbaumTarski)
+                → A ∧/ (B ∧/ C) ≡ (A ∧/ B) ∧/ C
+        ∧/Assoc = elimProp3 (λ _ _ _ → squash/ _ _)
+                            (λ _ _ _ → eq/ _ _ ∧Assoc)
 
-        ∨/-ass : ∀ (A B C : LindenbaumTarski)
-               → A ∨/ (B ∨/ C) ≡ (A ∨/ B) ∨/ C
-        ∨/-ass = elimProp3 (λ _ _ _ → squash/ _ _)
-                           (λ _ _ _ → eq/ _ _ ∨Assoc)
+        ∨/Assoc : ∀ (A B C : LindenbaumTarski)
+                → A ∨/ (B ∨/ C) ≡ (A ∨/ B) ∨/ C
+        ∨/Assoc = elimProp3 (λ _ _ _ → squash/ _ _)
+                            (λ _ _ _ → eq/ _ _ ∨Assoc)
 
-        ∧/-dist : ∀ (A B C : LindenbaumTarski)
-                → A ∧/ (B ∨/ C) ≡ (A ∧/ B) ∨/ (A ∧/ C)
-        ∧/-dist = elimProp3 (λ _ _ _ → squash/ _ _)
-                            (λ _ _ _ → eq/ _ _ ∧Dist)
+        ∧/Dist : ∀ (A B C : LindenbaumTarski)
+               → A ∧/ (B ∨/ C) ≡ (A ∧/ B) ∨/ (A ∧/ C)
+        ∧/Dist = elimProp3 (λ _ _ _ → squash/ _ _)
+                           (λ _ _ _ → eq/ _ _ ∧Dist)
 
-        ∨/-dist : ∀ (A B C : LindenbaumTarski)
-                → A ∨/ (B ∧/ C) ≡ (A ∨/ B) ∧/ (A ∨/ C)
-        ∨/-dist = elimProp3 (λ _ _ _ → squash/ _ _)
-                            (λ _ _ _ → eq/ _ _ ∨Dist)
+        ∨/Dist : ∀ (A B C : LindenbaumTarski)
+               → A ∨/ (B ∧/ C) ≡ (A ∨/ B) ∧/ (A ∨/ C)
+        ∨/Dist = elimProp3 (λ _ _ _ → squash/ _ _)
+                           (λ _ _ _ → eq/ _ _ ∨Dist)
 
-        ∧/-abs : ∀ (A B : LindenbaumTarski)
-               → A ∧/ (A ∨/ B) ≡ A
-        ∧/-abs = elimProp2 (λ _ _ → squash/ _ _)
-                           (λ _ _ → eq/ _ _ ∧Absorb)
+        ∧/Absorb : ∀ (A B : LindenbaumTarski)
+                 → A ∧/ (A ∨/ B) ≡ A
+        ∧/Absorb = elimProp2 (λ _ _ → squash/ _ _)
+                             (λ _ _ → eq/ _ _ ∧Absorb)
 
-        ∨/-abs : ∀ (A B : LindenbaumTarski)
-               → (A ∧/ B) ∨/ B ≡ B
-        ∨/-abs = elimProp2 (λ _ _ → squash/ _ _)
-                           (λ _ _ → eq/ _ _ ∨Absorb)
+        ∨/Absorb : ∀ (A B : LindenbaumTarski)
+                 → (A ∧/ B) ∨/ B ≡ B
+        ∨/Absorb = elimProp2 (λ _ _ → squash/ _ _)
+                             (λ _ _ → eq/ _ _ ∨Absorb)
 
-        ∨/-id : ∀ (A : LindenbaumTarski)
-              → A ∨/ ⊥/ ≡ A
-        ∨/-id = elimProp (λ _ → squash/ _ _)
+        ∨/Id : ∀ (A : LindenbaumTarski)
+             → A ∨/ ⊥/ ≡ A
+        ∨/Id = elimProp (λ _ → squash/ _ _)
                          (λ _ → eq/ _ _ ∨Id)
 
-        ∧/-id : ∀ (A : LindenbaumTarski)
-              → A ∧/ ⊤/ ≡ A
-        ∧/-id = elimProp (λ _ → squash/ _ _)
-                         (λ _ → eq/ _ _ ∧Id)
+        ∧/Id : ∀ (A : LindenbaumTarski)
+             → A ∧/ ⊤/ ≡ A
+        ∧/Id = elimProp (λ _ → squash/ _ _)
+                        (λ _ → eq/ _ _ ∧Id)
 
 
   open DistLatticeStr (snd LindenbaumTarski-DistLattice)
@@ -425,21 +426,21 @@ module _ {Γ : ctxt} where
 
   LindenbaumTarski-DistLattice-supremum : (A : fst LindenbaumTarski-DistLattice)
                                         → ¬/ A ∨l A ≡ 1l
-  LindenbaumTarski-DistLattice-supremum A = ∨/-comp A
+  LindenbaumTarski-DistLattice-supremum A = ∨/Complement A
     where
-        ∨/-comp : ∀ (A : LindenbaumTarski)
-                → ¬/ A ∨/ A ≡ ⊤/
-        ∨/-comp = elimProp (λ _ → squash/ _ _)
-                           (λ _ → eq/ _ _ ∨Complement)
+        ∨/Complement : ∀ (A : LindenbaumTarski)
+                     → ¬/ A ∨/ A ≡ ⊤/
+        ∨/Complement = elimProp (λ _ → squash/ _ _)
+                                (λ _ → eq/ _ _ ∨Complement)
 
   LindenbaumTarski-DistLattice-infimum : (A : fst LindenbaumTarski-DistLattice)
                                        → A ∧l ¬/ A ≡ 0l
-  LindenbaumTarski-DistLattice-infimum A = ∧/-comp A
+  LindenbaumTarski-DistLattice-infimum A = ∧/Complement A
     where
-        ∧/-comp : ∀ (A : LindenbaumTarski)
-                → A ∧/ ¬/ A ≡ ⊥/
-        ∧/-comp = elimProp (λ _ → squash/ _ _)
-                           (λ _ → eq/ _ _ ∧Complement)
+        ∧/Complement : ∀ (A : LindenbaumTarski)
+                     → A ∧/ ¬/ A ≡ ⊥/
+        ∧/Complement = elimProp (λ _ → squash/ _ _)
+                                (λ _ → eq/ _ _ ∧Complement)
 
 
   -----------------------------------------------
